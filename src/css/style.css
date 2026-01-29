@@ -7,7 +7,13 @@ nav {
     flex-direction: column;
     background-color: #00703c;
     color: whitesmoke;
-    padding: 5px 20px 5px 20px
+    padding: 5px 20px 5px 20px;
+    width: 150px;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
 }
 
 nav a {
@@ -27,8 +33,8 @@ body {
 
 .main {
     padding: 5px;
-    border: 1px black solid;
     width: 100%;
+    margin-left: 200px;
 }
 
 .container {
