@@ -1,0 +1,42 @@
+/* * {
+    border: 1px red solid;
+}  */
+
+nav {
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+    color: wheat;
+    padding: 5px;
+}
+
+nav a {
+    color: wheat;
+    font-size: 20px;
+}
+
+nav a:hover {
+    background-color: whitesmoke;
+    color: black;
+}
+
+body {
+    display: flex;
+    margin: 0;
+}
+
+.main {
+    padding: 5px;
+    border: 1px black solid;
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    gap: 10px;
+    align-content: center;
+}
+
+.container h2 {
+    margin-top: 0px;
+}
