@@ -5,13 +5,13 @@
 nav {
     display: flex;
     flex-direction: column;
-    background-color: black;
-    color: wheat;
-    padding: 5px;
+    background-color: #00703c;
+    color: whitesmoke;
+    padding: 5px 20px 5px 20px
 }
 
 nav a {
-    color: wheat;
+    color: whitesmoke;
     font-size: 20px;
 }
 
