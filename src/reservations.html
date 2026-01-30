@@ -1,14 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <link rel="stylesheet" media="all" type="text/css" href="css/style.css"/>
-        <script src="js/nav_constructor.js" defer></script>
-    </head>
-    <body>
-        <nav></nav>
-        <!-- this is for students to reserve a slot -->
-    </body>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" media="all" type="text/css" href="css/style.css" />
+    <script src="js/nav_constructor.js" defer></script>
+    <script src="js/room_constructor.js" defer></script>
+</head>
+
+<body>
+    <nav></nav>
+    <!-- this is for students to reserve a slot -->
+    <div class="main">
+        <div class="container center">
+            <p>Room <span></span></p>
+            <p>Day <span></span></p>
+        </div>
+
+        <div class="container center">
+            <div class="box" id="seat-list"></div>
+            <div class="box" id="reserve-list">
+                <h2>Room</h2>
+                <p id="diddy">reservations</p>
+            </div>
+        </div>
+
+        <div class="container center">
+            <p>Time <span></span></p>
+            <button type="button">Reserve</button>
+        </div>
+    </div>
+</body>
+
 </html>
