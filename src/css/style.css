@@ -37,6 +37,12 @@ body {
     margin-left: 200px;
 }
 
+.gapped {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
 .container {
     display: flex;
     gap: 10px;
@@ -48,12 +54,17 @@ body {
 }
 
 .box {
-    border: 3px red solid;
+    border: 3px #00703c solid;
+    border-radius: 6px;
+    background-color: #00703c;
+    color: azure;
     padding: 10px;
 }
 
 .seat {
-    border: 1px blue solid;
+    border: 1px gray solid;
+    background-color: azure;
+    border-radius: 3px;
     width: 50px;
     height: 50px;
 }
@@ -73,6 +84,22 @@ body {
     justify-content: center;
 }
 
+.aligned {
+    align-items: center;
+}
+
 #reserve-list {
     height: auto;
+}
+
+button {
+    height: 50%;
+}
+
+span {
+    border: 3px #00703c solid;
+    background-color: #00703c;
+    border-radius: 3px;
+    width: 70px;
+    height: 20px;
 }
