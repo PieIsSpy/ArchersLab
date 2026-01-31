@@ -123,3 +123,14 @@ select {
     align-self:flex-end;
     margin-right: 8vw;
 }
+
+button:hover, select:hover {
+    background-color: #2A2420;
+    border: 3px #2A2420 solid;
+}
+
+button:active {
+    background-color: aliceblue;
+    border: 3px #2A2420 solid;
+    color: black;
+}
