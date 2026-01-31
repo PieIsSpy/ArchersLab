@@ -134,3 +134,7 @@ button:active {
     border: 3px #2A2420 solid;
     color: black;
 }
+
+.seat:hover {
+    background-color: lightblue;
+}
