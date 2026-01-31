@@ -180,6 +180,7 @@ button {
 }
 
 .bottom-line {
+    padding-top: 30px;
     padding-bottom: 30px;
     border-bottom: #2A2420 3px solid;
 }
