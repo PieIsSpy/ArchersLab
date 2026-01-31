@@ -1,8 +1,8 @@
 function constructRoom() {
     let seats = document.querySelector("#seat-list");
 
-    var x = 4;
-    var y = 4;
+    var x = 5;
+    var y = 6;
 
     for (let i = 0; i < x; i++) {
         let row = document.createElement("div")
