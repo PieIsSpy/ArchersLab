@@ -17,7 +17,7 @@ function construct_nav() {
         nav.appendChild(link);
     });
 
-    console.log("done!")
+    console.log("[nav_constructor.js] Initialized navigation bar!")
 }
 
 construct_nav();

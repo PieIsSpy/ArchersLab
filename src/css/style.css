@@ -71,7 +71,7 @@ body {
     display: flex;
     flex-direction: column;
     width: 55vw;
-    height: 40vw;
+    height: 40.5vw;
 }
 
 .row {
@@ -119,8 +119,8 @@ body {
 #reserve-list-box {
     background-color: #2A2420;
     border: 3px #2A2420 solid;
-    width: 13vw;
-    height: 37vw;
+    width: 14vw;
+    height: 40vw;
     overflow-y:scroll;
 }
 

@@ -1,33 +1,15 @@
-var x = 5;
-var y = 5;
-
-function constructRoom() {
-    let seats = document.querySelector("#seat-list");
-
-    for (let i = 0; i < x; i++) {
-        let row = document.createElement("div")
-        row.setAttribute("class", "row")
-        for (let j = 0; j < y; j++) {
-            let seat = document.createElement("div")
-            seat.setAttribute("class", "seat");
-            seat.setAttribute("id",i+""+j)
-            seat.addEventListener("click",selectSeat);
-            row.appendChild(seat)
-        }
-
-        seats.appendChild(row);
-    }
-}
+var ROWS = 5;
+var COLS = 5;
 
 var selected_seats = [];
 const reservation_name = [];
 const reservation_datetime = [];
 
-for (let i = 0; i < x; i++)
+for (let i = 0; i < ROWS; i++)
 {
     reservation_name[i] = [];
     reservation_datetime[i] = [];
-    for (let j = 0; j < y; j++)
+    for (let j = 0; j < COLS; j++)
     {
         reservation_name[i][j] = [];
         reservation_datetime[i][j] = [];
@@ -69,8 +51,26 @@ reservation_datetime[3][4][0] = "3:00PM-5:00PM";
 reservation_name[4][1][0] = "UYRT, I.";
 reservation_datetime[4][1][0] = "11:00AM-12:30PM";
 
-reservation_name[4][3][0] = "WERT, Y.";
+reservation_name[4][3][0] = "WERT, COLS.";
 reservation_datetime[4][3][0] = "9:00AM-10:30AM";
+
+function constructRoom() {
+    let seats = document.querySelector("#seat-list");
+
+    for (let i = 0; i < ROWS; i++) {
+        let row = document.createElement("div")
+        row.setAttribute("class", "row")
+        for (let j = 0; j < COLS; j++) {
+            let seat = document.createElement("div")
+            seat.setAttribute("class", "seat");
+            seat.setAttribute("id",i+""+j)
+            seat.addEventListener("click",selectSeat);
+            row.appendChild(seat)
+        }
+
+        seats.appendChild(row);
+    }
+}
 
 function selectSeat() {   
     if (!selected_seats.includes(event.currentTarget.id))
@@ -83,7 +83,7 @@ function selectSeat() {
         event.currentTarget.setAttribute("class","seat");
         selected_seats.splice(selected_seats.indexOf(event.currentTarget.id),1);
     }
-    console.log(selected_seats);
+    console.log("[room_constructor.js] Printing currently selected seats: "+selected_seats);
 
     if (selected_seats.length != 0)
     {
@@ -100,15 +100,15 @@ function selectSeat() {
 function displayFakeReservations()
 {
     let fake_selected_seats = [];
-    for (let i = 0; i < x; i++)
+    for (let i = 0; i < ROWS; i++)
     {
-        for (let j = 0; j < y; j++)
+        for (let j = 0; j < COLS; j++)
         {
-            console.log(i+""+j);
             fake_selected_seats.push(i+""+j);
         }
     }
     displayReservations(fake_selected_seats);
+	console.log("[room_constructor.js] Displaying all seats!"+selected_seats);
 }
 
 function displayReservations(arr)
@@ -118,7 +118,7 @@ function displayReservations(arr)
 
     for (let i = 0; i < arr.length; i++)
     {
-        console.log(arr[i]);
+    	console.log("[room_constructor.js] Displaying seat "+arr[0]+"!");
 
         let block = document.createElement("div");
 
@@ -135,8 +135,6 @@ function displayReservations(arr)
 
         row = parseInt(arr[i][0]);
         col = parseInt(arr[i][1]);
-        console.log("Row:"+row);
-        console.log("Col:"+col);
 
         if (reservation_name[row][col].length == 0)
         {
@@ -164,6 +162,8 @@ function displayReservations(arr)
         block.appendChild(block_children[2]);
 
         reservations.appendChild(block);
+
+		console.log("[room_constructor.js] Displaying currently selected seats!"+selected_seats);
     }
 }
 
