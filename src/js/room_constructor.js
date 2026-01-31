@@ -2,7 +2,7 @@ function constructRoom() {
     let seats = document.querySelector("#seat-list");
 
     var x = 5;
-    var y = 6;
+    var y = 5 ;
 
     for (let i = 0; i < x; i++) {
         let row = document.createElement("div")
