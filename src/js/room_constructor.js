@@ -35,42 +35,42 @@ for (let i = 0; i < 5; i++)
     }
 }
 
-reservation_name[0][0][0] = "EPSTEIN, J.";
+reservation_name[0][0][0] = "ASDF, J.";
 reservation_datetime[0][0][0] = "9:00AM-12:00PM";
 
-reservation_name[0][1][0] = "EPSTEIN, A.";
+reservation_name[0][1][0] = "FDA, A.";
 reservation_datetime[0][1][0] = "10:00AM-11:00AM";
 
-reservation_name[0][3][0] = "EPSTEIN, M.";
+reservation_name[0][3][0] = "QWER, M.";
 reservation_datetime[0][3][0] = "8:00AM-9:30AM";
 
-reservation_name[1][0][0] = "EPSTEIN, R.";
+reservation_name[1][0][0] = "REQW, R.";
 reservation_datetime[1][0][0] = "9:00AM-10:00AM";
 
-reservation_name[1][2][0] = "EPSTEIN, L.";
+reservation_name[1][2][0] = "ZXCV, L.";
 reservation_datetime[1][2][0] = "3:00PM-5:00PM";
 
-reservation_name[1][4][0] = "EPSTEIN, E.";
+reservation_name[1][4][0] = "VCZ, E.";
 reservation_datetime[1][4][0] = "12:00PM-2:00PM";
 
-reservation_name[2][1][0] = "EPSTEIN, C.";
+reservation_name[2][1][0] = "GHJ, C.";
 reservation_datetime[2][1][0] = "1:00PM-2:30PM";
 
-reservation_name[2][3][0] = "EPSTEIN, J.";
+reservation_name[2][3][0] = "ERTY, J.";
 reservation_datetime[2][3][0] = "4:00PM-6:00PM";
-reservation_name[3][0][0] = "EPSTEIN, B.";
+reservation_name[3][0][0] = "HGFD, B.";
 reservation_datetime[3][0][0] = "7:00AM-9:00AM";
 
-reservation_name[3][2][0] = "EPSTEIN, H.";
+reservation_name[3][2][0] = "DFGH, H.";
 reservation_datetime[3][2][0] = "10:00AM-11:00AM";
 
-reservation_name[3][4][0] = "EPSTEIN, G.";
+reservation_name[3][4][0] = "YUI, G.";
 reservation_datetime[3][4][0] = "3:00PM-5:00PM";
 
-reservation_name[4][1][0] = "EPSTEIN, I.";
+reservation_name[4][1][0] = "UYRT, I.";
 reservation_datetime[4][1][0] = "11:00AM-12:30PM";
 
-reservation_name[4][3][0] = "EPSTEIN, Y.";
+reservation_name[4][3][0] = "WERT, Y.";
 reservation_datetime[4][3][0] = "9:00AM-10:30AM";
 
 
@@ -116,6 +116,13 @@ function selectSeat() {
         console.log("Row:"+row);
         console.log("Col:"+col);
 
+        if (reservation_name[row][col].length == 0)
+        {
+            let na = document.createElement("p");
+            na.innerHTML = "N/A"
+            block_children[2].appendChild(na);
+        }     
+
         for (let j = 0; j < reservation_name[row][col].length; j++) {
             let r_name = document.createElement("h2");
             r_name.setAttribute("class","seat-title");
@@ -128,15 +135,13 @@ function selectSeat() {
             block_children[2].appendChild(r_time);
         }
 
-        block.appendChild(document.createElement("br"));
-        block.appendChild(document.createElement("br"));
+        block.appendChild(document.createElement("hr"));
 
         block.appendChild(block_children[0]);
         block.appendChild(block_children[1]);
         block.appendChild(block_children[2]);
 
         reservations.appendChild(block);
-        
     }
 }
 

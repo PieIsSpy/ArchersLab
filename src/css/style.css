@@ -194,6 +194,6 @@ button {
     margin-right: 295px;
 }
 
-/* * {
-    border: 3px red solid;
-} */
+br{
+    margin: 1em;
+}
