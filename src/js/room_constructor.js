@@ -1,8 +1,8 @@
+var x = 5;
+var y = 5;
+
 function constructRoom() {
     let seats = document.querySelector("#seat-list");
-
-    var x = 5;
-    var y = 5 ;
 
     for (let i = 0; i < x; i++) {
         let row = document.createElement("div")
@@ -19,16 +19,15 @@ function constructRoom() {
     }
 }
 
-var x = 0;
 var selected_seats = [];
 const reservation_name = [];
 const reservation_datetime = [];
 
-for (let i = 0; i < 5; i++)
+for (let i = 0; i < x; i++)
 {
     reservation_name[i] = [];
     reservation_datetime[i] = [];
-    for (let j = 0; j < 5; j++)
+    for (let j = 0; j < y; j++)
     {
         reservation_name[i][j] = [];
         reservation_datetime[i][j] = [];
@@ -73,10 +72,7 @@ reservation_datetime[4][1][0] = "11:00AM-12:30PM";
 reservation_name[4][3][0] = "WERT, Y.";
 reservation_datetime[4][3][0] = "9:00AM-10:30AM";
 
-
-
 function selectSeat() {   
-    // document.getElementById("seat-label").innerHTML = `${event.currentTarget.id}`;
     if (!selected_seats.includes(event.currentTarget.id))
     {
         event.currentTarget.setAttribute("class","selected-seat");
@@ -89,14 +85,40 @@ function selectSeat() {
     }
     console.log(selected_seats);
 
-    let reservations = document.querySelector("#reserve-list");
-
-    reservations.innerHTML = '';
-    selected_seats.sort();
-
-    for (let i = 0; i < selected_seats.length; i++)
+    if (selected_seats.length != 0)
     {
-        console.log(selected_seats[i]);
+        selected_seats.sort();
+        displayReservations(selected_seats);
+    }
+    else 
+    {
+        displayFakeReservations();
+    }
+
+}
+
+function displayFakeReservations()
+{
+    let fake_selected_seats = [];
+    for (let i = 0; i < x; i++)
+    {
+        for (let j = 0; j < y; j++)
+        {
+            console.log(i+""+j);
+            fake_selected_seats.push(i+""+j);
+        }
+    }
+    displayReservations(fake_selected_seats);
+}
+
+function displayReservations(arr)
+{
+    let reservations = document.querySelector("#reserve-list");
+    reservations.innerHTML = '';
+
+    for (let i = 0; i < arr.length; i++)
+    {
+        console.log(arr[i]);
 
         let block = document.createElement("div");
 
@@ -107,12 +129,12 @@ function selectSeat() {
         block_children[0].innerHTML="SEAT";
 
         block_children[1] = document.createElement("h2");
-        block_children[1].innerHTML=selected_seats[i];
+        block_children[1].innerHTML=arr[i][0]+'-'+arr[i][1];
 
         block_children[2] = document.createElement("div");
 
-        row = parseInt(selected_seats[i][0]);
-        col = parseInt(selected_seats[i][1]);
+        row = parseInt(arr[i][0]);
+        col = parseInt(arr[i][1]);
         console.log("Row:"+row);
         console.log("Col:"+col);
 
@@ -146,4 +168,4 @@ function selectSeat() {
 }
 
 constructRoom();
-selectSeat();
+displayFakeReservations();

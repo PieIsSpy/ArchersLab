@@ -145,12 +145,12 @@ select {
 button:hover, select:hover {
     background-color: #2A2420;
     border: 3px #2A2420 solid;
-    transition: all .1s ease-in;
+    transition: all .1s;
 }
 
 button:active {
     background-color: aliceblue;
-    border: 3px #2A2420 solid;
+    border: 3px aliceblue solid;
     color: black;
 
 }
