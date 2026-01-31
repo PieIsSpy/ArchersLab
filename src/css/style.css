@@ -169,14 +169,14 @@ button {
 }
 
 .short {
-    width: 12vw;
+    width: 150px;
     margin-top: 5px;
 }
 
 .profile-edit {
     float: right;
-    width: 30vw;
-    margin-left: 10vw;
+    width: 350px;
+    margin-left: 100px;
 }
 
 .bottom-line {
@@ -191,7 +191,7 @@ button {
 
 .float-right {
     float: right;
-    margin-right: 295px;
+    margin-right: 360px;
 }
 
 br{
