@@ -1,3 +1,7 @@
+/* * {
+    border: 3px red solid;
+} */
+
 nav {
     display: flex;
     flex-direction: column;
@@ -102,6 +106,8 @@ button {
     border-radius: 6px;
     background-color: #567257;
     color: white;
+    height: 6vh;
+    width: 9vw;
     margin-top: 1em;
 }
 
@@ -111,4 +117,9 @@ select {
     border-radius: 6px;
     background-color: #567257;
     color: white;
+}
+
+.right-aligned {
+    align-self:flex-end;
+    margin-right: 8vw;
 }
