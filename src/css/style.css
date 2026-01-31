@@ -155,6 +155,7 @@ button:active {
 
 }
 
+<<<<<<< HEAD
 button {
     font-family: "Inter", sans-serif;
     border: 3px #567257 solid;
@@ -197,3 +198,20 @@ button {
 br{
     margin: 1em;
 }
+=======
+.seat:hover {
+    background-color: lightblue;
+}
+
+.cells{
+    background-color: white;
+    height: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.brown{
+    text-decoration:color: #567257
+>>>>>>> b6c9754 (Dashboard design)
