@@ -3,11 +3,41 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
+        <title>Profile Settings</title>
         <link rel="stylesheet" media="all" type="text/css" href="css/style.css"/>
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
         <script src="js/nav_constructor.js" defer></script>
     </head>
     <body>
         <nav></nav>
+
+        <div class="main">
+            <h1>Profile Settings</h2>
+            <div class="container">
+                <div class="picture">
+                    <img src="https://media.tenor.com/Eu03ypsoM3gAAAAM/dog-tongue-out.gif" width="150px">
+                    <button type="button" class="short">Change profile picture</button>
+                        
+                </div>
+
+                <div class="info">
+                    <p>Name: <span class="profile-edit">Name G. Oeshere</span></p>
+                    <p>College: <span><input type="text" class="profile-edit"></span></p>
+                    <p>Program: <span><input type="text" class="profile-edit"></span></p>
+                    <p>Description: <span ><input type="text" class="profile-edit desc"></span></p>
+                </div>
+
+            </div>
+            <button type="button" class="short float-right">Save</button>
+            <div class="bottom-line"></div>
+        </div>
+
+        <div>
+
+        </div>
     </body>
 </html>
