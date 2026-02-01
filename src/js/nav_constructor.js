@@ -17,6 +17,11 @@ function construct_nav() {
         nav.appendChild(link);
     });
 
+    let logout = document.createElement("a");
+    logout.setAttribute("href", "login.html")
+    logout.textContent = "Log Out"
+    nav.appendChild(logout);
+
     console.log("[nav_constructor.js] Initialized navigation bar!")
 }
 
