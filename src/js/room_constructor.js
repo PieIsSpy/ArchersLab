@@ -64,7 +64,7 @@ function constructRoom() {
             let seat = document.createElement("div")
             seat.setAttribute("class", "seat");
             seat.setAttribute("id",i+""+j)
-            seat.addEventListener("click",selectSeat);
+            seat.addEventListener("click",updateSeatSelection);
             row.appendChild(seat)
         }
 
@@ -73,20 +73,24 @@ function constructRoom() {
     console.log("[room_constructor.js] Room constructed!");
 }
 
-function selectSeat(event) {
-    if (event != undefined)
-        if (selected_seats.includes(event.currentTarget.id))
-        {
-            event.currentTarget.setAttribute("class","seat");
-            selected_seats.splice(selected_seats.indexOf(event.currentTarget.id),1);
-        }
-        else
-        {
-            event.currentTarget.setAttribute("class","selected-seat");
-            selected_seats.push(event.currentTarget.id);
-        }
+function updateSeatSelection(event)
+{
+    if (selected_seats.includes(event.currentTarget.id))
+    {
+        event.currentTarget.setAttribute("class","seat");
+        selected_seats.splice(selected_seats.indexOf(event.currentTarget.id),1);
+    }
+    else
+    {
+        event.currentTarget.setAttribute("class","selected-seat");
+        selected_seats.push(event.currentTarget.id);
+    }
 
-        
+    updateReservationDisplay();
+}
+
+function updateReservationDisplay()
+{
     if (selected_seats.length != 0)
     {
         selected_seats.sort();
@@ -168,14 +172,8 @@ function displayReservations(arr)
 
 function canReserveInTimePeriod(reserving,existing)
 {
-    // Let's just assume time == DD/MM/YY HHMM
-    // So January 1, 2026 12:00PM-12:30PM would be
-    // reserving = ["01/01/2026 1200","01/01/2026 1230"]
-    //               012345678901234
-    // YEAR IS 6-10
-    // MONTH IS 3-5
-    // DAY IS 0-2
-    // HOUR-MINUTE IS 11+
+    // ASSUME January 1, 2026 12:00PM-12:30PM would be reserving = ["01/01/2026 1200","01/01/2026 1230"]
+    // YEAR IS 6-10 MONTH IS 3-5 DAY IS 0-2 HOUR-MINUTE IS 11+
 
     if (reserving[0].slice(6,10) == existing[0].slice(6,10)) // YEAR
     {
@@ -183,12 +181,12 @@ function canReserveInTimePeriod(reserving,existing)
         {
             if (reserving[0].slice(0,2) == existing[0].slice(0,2)) // DAY
             {
+                // Check if your reservation OVERLAPS (inclusive reservation start, exclusive reservation end)
                 // console.log(reserving[0].slice(11)+"<"+existing[0].slice(11));
                 // console.log(reserving[1].slice(11)+"<="+existing[0].slice(11));
                 // console.log(reserving[0].slice(11)+">="+existing[1].slice(11));
                 // console.log(reserving[1].slice(11)+">"+existing[1].slice(11));
 
-                // Check if your reservation OVERLAPS (inclusive reservation start, exclusive reservation end)
                 if (!(((reserving[0].slice(11)<existing[0].slice(11) &&
                     reserving[1].slice(11)<=existing[0].slice(11))|| 
                     (reserving[0].slice(11)>=existing[1].slice(11) &&
@@ -205,4 +203,4 @@ function canReserveInTimePeriod(reserving,existing)
 }
 
 constructRoom();
-selectSeat();
+updateReservationDisplay();
