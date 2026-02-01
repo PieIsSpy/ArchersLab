@@ -64,61 +64,67 @@ function constructRoom() {
             let seat = document.createElement("div")
             seat.setAttribute("class", "seat");
             seat.setAttribute("id",i+""+j)
-            seat.addEventListener("click",selectSeat);
+            seat.addEventListener("click",updateSeatSelection);
             row.appendChild(seat)
         }
 
         seats.appendChild(row);
     }
+    console.log("[room_constructor.js] Room constructed!");
 }
 
-function selectSeat() {   
-    if (!selected_seats.includes(event.currentTarget.id))
-    {
-        event.currentTarget.setAttribute("class","selected-seat");
-        selected_seats.push(event.currentTarget.id);
-    }
-    else
+function updateSeatSelection(event)
+{
+    if (selected_seats.includes(event.currentTarget.id))
     {
         event.currentTarget.setAttribute("class","seat");
         selected_seats.splice(selected_seats.indexOf(event.currentTarget.id),1);
     }
-    console.log("[room_constructor.js] Printing currently selected seats: "+selected_seats);
+    else
+    {
+        event.currentTarget.setAttribute("class","selected-seat");
+        selected_seats.push(event.currentTarget.id);
+    }
 
+    updateReservationDisplay();
+}
+
+function updateReservationDisplay()
+{
     if (selected_seats.length != 0)
     {
         selected_seats.sort();
         displayReservations(selected_seats);
+        console.log("[room_constructor.selectSeat()] Calling displayReservations on currently selected seats: "+selected_seats);
     }
     else 
     {
-        displayFakeReservations();
-    }
-
-}
-
-function displayFakeReservations()
-{
-    let fake_selected_seats = [];
-    for (let i = 0; i < ROWS; i++)
-    {
-        for (let j = 0; j < COLS; j++)
+        let fake_selected_seats = [];
+        for (let i = 0; i < ROWS; i++)
         {
-            fake_selected_seats.push(i+""+j);
+            for (let j = 0; j < COLS; j++)
+            {
+                fake_selected_seats.push(i+""+j);
+            }
         }
+        displayReservations(fake_selected_seats);
+        console.log("[room_constructor.js] Displaying all seats!");
     }
-    displayReservations(fake_selected_seats);
-	console.log("[room_constructor.js] Displaying all seats!"+selected_seats);
 }
 
 function displayReservations(arr)
 {
+    console.log("[room_constructor.displayReservations()] Displaying currently selected seats: "+selected_seats+"!");
+
     let reservations = document.querySelector("#reserve-list");
     reservations.innerHTML = '';
 
     for (let i = 0; i < arr.length; i++)
     {
-    	console.log("[room_constructor.js] Displaying seat "+arr[0]+"!");
+        row = parseInt(arr[i][0]);
+        col = parseInt(arr[i][1]);
+
+    	console.log("[room_constructor.displayReservations()] Displaying seat "+arr[0]+"!");
 
         let block = document.createElement("div");
 
@@ -129,12 +135,10 @@ function displayReservations(arr)
         block_children[0].innerHTML="SEAT";
 
         block_children[1] = document.createElement("h2");
-        block_children[1].innerHTML=arr[i][0]+'-'+arr[i][1];
+        block_children[1].innerHTML=row+'-'+col;
 
         block_children[2] = document.createElement("div");
 
-        row = parseInt(arr[i][0]);
-        col = parseInt(arr[i][1]);
 
         if (reservation_name[row][col].length == 0)
         {
@@ -163,9 +167,40 @@ function displayReservations(arr)
 
         reservations.appendChild(block);
 
-		console.log("[room_constructor.js] Displaying currently selected seats!"+selected_seats);
+    }
+}
+
+function canReserveInTimePeriod(reserving,existing)
+{
+    // ASSUME January 1, 2026 12:00PM-12:30PM would be reserving = ["01/01/2026 1200","01/01/2026 1230"]
+    // YEAR IS 6-10 MONTH IS 3-5 DAY IS 0-2 HOUR-MINUTE IS 11+
+
+    if (reserving[0].slice(6,10) == existing[0].slice(6,10)) // YEAR
+    {
+        if (reserving[0].slice(3,5) == existing[0].slice(3,5)) // MONTH
+        {
+            if (reserving[0].slice(0,2) == existing[0].slice(0,2)) // DAY
+            {
+                // Check if your reservation OVERLAPS (inclusive reservation start, exclusive reservation end)
+                // console.log(reserving[0].slice(11)+"<"+existing[0].slice(11));
+                // console.log(reserving[1].slice(11)+"<="+existing[0].slice(11));
+                // console.log(reserving[0].slice(11)+">="+existing[1].slice(11));
+                // console.log(reserving[1].slice(11)+">"+existing[1].slice(11));
+
+                if (!(((reserving[0].slice(11)<existing[0].slice(11) &&
+                    reserving[1].slice(11)<=existing[0].slice(11))|| 
+                    (reserving[0].slice(11)>=existing[1].slice(11) &&
+                    reserving[1].slice(11)>existing[1].slice(11)))))
+                {
+
+                    console.log("[room_constructor.js] Room reservation failed! Overlappting time!");
+                    console.log("Slot to be acquired: "+reserving[0].slice(11)+"-"+reserving[1].slice(11)+
+                                "  Occupying slot:"+existing[0].slice(11)+"-"+existing[1].slice(11));
+                }
+            }
+        }
     }
 }
 
 constructRoom();
-displayFakeReservations();
+updateReservationDisplay();
