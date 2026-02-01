@@ -198,7 +198,7 @@ button {
 br{
     margin: 1em;
 }
-=======
+
 .seat:hover {
     background-color: lightblue;
 }
@@ -211,7 +211,3 @@ br{
     justify-content: center;
     align-items: center;
 }
-
-.brown{
-    text-decoration:color: #567257
->>>>>>> b6c9754 (Dashboard design)
