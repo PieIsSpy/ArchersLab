@@ -155,7 +155,7 @@ button:active {
 
 }
 
-button {
+button, input[type=submit] {
     font-family: "Inter", sans-serif;
     border: 3px #567257 solid;
     border-radius: 6px;
