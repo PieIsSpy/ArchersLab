@@ -11,6 +11,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
         <script src="js/nav_constructor.js" defer></script>
+        <script src="js/input_checker.js" defer></script>
     </head>
     <body>
         <nav></nav>
@@ -22,19 +23,19 @@
                 done prior to deletion are cancelled when your account is deleted.
             </p>
             <div class="container col-flex center aligned">
-                <form>
+                <form action="login.html" onsubmit="return checkInputs() && confirmPassword()">
                     <table>
                         <tr>
                             <th align="left">Password</th>
                             <th width="150px">
-                                <input type="text"/>
+                                <input class="confirm-password" type="text"/>
                             </th>
                         </tr>
 
                         <tr>
                             <th align="left">Confirm Password</th>
                             <th width="150px">
-                                <input type="text"/>
+                                <input class="confirm-password" type="text"/>
                             </th>
                         </tr>
 
