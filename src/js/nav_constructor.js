@@ -17,6 +17,11 @@ function construct_nav() {
         nav.appendChild(link);
     });
 
+    let manage = document.createElement("a");
+    manage.setAttribute("href", "manage_reservations.html")
+    manage.textContent = "Manage Reservations"
+    nav.appendChild(manage);
+
     let logout = document.createElement("a");
     logout.setAttribute("href", "login.html")
     logout.textContent = "Log Out"

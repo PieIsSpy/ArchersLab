@@ -178,7 +178,7 @@ function renderReservations(arr)
         block_children[1].innerHTML=row+'-'+col;
 
         block_children[2] = document.createElement("div");
-
+        block_children[2].setAttribute("class", "list");
 
         if (reservations[row][col].length == 0)
         {
@@ -198,8 +198,13 @@ function renderReservations(arr)
             r_time_para.setAttribute("class","seat-title");
             r_time_para.innerHTML = reservation.start_time+'-'+reservation.end_time;
 
-            block_children[2].appendChild(r_name_header);
-            block_children[2].appendChild(r_time_para);
+            let slot = document.createElement("div");
+            slot.setAttribute("class", "info");
+
+            slot.appendChild(r_name_header);
+            slot.appendChild(r_time_para);
+
+            block_children[2].appendChild(slot);
         }
 
         block.appendChild(document.createElement("hr"));
@@ -210,6 +215,22 @@ function renderReservations(arr)
 
         reservation_list.appendChild(block);
     }
+
+    if (document.title == "Manage Reservations") {
+        addRemoveButton();
+    }
+}
+
+function addRemoveButton() {
+    let infoList = document.querySelectorAll(".info");
+
+    console.log("pinged");
+
+    infoList.forEach(info => {
+        let remove = document.createElement("button");
+        remove.textContent = "Remove";
+        info.appendChild(remove);
+    });
 }
 
 function isOccupied(reserving,existing)
