@@ -14,12 +14,12 @@ for (let i = 0; i < ROWS; i++)
 }
 
 reservations[0][0][0]={name: "ASDF, J.", date: "20260607", start_time: "1200", end_time: "1300"}
-reservations[0][1][0]={name: "ASDF, J.", date: "20260607", start_time: "1200", end_time: "1300"}
-reservations[0][3][0]={name: "ASDF, J.", date: "20260607", start_time: "1200", end_time: "1300"}
-reservations[1][0][0]={name: "ASDF, J.", date: "20260607", start_time: "1200", end_time: "1300"}
-reservations[1][2][0]={name: "ASDF, J.", date: "20260607", start_time: "1200", end_time: "1300"}
-reservations[1][4][0]={name: "ASDF, J.", date: "20260607", start_time: "1200", end_time: "1300"}
-reservations[2][1][0]={name: "ASDF, J.", date: "20260607", start_time: "1200", end_time: "1300"}
+reservations[0][1][0]={name: "Ang, B.", date: "20260608", start_time: "1200", end_time: "1300"}
+reservations[0][3][0]={name: "Omandac, K. D.", date: "20260609", start_time: "1200", end_time: "1300"}
+reservations[1][0][0]={name: "Devito, D.", date: "20260610", start_time: "1200", end_time: "1300"}
+reservations[1][2][0]={name: "Cena, J.", date: "20260611", start_time: "1200", end_time: "1300"}
+reservations[1][4][0]={name: "Mordecai, A.", date: "20260612", start_time: "1200", end_time: "1300"}
+reservations[2][1][0]={name: "Rigbi, L.", date: "20260613", start_time: "1200", end_time: "1300"}
 
 function getDateSelection()
 {
