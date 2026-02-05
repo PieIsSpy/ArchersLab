@@ -216,7 +216,7 @@ function renderReservations(arr)
         reservation_list.appendChild(block);
     }
 
-    if (document.title == "Manage Reservations") {
+    if (document.title == "View Slot") {
         addRemoveButton();
     }
 }
