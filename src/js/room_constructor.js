@@ -5,7 +5,7 @@ var selected_seats = [];
 var all_seats = [];
 const reservations = [];
 
-const name = "TEE, J."
+const name = "Tee, J."
 
 for (let i = 0; i < ROWS; i++)
 {
@@ -16,13 +16,18 @@ for (let i = 0; i < ROWS; i++)
     }
 }
 
-reservations[0][0][0]={name: "ASDF, J.", date: "20260607", start_time: "1200", end_time: "1300"}
 reservations[0][1][0]={name: "Ang, B.", date: "20260608", start_time: "1200", end_time: "1300"}
 reservations[0][3][0]={name: "Omandac, K. D.", date: "20260609", start_time: "1200", end_time: "1300"}
 reservations[1][0][0]={name: "Devito, D.", date: "20260610", start_time: "1200", end_time: "1300"}
 reservations[1][2][0]={name: "Cena, J.", date: "20260611", start_time: "1200", end_time: "1300"}
 reservations[1][4][0]={name: "Mordecai, A.", date: "20260612", start_time: "1200", end_time: "1300"}
 reservations[2][1][0]={name: "Rigbi, L.", date: "20260613", start_time: "1200", end_time: "1300"}
+
+function generateSeatList(){
+    for (let i = 0; i < ROWS; i++)
+        for (let j = 0; j < COLS; j++)
+            all_seats.push(i+"-"+j);
+}
 
 function getDateSelection()
 {
@@ -116,7 +121,7 @@ function constructRoom() {
     }
 
     // Add listener for reserve button
-    if (document.title == "reservations") {
+    if (document.title.toLowerCase() == "reservations") {
         document.getElementById("reserve-btn").addEventListener("click",reserveSeat);
     }
     else {
@@ -143,120 +148,37 @@ function onSeatClick(event)
         selected_seats.push(event.currentTarget.id);
     }
 
-    updateReservationState();
-}
-
-/*
-Using current amount of seats, call renderReservations() based on selected seats.
-None - display all
-Selection - display selection
-*/
-function updateReservationState()
-{
-    if (selected_seats.length != 0)
-    {
-        selected_seats.sort();
-        renderReservations(selected_seats);
-        console.log("[room_constructor.selectSeat()] Calling renderReservations on currently selected seats: "+selected_seats);
-    }
-    else 
-    {
-        let fake_selected_seats = [];
-        for (let i = 0; i < ROWS; i++)
-        {
-            for (let j = 0; j < COLS; j++)
-            {
-                fake_selected_seats.push(i+""+j);
-            }
-        }
-        renderReservations(fake_selected_seats);
-        console.log("[room_constructor.js] Displaying all seats!");
-    }
-}
-
-function reserveSeat()
-{
-    let reservation = {name: "LORENS, J. T.", date: getDateSelection(), 
-                        start_time: getStartTimeSelection(), end_time: getEndTimeSelection()};
-    for (let i = 0; i < selected_seats.length; i++)
-    {
-        row = parseInt(selected_seats[i][0]);
-        col = parseInt(selected_seats[i][1]);
-
-        let available = true;
-        for (let j = 0; j < reservations[row][col].length; j++)
-        {
-            if (isOccupied(reservation,reservations[row][col][j]))
-            {
-                available = false;
-            }
-        }
-
-        if (available)
-        {
-            console.log("Seat is free!");
-            reservations[row][col].push(reservation);
-            reservations[row][col].sort(compare)
-            updateReservationState();
-        }
-    }
+    renderReservations();
 }
 
 function displayModal() {
     let modal = document.querySelector(".modal");
-    modal.style.display = "block";
+    if (modal != undefined)
+        modal.style.display = "block";
 }
 
 function hideModal() {
     let modal = document.querySelector(".modal");
-    modal.style.display = "none";
+    if (modal != undefined)
+    {
+        modal.style.display = "none";
 
-    let inputs = document.querySelectorAll(".modal-content input[type=text]");
+        let inputs = document.querySelectorAll(".modal-content input[type=text]");
 
-    inputs.forEach(input => {
-        console.log(input.value)
-        input.value = "";
-        input.style.backgroundColor = "white";
-    });
-}
-
-function inpersonReserve() {
-    for (let i = 0; i < selected_seats.length; i++) {
-        row = parseInt(selected_seats[i][0]);
-        col = parseInt(selected_seats[i][1]);
-
-        let available = true;
-        for (let j = 0; j < reservations[row][col].length; j++)
-        {
-            if (isOccupied(reservation,reservations[row][col][j]))
-            {
-                available = false;
-                break;
-            }
-        }
-
-        if (available)
-        {
-            console.log("Seat is free!");
-
-            reservations[row][col].push(reservation);
-            reservations[row][col].sort(compare)
-            updateReservationState();
-            hideModal();
-        }
+        inputs.forEach(input => {
+            console.log(input.value)
+            input.value = "";
+            input.style.backgroundColor = "white";
+        });
     }
 }
 
 function compare(a, b)
 {
     if (""+a.date+a.start_time+a.end_time < ""+b.date+b.start_time+b.end_time)
-    {
         return -1;
-    }
     if (""+a.date+a.start_time+a.end_time > ""+b.date+b.start_time+b.end_time)
-    {
         return 1;
-    }
     return 0;
 }
 
@@ -268,7 +190,7 @@ function renderReservations()
     let user = (selected_seats.length == 0);
     selected_seats.sort();
 
-    if (user)
+    if (user && document.name.toLowerCase() == "reservations")
     {
         arr = all_seats;
         document.getElementById("confirmed-text").innerHTML = "YOUR RESERVATIONS";
@@ -312,9 +234,7 @@ function renderReservations()
                 block_children[1].setAttribute("class", "list");
             
                 if (reservations[row][col].length == 0)
-                {
                     block_children[0].innerHTML="SEAT <span style=\"font-weight:bold\">"+row+" "+col+"</span>"+"<span style=\"color:#6f6053;margin-left: 10px;\">N/A</span>";
-                }
 
                 for (let j = 0; j < reservations[row][col].length; j++) {
                     let reservation = reservations[row][col][j];
@@ -412,6 +332,33 @@ function reserveSeat()
     }
 }
 
+function inpersonReserve() {
+    for (let i = 0; i < selected_seats.length; i++) {
+        row = parseInt(selected_seats[i][0]);
+        col = parseInt(selected_seats[i][1]);
+
+        let available = true;
+        for (let j = 0; j < reservations[row][col].length; j++)
+        {
+            if (isOccupied(reservation,reservations[row][col][j]))
+            {
+                available = false;
+                break;
+            }
+        }
+
+        if (available)
+        {
+            console.log("Seat is free!");
+
+            reservations[row][col].push(reservation);
+            reservations[row][col].sort(compare)
+            updateReservationState();
+            hideModal();
+        }
+    }
+}
+
 function addRemoveButton() {
     let infoList = document.querySelectorAll(".info");
 
@@ -420,6 +367,7 @@ function addRemoveButton() {
     infoList.forEach(info => {
         let remove = document.createElement("button");
         remove.textContent = "Remove";
+        remove.setAttribute("class","remove-reservation");
         info.appendChild(remove);
     });
 }
