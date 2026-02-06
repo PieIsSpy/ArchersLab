@@ -17,9 +17,27 @@
     <div class="main">
         <h1>List of Reservations</h1>
 
+        <div class="box container gapped">
+            <div class="container narrow">
+                <p>Search ID number: </p>
+                <input type="text">
+            </div>
+            
+            <div class="container narrow">
+                <p>Filter Room</p>
+                <select class="inverse-color">
+                    <option>G301</option>
+                    <option>G302</option>
+                    <option>G303</option>
+                    <option>G304</option>
+                    <option>G305</option>
+                </select>
+            </div>
+        </div>
+
         <div class="box">
             <h2>Current Reservations</h2>
-            <div class="gapped">
+            <div class="gapped col-flex">
                 <table id = "reservationTable">
                     <tr>
                         <th>Name</th><th>Date</th><th>Time</th><th>Room</th><th>Seats Taken</th><th>Status</th>
