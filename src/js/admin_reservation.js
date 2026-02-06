@@ -143,24 +143,20 @@ function onSeatClick(event)
 
 function displayModal() {
     let modal = document.querySelector(".modal");
-    if (modal != undefined)
-        modal.style.display = "block";
+    modal.style.display = "block";
 }
 
 function hideModal() {
     let modal = document.querySelector(".modal");
-    if (modal != undefined)
-    {
-        modal.style.display = "none";
+    modal.style.display = "none";
 
-        let inputs = document.querySelectorAll(".modal-content input[type=text]");
+    let inputs = document.querySelectorAll(".modal-content input[type=text]");
 
-        inputs.forEach(input => {
-            console.log(input.value)
-            input.value = "";
-            input.style.backgroundColor = "white";
-        });
-    }
+    inputs.forEach(input => {
+        console.log(input.value)
+        input.value = "";
+        input.style.backgroundColor = "#567257";
+    });
 }
 
 function compare(a, b)
@@ -177,9 +173,10 @@ Caller to update the div. Selected seats fed to this directly updates the GUI.
 */
 function renderReservations()
 {
+    var display = selected_seats.length == 0; 
     selected_seats.sort();
 
-    if (selected_seats.length == 0)
+    if (display)
         arr = all_seats; 
     else 
         arr = selected_seats;
@@ -192,7 +189,7 @@ function renderReservations()
         row = parseInt(arr[i][0]);
         col = parseInt(arr[i][2]);
 
-        if (reservations[row][col].length != 0)
+        if (!display || reservations[row][col].length != 0)
         {
             let block = document.createElement("div");
 
@@ -202,22 +199,18 @@ function renderReservations()
             block_children[0].setAttribute("class","seat-title");
             block_children[0].innerHTML="SEAT <span style=\"font-weight:bold\">"+row+" "+col+"</span>";
 
-            block_children[1] = document.createElement("div");
-            block_children[1].setAttribute("class", "list");
-        
             if (reservations[row][col].length == 0)
                 block_children[0].innerHTML="SEAT <span style=\"font-weight:bold\">"+row+" "+col+"</span>"+"<span style=\"color:#6f6053;margin-left: 10px;\">N/A</span>";
 
+            block_children[1] = document.createElement("div");
+            block_children[1].setAttribute("class", "list");
+        
             for (let j = 0; j < reservations[row][col].length; j++) {
                 let reservation = reservations[row][col][j];
                 let r_name_header = document.createElement("h3");
                 r_name_header.setAttribute("class","seat-title");
                 r_name_header.innerHTML = reservation.name;
-
-                if (reservation.name == name)
-                    r_name_header.innerHTML = "<span style=\"color:#FFFFFF;\">"+reservation.name+"</span>";
                 
-
                 let r_time_para = document.createElement("p");
                 r_time_para.setAttribute("class","seat-title");
                 r_time_para.innerHTML =
@@ -227,8 +220,15 @@ function renderReservations()
                 let slot = document.createElement("div");
                 slot.setAttribute("class", "info");
 
+                let remove = document.createElement("button");
+                remove.textContent = "Remove";
+                remove.setAttribute("class","remove-reservation");
+                remove.setAttribute("id","remove-"+row+"-"+col+"-"+j);
+                remove.addEventListener("click",removeReservation);
+
                 slot.appendChild(r_name_header);
                 slot.appendChild(r_time_para);
+                slot.appendChild(remove);
 
                 block_children[1].appendChild(slot);
             }
@@ -241,10 +241,15 @@ function renderReservations()
             reservation_list.appendChild(block);
         }
     }
+}
 
-    if (document.title == "View Slot") {
-        addRemoveButton();
-    }
+function removeReservation(event)
+{
+    console.log("Epsteinifying row "+event.currentTarget.id.slice(7,8)+" and column "+event.currentTarget.id.slice(9,10)+" and 3rd dimension "+event.currentTarget.id.slice(11,12));
+    
+    reservations[parseInt(event.currentTarget.id.slice(7,8))][parseInt(event.currentTarget.id.slice(9,10))].splice(parseInt(event.currentTarget.id.slice(11,12)));
+
+    renderReservations();
 }
 
 function isOccupied(reserving,existing)
@@ -293,41 +298,44 @@ function reserveSeat()
 }
 
 function inpersonReserve() {
-    for (let i = 0; i < selected_seats.length; i++) {
-        row = parseInt(selected_seats[i][0]);
-        col = parseInt(selected_seats[i][1]);
-
-        let available = true;
-        for (let j = 0; j < reservations[row][col].length; j++)
-        {
-            if (isOccupied(reservation,reservations[row][col][j]))
-            {
-                available = false;
-                break;
-            }
-        }
-
-        if (available)
-        {
-            reservations[row][col].push(reservation);
-            reservations[row][col].sort(compare)
-            updateReservationState();
-            hideModal();
-        }
+    console.log("Reserve called");
+    let available = true;
+    let reservation = {
+        name: 
+        document.getElementById("input-last").value.toUpperCase().slice(0,1)+
+        document.getElementById("input-last").value.toLowerCase().slice(1)+
+        ", "+document.getElementById("input-first").value.toUpperCase()[0]+".", 
+        date: getDateSelection(),     
+        start_time: simplifyTime(document.getElementById("select-start-time").value), 
+        end_time: simplifyTime(document.getElementById("select-end-time").value)
     }
-}
+    for (let i = 0; i < selected_seats.length; i++)
+    {
+        row = parseInt(selected_seats[i][0]);
+        col = parseInt(selected_seats[i][2]);
 
-function addRemoveButton() {
-    let infoList = document.querySelectorAll(".info");
+        for (let j = 0; j < reservations[row][col].length; j++)
+            if (isOccupied(reservation,reservations[row][col][j]))
+                available = false;
+    }
 
-    console.log("pinged");
+    if (available)
+    {
+        console.log("Reserve");
+        
+        for (let i = 0; i < selected_seats.length; i++)
+        {
+            console.log(row+" "+col)
+            row = parseInt(selected_seats[i][0]);
+            col = parseInt(selected_seats[i][2]);
+            reservations[row][col].push(reservation);
+        }
 
-    infoList.forEach(info => {
-        let remove = document.createElement("button");
-        remove.textContent = "Remove";
-        remove.setAttribute("class","remove-reservation");
-        info.appendChild(remove);
-    });
+        reservations[row][col].sort(compare)
+        renderReservations();
+    }
+    else
+        console.log("Can't reserve");
 }
 
 constructRoom();

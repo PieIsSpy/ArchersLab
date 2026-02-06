@@ -2,12 +2,12 @@ function clearStyle(){
     let inputs = document.querySelectorAll("td input[type=text]");
 
     inputs.forEach(input => {
-        input.style.backgroundColor = "white";
+        input.style.backgroundColor = "#567257";
     });
 }
 
 function checkInputs() {
-    let valid = true;
+    // let valid = true;
     let inputs = document.querySelectorAll("td input[type=text]");
 
     clearStyle();
@@ -15,13 +15,19 @@ function checkInputs() {
     inputs.forEach(input => {
         if (input.value.length == 0) {
             valid = false;
-            input.style.backgroundColor = "red";
+            input.style.backgroundColor = "#d95746";
+            input.style.color = "white";
+            input.style.border.style="solid";
+            input.style.border.radius="8px";
+            input.style.border.color="#d95746";
+            input.style.outline="none";
         }
     });
 
     console.log("checkInput() called");
     
-    return valid;
+    
+    // return valid;
 }
 
 function confirmPassword() {

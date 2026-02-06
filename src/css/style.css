@@ -262,6 +262,23 @@ button, input[type=submit], input[type=button] {
     align-items: center;
 }
 
+.bottom-padding {
+    padding-bottom: 30px;
+}
+
+/* .error-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+} */
+
 .modal {
     display: none;
     position: fixed;
@@ -276,21 +293,40 @@ button, input[type=submit], input[type=button] {
 }
 
 .modal-content {
-    background-color: aliceblue;
+    background-color: whitesmoke;
     margin: auto;
     padding: 20px;
     border: 1px solid black;
-    width: 60%;
+    border-radius: 10px;
+    width: 40%;
+}
+
+.modal-h2 {
+    margin-block-start:0;
+}
+
+.modal-td {
+    padding-bottom:20px;
+}
+
+.modal-input {
+    background-color:#567257;
+    color: white;
+    border-style:solid;
+    border-width: 8px;
+    border-radius:8px;
+    border-color:#567257;
+    outline:none;
+}
+
+.modal-input::placeholder {
+    color: rgb(208, 220, 201);
 }
 
 #cancel {
-    background-color: red;
-    border: red 3px solid;
+    background-color: #d95746;
+    border: #d95746 3px solid;
     color: aliceblue;
-}
-
-.bottom-padding {
-    padding-bottom: 30px;
 }
 
 #cancel:hover {
@@ -301,7 +337,7 @@ button, input[type=submit], input[type=button] {
 }
 
 #cancel:active {
-    background-color: red;
+    background-color: #d95746;
     color: whitesmoke;
 }
 

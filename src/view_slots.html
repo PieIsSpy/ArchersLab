@@ -22,29 +22,29 @@
     
     <div id="inperson-reserve" class="modal">
         <div class="modal-content">
-            <h2>Confirm Reservation</h2>
-            <form onsubmit="return checkInputs()">
+            <h2 class="modal-h2">Confirm Reservation</h2>
+            <form onsubmit="return false;">
                 <table>
                     <tr>
-                        <td width="200px">First Name</td>
-                        <td><input type="text"></td>
+                        <td class="modal-td">First Name</td>
+                        <td class="modal-td"><input class="modal-input" type="text" id="input-first" placeholder="Enter first name here..."></td>
                     </tr>
                     <tr>
-                        <td width="200px">Last Name</td>
-                        <td><input type="text"></td>
+                        <td class="modal-td">Last Name</td>
+                        <td class="modal-td"><input class="modal-input" type="text" id="input-last" placeholder="Enter last name here..."></td>
                     </tr>
                     <tr>
-                        <td width="200px">Email</td>
-                        <td><input type="text"></td>
+                        <td class="modal-td">Email</td>
+                        <td class="modal-td"><input class="modal-input" type="text" id="input-email" placeholder="Enter email here..."></td>
                     </tr>
                     <tr>
-                        <td width="200px">ID Number</td>
-                        <td><input type="text"></td>
+                        <td class="modal-td">ID Number</td>
+                        <td class="modal-td"><input class="modal-input" type="text" id="input-id" placeholder="Enter ID number here..."></td>
                     </tr>
                     <tr>
                         <td>
                             <input type="button" id="cancel" onclick="hideModal()" value="Cancel">
-                            <input type="submit" value="Confirm">
+                            <input type="submit" value="Confirm" onclick="inpersonReserve();hideModal();">
                         </td>
                     </tr>
                 </table>
@@ -68,60 +68,60 @@
 
             <p>Start Time</p>
             <select id="select-start-time">
-                <option>0700</option>
-                <option>0730</option>
-                <option>0800</option>
-                <option>0830</option>
-                <option>0900</option>
-                <option>0930</option>
-                <option>1000</option>
-                <option>1030</option>
-                <option>1100</option>
-                <option>1130</option>
-                <option>1200</option>
-                <option>1230</option>
-                <option>1300</option>
-                <option>1330</option>
-                <option>1400</option>
-                <option>1430</option>
-                <option>1500</option>
-                <option>1530</option>
-                <option>1600</option>
-                <option>1630</option>
-                <option>1700</option>
-                <option>1730</option>
-                <option>1800</option>
-                <option>1830</option>
-                <option>1900</option>
+                <option>7:00 AM</option>
+                <option>7:30 AM</option>
+                <option>8:00 AM</option>
+                <option>8:30 AM</option>
+                <option>9:00 AM</option>
+                <option>9:30 AM</option>
+                <option>10:00 AM</option>
+                <option>10:30 AM</option>
+                <option>11:00 AM</option>
+                <option>11:30 AM</option>
+                <option>12:00 PM</option>
+                <option>12:30 PM</option>
+                <option>1:00 PM</option>
+                <option>1:30 PM</option>
+                <option>2:00 PM</option>
+                <option>2:30 PM</option>
+                <option>3:00 PM</option>
+                <option>3:30 PM</option>
+                <option>4:00 PM</option>
+                <option>4:30 PM</option>
+                <option>5:00 PM</option>
+                <option>5:30 PM</option>
+                <option>6:00 PM</option>
+                <option>6:30 PM</option>
+                <option>7:00 PM</option>
             </select>
 
             <p>End Time</p>
             <select id="select-end-time">
-                <option>0730</option>
-                <option>0800</option>
-                <option>0830</option>
-                <option>0900</option>
-                <option>0930</option>
-                <option>1000</option>
-                <option>1030</option>
-                <option>1100</option>
-                <option>1130</option>
-                <option>1200</option>
-                <option>1230</option>
-                <option>1300</option>
-                <option>1330</option>
-                <option>1400</option>
-                <option>1430</option>
-                <option>1500</option>
-                <option>1530</option>
-                <option>1600</option>
-                <option>1630</option>
-                <option>1700</option>
-                <option>1730</option>
-                <option>1800</option>
-                <option>1830</option>
-                <option>1900</option>
-                <option>1930</option>
+                <option>7:30 AM</option>
+                <option>8:00 AM</option>
+                <option>8:30 AM</option>
+                <option>9:00 AM</option>
+                <option>9:30 AM</option>
+                <option>10:00 AM</option>
+                <option>10:30 AM</option>
+                <option>11:00 AM</option>
+                <option>11:30 AM</option>
+                <option>12:00 PM</option>
+                <option>12:30 PM</option>
+                <option>1:00 PM</option>
+                <option>1:30 PM</option>
+                <option>2:00 PM</option>
+                <option>2:30 PM</option>
+                <option>3:00 PM</option>
+                <option>3:30 PM</option>
+                <option>4:00 PM</option>
+                <option>4:30 PM</option>
+                <option>5:00 PM</option>
+                <option>5:30 PM</option>
+                <option>6:00 PM</option>
+                <option>6:30 PM</option>
+                <option>7:00 PM</option>
+                <option>7:30 PM</option>
             </select>
 
         </div>
