@@ -42,7 +42,7 @@ body {
 
 .gapped {
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     gap: 5px;
 }
 
@@ -65,6 +65,7 @@ body {
     background-color: #567257;
     color: whitesmoke;
     padding: 10px;
+    margin-bottom: 5px;
 }
 
 #seat-list {
@@ -214,4 +215,18 @@ br{
 
 .warning {
     color: red;
+}
+
+.inverse-color {
+    color: black;
+    background-color: white;
+}
+
+.inverse-color:focus, .inverse-color:hover {
+    background-color: white;
+}
+
+.narrow {
+    height: 30px;
+    align-items: center;
 }
