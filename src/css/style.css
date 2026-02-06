@@ -34,6 +34,10 @@ body {
     height: 100vh;
 }
 
+br{
+    margin: 1em;
+}
+
 .main {
     padding: 5px;
     width: 100%;
@@ -66,12 +70,13 @@ body {
     color: whitesmoke;
     padding: 10px;
     margin-bottom: 5px;
+    overflow-wrap:break-word;
 }
 
 #seat-list {
     display: flex;
     flex-direction: column;
-    width: 55vw;
+    width: 35vw;
     height: 40.5vw;
 }
 
@@ -90,7 +95,7 @@ body {
 
 .selected-seat 
 {
-    background-color: #ACAB9E;
+    background-color: #979e8d;
     border: 3px #567257 solid;
     border-radius: 5px;
     width:100%;
@@ -99,13 +104,13 @@ body {
 
 .seat:hover
 {
-    background-color: lightblue;
+    background-color: rgb(207, 226, 180);
     transition: all .1s ease-in;
 }
 
 .selected-seat:hover
 {
-    background-color: rgb(98, 133, 144);
+    background-color: rgb(127, 169, 100);
     transition: all .1s ease-in;
 }
 
@@ -117,12 +122,43 @@ body {
     align-items: center;
 }
 
+#reserve-list h3 {
+    padding-top: 20px;
+    padding-bottom: 5px;
+}
+
 #reserve-list-box {
+    /* color: green; */
     background-color: #2A2420;
     border: 3px #2A2420 solid;
-    width: 14vw;
+    width: 15vw;
     height: 40vw;
     overflow-y:scroll;
+}
+
+.seat-title {
+    color:#e5dcd6;
+}
+
+hr{
+    border-color:#6f6053;
+    border-style:solid;
+}
+
+::-webkit-scrollbar {
+  background-color: transparent;
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: hsla(0, 0%, 46%, 0.5);
+  border-radius: 8px;
+}
+
+.scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
 }
 
 #reserve-btn {
@@ -153,7 +189,6 @@ button:active, input[type=submit]:active, input[type=button]:active {
     background-color: aliceblue;
     border: 3px #2A2420 solid;
     color: black;
-
 }
 
 button, input[type=submit], input[type=button] {
@@ -193,14 +228,6 @@ button, input[type=submit], input[type=button] {
 .float-right {
     float: right;
     margin-right: 360px;
-}
-
-br{
-    margin: 1em;
-}
-
-.seat:hover {
-    background-color: lightblue;
 }
 
 .cells{
@@ -272,4 +299,10 @@ br{
 #cancel:active {
     background-color: red;
     color: whitesmoke;
+}
+
+#confirmed-text {
+    color: #FFFFFF;
+    font-weight:bold;
+    font-size:30px;
 }
