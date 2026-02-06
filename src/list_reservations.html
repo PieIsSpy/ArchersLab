@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Reservations</title>
+    <link rel="stylesheet" media="all" type="text/css" href="css/style.css"/>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+    <script src="js/nav_constructor.js" defer></script>
+</head>
+<body>
+    <nav></nav>
+    <div class="main">
+        <h1>List of Reservations</h1>
+
+        <div class="box">
+            <h2>Current Reservations</h2>
+            <div class="gapped">
+                <table id = "reservationTable">
+                    <tr>
+                        <th>Name</th><th>Date</th><th>Time</th><th>Room</th><th>Seats Taken</th><th>Status</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let list = [
+            ["ASDF, J.", "20260607", "1200-1300", "G404", "1, 2", "Finished"],
+            ["Omandac, K. D.", "20260608", "1200-1300", "G404", "1, 2", "Canceled"],
+            ["ASDF, J.", "20260609", "1200-1300", "G404", "1, 2", "Pending"],
+            ["Devito, D.", "20260610", "1200-1300", "G404", "2", "Pending"],
+            ["Mordecai, A.", "20260610", "1200-1300", "G404", "1", "Canceled"],
+        ]
+
+        function listReservations() {
+            let table = document.querySelector("#reservationTable");
+
+            list.forEach(x => {
+                let row = document.createElement("tr");
+
+                x.forEach(y => {
+                    let col = document.createElement("td");
+                    let container = document.createElement("div");
+                    container.className = "cells";
+                    container.textContent = y;
+
+                    col.appendChild(container);
+                    row.appendChild(col);
+                });
+
+                table.appendChild(row);
+            });
+        }
+
+        listReservations();
+    </script>
+</body>
+</html>
