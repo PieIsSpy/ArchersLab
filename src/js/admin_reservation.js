@@ -11,9 +11,7 @@ for (let i = 0; i < ROWS; i++)
 {
     reservations[i] = [];
     for (let j = 0; j < COLS; j++)
-    {
         reservations[i][j] = [];
-    }
 }
 
 reservations[0][1][0]={name: "Ang, B.", date: "20260608", start_time: "1200", end_time: "1300"}
@@ -31,8 +29,7 @@ function generateSeatList(){
 
 function getDateSelection()
 {
-    let str = document.getElementById("select-day").value
-    // console.log (str.slice(0,4)+str.slice(5,7)+str.slice(8));
+    let str = document.getElementById("select-day").value;
     return (str.slice(0,4)+str.slice(5,7)+str.slice(8));
 }
 
@@ -120,14 +117,7 @@ function constructRoom() {
         seats.appendChild(row);
     }
 
-    // Add listener for reserve button
-    if (document.title.toLowerCase() == "reservations") {
-        document.getElementById("reserve-btn").addEventListener("click",reserveSeat);
-    }
-    else {
-        document.querySelector("#reserve-btn").addEventListener("click", displayModal);
-    }
-
+    document.querySelector("#reserve-btn").addEventListener("click", displayModal);
     console.log("[room_constructor.js] Room constructed!");
 }
 
@@ -187,19 +177,12 @@ Caller to update the div. Selected seats fed to this directly updates the GUI.
 */
 function renderReservations()
 {
-    let user = (selected_seats.length == 0);
     selected_seats.sort();
 
-    if (user && document.name.toLowerCase() == "reservations")
-    {
-        arr = all_seats;
-        document.getElementById("confirmed-text").innerHTML = "YOUR RESERVATIONS";
-    }    
+    if (selected_seats.length == 0)
+        arr = all_seats; 
     else 
-    {
         arr = selected_seats;
-        document.getElementById("confirmed-text").innerHTML = "CONFIRMED RESERVATIONS";
-    }
 
     let reservation_list = document.querySelector("#reserve-list");
     reservation_list.innerHTML = '';
@@ -209,69 +192,53 @@ function renderReservations()
         row = parseInt(arr[i][0]);
         col = parseInt(arr[i][2]);
 
-        let render = false;
-
-    	console.log("[room_constructor.renderReservations()] Displaying seat "+arr[0]+"!");
-
-        if ((reservations[row][col].length != 0 && user) || !user)
+        if (reservations[row][col].length != 0)
         {
-            if (user)
-                for (let j = 0; j < reservations[row][col].length; j++)
-                    if (user && reservations[row][col][j].name == name)
-                    render = true;
+            let block = document.createElement("div");
 
-            if (!user || render)
-            {
-                let block = document.createElement("div");
+            let block_children = [];
 
-                let block_children = [];
+            block_children[0] = document.createElement("p");
+            block_children[0].setAttribute("class","seat-title");
+            block_children[0].innerHTML="SEAT <span style=\"font-weight:bold\">"+row+" "+col+"</span>";
 
-                block_children[0] = document.createElement("p");
-                block_children[0].setAttribute("class","seat-title");
-                block_children[0].innerHTML="SEAT <span style=\"font-weight:bold\">"+row+" "+col+"</span>";
+            block_children[1] = document.createElement("div");
+            block_children[1].setAttribute("class", "list");
+        
+            if (reservations[row][col].length == 0)
+                block_children[0].innerHTML="SEAT <span style=\"font-weight:bold\">"+row+" "+col+"</span>"+"<span style=\"color:#6f6053;margin-left: 10px;\">N/A</span>";
 
-                block_children[1] = document.createElement("div");
-                block_children[1].setAttribute("class", "list");
-            
-                if (reservations[row][col].length == 0)
-                    block_children[0].innerHTML="SEAT <span style=\"font-weight:bold\">"+row+" "+col+"</span>"+"<span style=\"color:#6f6053;margin-left: 10px;\">N/A</span>";
+            for (let j = 0; j < reservations[row][col].length; j++) {
+                let reservation = reservations[row][col][j];
+                let r_name_header = document.createElement("h3");
+                r_name_header.setAttribute("class","seat-title");
+                r_name_header.innerHTML = reservation.name;
 
-                for (let j = 0; j < reservations[row][col].length; j++) {
-                    let reservation = reservations[row][col][j];
+                if (reservation.name == name)
+                    r_name_header.innerHTML = "<span style=\"color:#FFFFFF;\">"+reservation.name+"</span>";
+                
 
-                    if ((user && reservation.name == name) || !user)
-                    {
-                        let r_name_header = document.createElement("h3");
-                        r_name_header.setAttribute("class","seat-title");
-                        r_name_header.innerHTML = reservation.name;
+                let r_time_para = document.createElement("p");
+                r_time_para.setAttribute("class","seat-title");
+                r_time_para.innerHTML =
+                complexifyTime(reservation.start_time)+
+                ' - '+complexifyTime(reservation.end_time);
 
-                        if (reservation.name == name)
-                            r_name_header.innerHTML = "<span style=\"color:#FFFFFF;\">"+reservation.name+"</span>";
-                        
+                let slot = document.createElement("div");
+                slot.setAttribute("class", "info");
 
-                        let r_time_para = document.createElement("p");
-                        r_time_para.setAttribute("class","seat-title");
-                        r_time_para.innerHTML =
-                        complexifyTime(reservation.start_time)+
-                        ' - '+complexifyTime(reservation.end_time);
+                slot.appendChild(r_name_header);
+                slot.appendChild(r_time_para);
 
-                        let slot = document.createElement("div");
-                        slot.setAttribute("class", "info");
-
-                        slot.appendChild(r_name_header);
-                        slot.appendChild(r_time_para);
-
-                        block_children[1].appendChild(slot);
-                    }
-                }
-
-                block.appendChild(document.createElement("hr"));
-
-                block.appendChild(block_children[0]);
-                block.appendChild(block_children[1]);
-
-                reservation_list.appendChild(block);
+                block_children[1].appendChild(slot);
             }
+
+            block.appendChild(document.createElement("hr"));
+
+            block.appendChild(block_children[0]);
+            block.appendChild(block_children[1]);
+
+            reservation_list.appendChild(block);
         }
     }
 
@@ -285,12 +252,7 @@ function isOccupied(reserving,existing)
     if (reserving.date == existing.date)
         if (!((reserving.start_time < existing.start_time && reserving.end_time <= existing.start_time) || 
             (reserving.start_time >= existing.end_time && reserving.end_time > existing.end_time)))
-        {
-            // console.log("[room_constructor.js] Room reservation failed! Overlappting time!");
-            // console.log("Slot to be acquired: "+reserving.start_time+"-"+reserving.end_time);
-            // console.log("Occupying slot:"+existing.start_time+"-"+existing.end_time);
             return true;
-        }
     return false;
 }
 
@@ -327,9 +289,7 @@ function reserveSeat()
         renderReservations();
     }
     else
-    {
         console.log("Can't reserve");
-    }
 }
 
 function inpersonReserve() {
@@ -349,8 +309,6 @@ function inpersonReserve() {
 
         if (available)
         {
-            console.log("Seat is free!");
-
             reservations[row][col].push(reservation);
             reservations[row][col].sort(compare)
             updateReservationState();
