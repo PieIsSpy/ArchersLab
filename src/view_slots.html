@@ -8,6 +8,7 @@
     <link rel="stylesheet" media="all" type="text/css" href="css/style.css" />
     <script src="js/nav_constructor.js" defer></script>
     <script src="js/room_constructor.js" defer></script>
+    <script src="js/input_checker.js" defer></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,6 +20,38 @@
     <nav></nav>
     <!-- this is for lab technician view for in person reservations -->
     
+    <div id="inperson-reserve" class="modal">
+        <div class="modal-content">
+            <h2>Confirm Reservation</h2>
+            <form onsubmit="return checkInputs()">
+                <table>
+                    <tr>
+                        <td width="200px">First Name</td>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <td width="200px">Last Name</td>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <td width="200px">Email</td>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <td width="200px">ID Number</td>
+                        <td><input type="text"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="button" id="cancel" onclick="hideModal()" value="Cancel">
+                            <input type="submit" value="Confirm">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+
     <div class="main gapped aligned col-flex">
         <div class="container center aligned">
             <p>Room</p>

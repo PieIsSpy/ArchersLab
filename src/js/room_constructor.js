@@ -57,7 +57,12 @@ function constructRoom() {
     }
 
     // Add listener for reserve button
-    document.getElementById("reserve-btn").addEventListener("click",reserveSeat);
+    if (document.title == "reservations") {
+        document.getElementById("reserve-btn").addEventListener("click",reserveSeat);
+    }
+    else {
+        document.querySelector("#reserve-btn").addEventListener("click", displayModal);
+    }
 
     console.log("[room_constructor.js] Room constructed!");
 }
@@ -134,6 +139,51 @@ function reserveSeat()
             reservations[row][col].push(reservation);
             reservations[row][col].sort(compare)
             updateReservationState();
+        }
+    }
+}
+
+function displayModal() {
+    let modal = document.querySelector(".modal");
+    modal.style.display = "block";
+}
+
+function hideModal() {
+    let modal = document.querySelector(".modal");
+    modal.style.display = "none";
+
+    let inputs = document.querySelectorAll(".modal-content input");
+
+    inputs.forEach(input => {
+        console.log(input.value)
+        input.value = "";
+        input.style.backgroundColor = "white";
+    });
+}
+
+function inpersonReserve() {
+    for (let i = 0; i < selected_seats.length; i++) {
+        row = parseInt(selected_seats[i][0]);
+        col = parseInt(selected_seats[i][1]);
+
+        let available = true;
+        for (let j = 0; j < reservations[row][col].length; j++)
+        {
+            if (isOccupied(reservation,reservations[row][col][j]))
+            {
+                available = false;
+                break;
+            }
+        }
+
+        if (available)
+        {
+            console.log("Seat is free!");
+
+            reservations[row][col].push(reservation);
+            reservations[row][col].sort(compare)
+            updateReservationState();
+            hideModal();
         }
     }
 }
