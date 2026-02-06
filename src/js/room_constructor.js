@@ -152,7 +152,7 @@ function hideModal() {
     let modal = document.querySelector(".modal");
     modal.style.display = "none";
 
-    let inputs = document.querySelectorAll(".modal-content input");
+    let inputs = document.querySelectorAll(".modal-content input[type=text]");
 
     inputs.forEach(input => {
         console.log(input.value)
