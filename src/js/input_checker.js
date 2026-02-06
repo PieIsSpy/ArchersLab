@@ -1,5 +1,5 @@
 function clearStyle(){
-    let inputs = document.querySelectorAll("th input[type=text]");
+    let inputs = document.querySelectorAll("td input[type=text]");
 
     inputs.forEach(input => {
         input.style.backgroundColor = "white";
@@ -8,7 +8,7 @@ function clearStyle(){
 
 function checkInputs() {
     let valid = true;
-    let inputs = document.querySelectorAll("th input[type=text]");
+    let inputs = document.querySelectorAll("td input[type=text]");
 
     clearStyle();
     
