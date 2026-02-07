@@ -32,9 +32,7 @@
 
                 <div class = "gapped col-flex container">
                     <table id = "reservationTable">
-                        <tr>
-                            <th>Date</th><th>Time</th><th>Room</th><th>Capacity</th><th>Seats Taken</th><th>Status</th><th>Actions</th>
-                        </tr>
+
                     </table>
                 </div>
 
@@ -55,13 +53,24 @@
 
             //reservations[0][1][0]={name: "Ang, B.", date: "20260608", start_time: "1200", end_time: "1300"}
 
-            
-            //actionbutton.textContent = "Cancel";
-            //actionbutton.className = "cells"
-            //actionbutton.style = "background-color: red; color: white";
+
 
             function viewReservations(){
                 const table = document.getElementById("reservationTable");
+                
+                headerTable = ["Date", "Time","Room","Capacity","Seats Taken","Status", "Actions"];
+
+                const topRow = document.createElement("tr");
+
+                for(let i = 0; i < headerTable.length; i++){
+                    const th = document.createElement("th");
+                    th.textContent = headerTable[i];
+                    topRow.appendChild(th);
+
+                }
+
+                table.appendChild(topRow);
+
 
                 for(let i = 0; i < reservation.length; i++){
                     const row = document.createElement("tr");
@@ -81,15 +90,27 @@
                             button.textContent = "Cancel";
                             button.className = "cells";
                             button.style = "background-color: red; color: white";
+                            button.onclick = () => deleteReservation(i);
                             buttonTd.appendChild(button);
                             row.appendChild(buttonTd);
                         }
-
                     }
                     table.appendChild(row);
                 }
             }
 
+            function deleteReservation(i){
+                chosenReservation = "room " + reservation[i][2] + " - " + reservation[i][0] + " - " + reservation[i][1];
+                if (confirm("Are you sure you want to cancel your reservation at " + chosenReservation + "?") == true) {
+                    alert("Reservation at " + chosenReservation + " cancelled!")
+                    reservation.splice(i,1);
+                    document.getElementById("reservationTable").innerHTML = "";
+                    viewReservations();
+                } else {
+                }
+
+
+            }
 
             function showCurrentTime(){
                 var today = new Date();
