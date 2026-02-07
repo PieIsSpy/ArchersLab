@@ -15,7 +15,6 @@
     </head>
     <body>
         <nav></nav>
-
         <div class="main" style ="color: #2A2420">
             <div>
                 <br>
@@ -24,16 +23,21 @@
                 <strong id = "datetime"></strong>
             </div>
             <br>
+
             <div class = "box">
-                <strong style = "font-size: xx-large;">Current reservations:</strong>
+                <div class = "container">
+                    <strong style = "font-size: xx-large;">Current reservations:</strong>
+                </div>
                 <br>
-                <div class = "gapped col-flex">
+
+                <div class = "gapped col-flex container">
                     <table id = "reservationTable">
                         <tr>
-                            <th>Date</th><th>Time</th><th>Room</th><th>Capacity</th><th>Seats Taken</th><th>Status</th>
+                            <th>Date</th><th>Time</th><th>Room</th><th>Capacity</th><th>Seats Taken</th><th>Status</th><th>Actions</th>
                         </tr>
                     </table>
                 </div>
+
             </div>
         </div>
 
@@ -48,23 +52,44 @@
             ["2/12", "16:00-18:00", "G307a", "5/30", "11", "Ongoing"],
             ["2/15", "16:00-18:00", "G308a", "5/30", "3,4", "Ongoing"],
             ];
+
+            //reservations[0][1][0]={name: "Ang, B.", date: "20260608", start_time: "1200", end_time: "1300"}
+
+            
+            //actionbutton.textContent = "Cancel";
+            //actionbutton.className = "cells"
+            //actionbutton.style = "background-color: red; color: white";
+
             function viewReservations(){
-                const table = document.getElementById("reservationTable")
+                const table = document.getElementById("reservationTable");
+
                 for(let i = 0; i < reservation.length; i++){
                     const row = document.createElement("tr");
                     for(let j = 0; j < reservation[i].length; j++){
                         const td = document.createElement("td");
                         const div = document.createElement("div");
+                        const buttonTd = document.createElement("td");
+
                         div.className = "cells";
                         div.textContent = reservation[i][j];
-                        div.style = "color: black;"
+                        div.style = "color: black;";
                         td.appendChild(div);
                         row.appendChild(td);
-                    }
 
+                        if(j === reservation[i].length - 1){
+                            const button = document.createElement("button");
+                            button.textContent = "Cancel";
+                            button.className = "cells";
+                            button.style = "background-color: red; color: white";
+                            buttonTd.appendChild(button);
+                            row.appendChild(buttonTd);
+                        }
+
+                    }
                     table.appendChild(row);
                 }
             }
+
 
             function showCurrentTime(){
                 var today = new Date();
