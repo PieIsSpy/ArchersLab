@@ -1,13 +1,5 @@
-function clearStyle(){
-    let inputs = document.querySelectorAll("td input[type=text]");
-
-    inputs.forEach(input => {
-        input.style.backgroundColor = "#567257";
-    });
-}
-
-function checkInputs() {
-    // let valid = true;
+export function checkInputs() {
+    let valid = true;
     let inputs = document.querySelectorAll("td input[type=text]");
 
     clearStyle();
@@ -17,9 +9,8 @@ function checkInputs() {
             valid = false;
             input.style.backgroundColor = "#d95746";
             input.style.color = "white";
-            input.style.border.style="solid";
-            input.style.border.radius="8px";
-            input.style.border.color="#d95746";
+            input.style.border="solid #d95746";
+            input.style.borderRadius="3px";
             input.style.outline="none";
         }
     });
@@ -27,7 +18,19 @@ function checkInputs() {
     console.log("checkInput() called");
     
     
-    // return valid;
+    return valid;
+}
+
+function clearStyle(){
+    let inputs = document.querySelectorAll("td input[type=text]");
+
+    inputs.forEach(input => {
+        input.style.backgroundColor = "";
+            input.style.color = "";
+            input.style.border="";
+            input.style.borderRadius="";
+            input.style.outline="";
+    });
 }
 
 function confirmPassword() {
@@ -35,11 +38,19 @@ function confirmPassword() {
     let passwords = document.querySelectorAll(".confirm-password");
 
     if (passwords[0].value != passwords[1].value) {
-        passwords[0].style.backgroundColor = "red";
-        passwords[1].style.backgroundColor = "red";
+        passwords.forEach(input => {
+            input.style.backgroundColor = "#d95746";
+            input.style.color = "white";
+            input.style.border="solid #d95746";
+            input.style.borderRadius="3px";
+            input.style.outline="none";
+        });
 
         valid = false;
     }
 
     return valid;
 }
+
+window.checkInputs = checkInputs;
+window.confirmPassword = confirmPassword;
