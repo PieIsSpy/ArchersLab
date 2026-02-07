@@ -266,7 +266,8 @@ button, input[type=submit], input[type=button] {
     padding-bottom: 30px;
 }
 
-/* .error-modal {
+
+.error-bg {
     display: none;
     position: fixed;
     z-index: 1;
@@ -277,7 +278,16 @@ button, input[type=submit], input[type=button] {
     height: 100%;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
-} */
+}
+
+.error {
+    background-color: whitesmoke;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 40%;
+}
 
 .modal {
     display: none;

@@ -14,12 +14,12 @@ for (let i = 0; i < ROWS; i++)
         reservations[i][j] = [];
 }
 
-reservations[0][1][0]={name: "Ang, B.", date: "20260608", start_time: "1200", end_time: "1300"}
-reservations[0][3][0]={name: "Omandac, K. D.", date: "20260609", start_time: "1200", end_time: "1300"}
-reservations[1][0][0]={name: "Devito, D.", date: "20260610", start_time: "1200", end_time: "1300"}
-reservations[1][2][0]={name: "Cena, J.", date: "20260611", start_time: "1200", end_time: "1300"}
-reservations[1][4][0]={name: "Mordecai, A.", date: "20260612", start_time: "1200", end_time: "1300"}
-reservations[2][1][0]={name: "Rigbi, L.", date: "20260613", start_time: "1200", end_time: "1300"}
+reservations[0][1][0]={name: "Ang, B.", date: "20260607", start_time: "1200", end_time: "1300"}
+reservations[0][3][0]={name: "Omandac, K. D.", date: "20260607", start_time: "1200", end_time: "1300"}
+reservations[1][0][0]={name: "Devito, D.", date: "20260607", start_time: "1200", end_time: "1300"}
+reservations[1][2][0]={name: "Cena, J.", date: "20260607", start_time: "1200", end_time: "1300"}
+reservations[1][4][0]={name: "Mordecai, A.", date: "20260607", start_time: "1200", end_time: "1300"}
+reservations[2][1][0]={name: "Rigbi, L.", date: "20260607", start_time: "1200", end_time: "1300"}
 
 function generateSeatList(){
     for (let i = 0; i < ROWS; i++)
@@ -100,6 +100,52 @@ function compare(a, b)
     return 0;
 }
 
+function hasRemainder(looptime)
+{
+    if(parseInt(looptime)%100==0) 
+        return 0;
+    return 1;
+}
+
+function hasNoRemainder(looptime)
+{
+    if(parseInt(looptime)%100==0) 
+        return 1;
+    return 0;
+}
+
+function adjustEndTime() {
+    let time = simplifyTime(document.getElementById("select-start-time").value);
+    let select_end_time = document.getElementById("select-end-time");
+
+    let options = []
+    let looptime = '0700';
+
+    select_end_time.options.length = 0;
+
+    for (let i = 0; i < 26; i++)
+    {
+        let option = document.createElement("option");
+        option.innerHTML = looptime;
+        looptime = ('0'+String(parseInt(looptime) + 
+        hasRemainder(looptime)*(100 - parseInt(looptime) % 100) +
+        hasNoRemainder(looptime)*30)).slice(-4);
+        console.log(option.innerHTML);
+        options.push(option);
+    }
+
+    for (let i = 0; i < 26; i++)
+    {
+        if (parseInt(time) < parseInt(options[i].innerHTML))
+        {    
+            // let new_time = document.createElement("option");
+            // new_time.innerHTML = select_end_time_options[i];
+            options[i].innerHTML = complexifyTime(options[i].innerHTML);
+            select_end_time.appendChild(options[i]);
+        }
+    }
+}
+
 function constructRoom() {
     // Build seats according to Rows and Cols
     let seats = document.querySelector("#seat-list");
@@ -119,6 +165,11 @@ function constructRoom() {
     }
     
     document.getElementById("reserve-btn").addEventListener("click",reserveSeat);
+    document.getElementById("error-reserve").addEventListener("click",reserveSeat);
+
+    document.getElementById("error-ok").addEventListener("click",hideError);
+
+    document.getElementById("select-start-time").addEventListener("click",adjustEndTime);
 
     console.log("[room_constructor.js] Room constructed!");
 }
@@ -141,28 +192,6 @@ function onSeatClick(event)
     }
 
     renderReservations();
-}
-
-function displayModal() {
-    let modal = document.querySelector(".modal");
-    if (modal != undefined)
-        modal.style.display = "block";
-}
-
-function hideModal() {
-    let modal = document.querySelector(".modal");
-    if (modal != undefined)
-    {
-        modal.style.display = "none";
-
-        let inputs = document.querySelectorAll(".modal-content input[type=text]");
-
-        inputs.forEach(input => {
-            console.log(input.value)
-            input.value = "";
-            input.style.backgroundColor = "white";
-        });
-    }
 }
 
 function compare(a, b)
@@ -202,8 +231,6 @@ function renderReservations()
         col = parseInt(arr[i][2]);
 
         let render = false;
-
-    	console.log("[room_constructor.renderReservations()] Displaying seat "+arr[0]+"!");
 
         if ((reservations[row][col].length != 0 && user) || !user)
         {
@@ -285,42 +312,66 @@ function isOccupied(reserving,existing)
     return false;
 }
 
-function reserveSeat()
+function reserveSeat(event)
 {
+    let veto = event.currentTarget.id == "error-reserve";
+
+    let unavailable_seats = [];
     let available = true;
     let reservation = {name: name, date: getDateSelection(), 
                         start_time: simplifyTime(document.getElementById("select-start-time").value),
                         end_time: simplifyTime(document.getElementById("select-end-time").value)}
     for (let i = 0; i < selected_seats.length; i++)
     {
-        console.log(row+" "+col)
         row = parseInt(selected_seats[i][0]);
         col = parseInt(selected_seats[i][2]);
+        console.log(row+" "+col)
 
         for (let j = 0; j < reservations[row][col].length; j++)
             if (isOccupied(reservation,reservations[row][col][j]))
+            {
                 available = false;
+                unavailable_seats.push(" SEAT "+row+"-"+col);
+            }
     }
 
-    if (available)
+    if (available || veto)
     {
         console.log("Reserve");
         
         for (let i = 0; i < selected_seats.length; i++)
         {
-            console.log(row+" "+col)
             row = parseInt(selected_seats[i][0]);
             col = parseInt(selected_seats[i][2]);
-            reservations[row][col].push(reservation);
+            
+            for (let j = 0; j < reservations[row][col].length; j++)
+                if (reservations[row][col][j].name == name)
+                    available = false;
+            
+            if (available)
+            {
+                reservations[row][col].push(reservation);
+                reservations[row][col].sort(compare)
+            }
         }
-
-        reservations[row][col].sort(compare)
         renderReservations();
     }
     else
     {
-        console.log("Can't reserve");
+        document.getElementById("error-msg").innerHTML=
+        "Can't reserve. Existing conflicts in these seats: "+unavailable_seats;
+        displayError();
     }
+}
+
+function displayError() {
+    let modal = document.querySelector(".error-bg");
+    modal.style.display = "block";
+}
+
+function hideError() {
+    let modal = document.querySelector(".error-bg");
+    modal.style.display = "none";
 }
 
 constructRoom();
