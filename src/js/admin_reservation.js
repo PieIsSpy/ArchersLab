@@ -142,8 +142,10 @@ function onSeatClick(event)
 }
 
 function displayModal() {
-    let modal = document.querySelector(".modal");
-    modal.style.display = "block";
+    if (selected_seats.length > 0) {
+        let modal = document.querySelector(".modal");
+        modal.style.display = "block";
+    }
 }
 
 function hideModal() {
@@ -156,6 +158,7 @@ function hideModal() {
         console.log(input.value)
         input.value = "";
         input.style.backgroundColor = "#567257";
+        input.style.border = ""
     });
 }
 
@@ -319,7 +322,7 @@ function inpersonReserve() {
                 available = false;
     }
 
-    if (available)
+    if (available && checkInputs())
     {
         console.log("Reserve");
         
@@ -333,6 +336,7 @@ function inpersonReserve() {
 
         reservations[row][col].sort(compare)
         renderReservations();
+        hideModal();
     }
     else
         console.log("Can't reserve");
