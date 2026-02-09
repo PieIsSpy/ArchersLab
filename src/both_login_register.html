@@ -12,7 +12,7 @@
 
             <!-- register input -->
             <div class="form-container sign-up-container">
-                <form>
+                <form action="#" id="registerForm">
                     <h1>Create Account</h1>
                     <span>Use your DLSU Student ID and Email for registration</span>
 
@@ -70,6 +70,7 @@
             const signUpButton = document.getElementById('signUp');
             const signInButton = document.getElementById('signIn');
             const container = document.getElementById('container');
+            const registerForm = document.getElementById('registerForm');
 
             signUpButton.addEventListener('click', () => {
                 container.classList.add("right-panel-active");
@@ -77,6 +78,14 @@
 
             signInButton.addEventListener('click', () => {
                 container.classList.remove("right-panel-active");
+            });
+
+            <!-- I added this so that there is a successful registration popup -->
+            registerForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                alert("Registration Successful! Please log in.");
+                container.classList.remove("right-panel-active");
+                registerForm.reset();
             });
         </script>
     </body>
