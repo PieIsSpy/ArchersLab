@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login/Register</title>
+        <link rel="stylesheet" href="css/sign_up_in.css">
+    </head>
+
+    <body>
+        <div class="container" id="container">
+
+            <!-- register input -->
+            <div class="form-container sign-up-container">
+                <form>
+                    <h1>Create Account</h1>
+                    <span>Use your DLSU Student ID and Email for registration</span>
+
+                    <input type="text" placeholder="First Name" required />
+                    <input type="text" placeholder="Middle Name" required />
+                    <input type="text" placeholder="Surname" required />
+
+                    <input type="text" placeholder="DLSU Student ID" required />
+                    <input type="email" placeholder="DLSU Email" required />
+
+                    <input type="password" placeholder="Password" required />
+                    <input type="password" placeholder="Confirm Password" required />
+
+                    <button>Register</button>
+                </form>
+            </div>
+
+            <!-- login input -->
+            <div class="form-container sign-in-container">
+                <form action="dashboard.html">
+                    <h1>Log in</h1>
+                    <span>Use your DLSU Student ID to log in</span>
+
+                    <input type="text" placeholder="Student ID" required />
+                    <input type="password" placeholder="Password" required />
+
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember" />
+                        <label for="remember">Remember me (3 Weeks)</label>
+                    </div>
+
+                    <button>Log In</button>
+                </form>
+            </div>
+
+            <!-- panel to switch from register and login -->
+            <div class="overlay-container">
+                <div class="overlay">
+                    <div class="overlay-panel overlay-left">
+                        <h1>Log-In Here!</h1>
+                        <p>After registering, click here to log in</p>
+                        <button class="ghost" id="signIn">log in</button>
+                    </div>
+
+                    <div class="overlay-panel overlay-right">
+                        <h1>Register Here!</h1>
+                        <p>Click here and enter your personal details to register</p>
+                        <button class="ghost" id="signUp">register</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const signUpButton = document.getElementById('signUp');
+            const signInButton = document.getElementById('signIn');
+            const container = document.getElementById('container');
+
+            signUpButton.addEventListener('click', () => {
+                container.classList.add("right-panel-active");
+            });
+
+            signInButton.addEventListener('click', () => {
+                container.classList.remove("right-panel-active");
+            });
+        </script>
+    </body>
+</html>
