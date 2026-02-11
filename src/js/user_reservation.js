@@ -1,38 +1,91 @@
-var ROWS = 5;
-var COLS = 5;
+const name = "Tee, J.";
 
 var selected_seats = [];
 var all_seats = [];
-const reservations = [];
+var selected_room;
+var selected_day;
 
-const name = "Tee, J.";
+const rooms = [];
 
-for (let i = 0; i < ROWS; i++)
+rooms[0] = {
+	name: "GK201",
+	reservations: [],
+	rows: 5,
+	cols: 5
+}
+
+rooms[1] = {
+	name: "GK301",
+	reservations: [],
+	rows: 7,
+	cols: 5
+}
+
+rooms[2] = {
+	name: "GK302",
+	reservations: [],
+	rows: 10,
+	cols: 4
+}
+
+rooms[3] = {
+	name: "GK306",
+	reservations: [],
+	rows: 4,
+	cols: 8
+}
+
+rooms[4] = {
+	name: "GK401",
+	reservations: [],
+	rows: 5,
+	cols: 6
+}
+
+rooms[5] = {
+	name: "GK403",
+	reservations: [],
+	rows: 7,
+	cols: 9
+}
+
+for (let h = 0; h < rooms.length; h++)
 {
-    reservations[i] = [];
-    for (let j = 0; j < COLS; j++)
-        reservations[i][j] = [];
+	for (let i = 0; i < rooms[h].rows; i++)
+	{
+		rooms[h].reservations[i] = [];
+		for (let j = 0; j < rooms[h].cols; j++)
+			rooms[h].reservations[i][j] = [];
+	}
 }
 
-reservations[0][1][0]={name: "Ang, B.", date: "20260607", start_time: "1200", end_time: "1300"}
-reservations[0][3][0]={name: "Omandac, K. D.", date: "20260607", start_time: "1200", end_time: "1300"}
-reservations[1][0][0]={name: "Devito, D.", date: "20260607", start_time: "1200", end_time: "1300"}
-reservations[1][2][0]={name: "Cena, J.", date: "20260607", start_time: "1200", end_time: "1300"}
-reservations[1][4][0]={name: "Mordecai, A.", date: "20260607", start_time: "1200", end_time: "1300"}
-reservations[2][1][0]={name: "Rigbi, L.", date: "20260607", start_time: "1200", end_time: "1300"}
+console.log(rooms)
 
-function generateSeatList(){
-    for (let i = 0; i < ROWS; i++)
-        for (let j = 0; j < COLS; j++)
-            all_seats.push(i+"-"+j);
-}
+rooms[0].reservations[0][1][0]={name: "Tee, J.", date: "20260216", start_time: "1200", end_time: "1300"}
+rooms[0].reservations[0][3][0]={name: "Ang, K.", date: "20260216", start_time: "1200", end_time: "1300"}
+rooms[0].reservations[1][0][0]={name: "Ang, D.", date: "20260216", start_time: "1200", end_time: "1300"}
+rooms[0].reservations[1][2][0]={name: "Ang, J.", date: "20260217", start_time: "1200", end_time: "1300"}
+rooms[0].reservations[1][4][0]={name: "Ang, A.", date: "20260217", start_time: "1200", end_time: "1300"}
+rooms[0].reservations[2][1][0]={name: "Ang, L.", date: "20260217", start_time: "1200", end_time: "1300"}
+rooms[0].reservations[3][1][0]={name: "Tee, J.", date: "20260218", start_time: "1200", end_time: "1300"}
+rooms[0].reservations[3][3][0]={name: "Ang, K.", date: "20260218", start_time: "1200", end_time: "1300"}
+rooms[0].reservations[4][0][0]={name: "Ang, D.", date: "20260219", start_time: "1200", end_time: "1300"}
+rooms[0].reservations[4][2][0]={name: "Ang, J.", date: "20260219", start_time: "1200", end_time: "1300"}
+rooms[0].reservations[4][4][0]={name: "Ang, A.", date: "20260220", start_time: "1200", end_time: "1300"}
+rooms[0].reservations[4][1][0]={name: "Ang, L.", date: "20260220", start_time: "1200", end_time: "1300"}
 
-function getDateSelection()
-{
-    let str = document.getElementById("select-day").value
-    // console.log (str.slice(0,4)+str.slice(5,7)+str.slice(8));
-    return (str.slice(0,4)+str.slice(5,7)+str.slice(8));
-}
+rooms[1].reservations[0][1][0]={name: "OMANDAC, B.", date: "20260216", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[0][3][0]={name: "OMANDAC, K.", date: "20260216", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[1][0][0]={name: "OMANDAC, D.", date: "20260216", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[1][2][0]={name: "OMANDAC, J.", date: "20260217", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[1][4][0]={name: "OMANDAC, A.", date: "20260217", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[2][1][0]={name: "OMANDAC, L.", date: "20260217", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[3][1][0]={name: "OMANDAC, B.", date: "20260218", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[3][3][0]={name: "OMANDAC, K.", date: "20260218", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[4][0][0]={name: "OMANDAC, D.", date: "20260219", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[4][2][0]={name: "OMANDAC, J.", date: "20260219", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[4][4][0]={name: "OMANDAC, A.", date: "20260220", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[4][1][0]={name: "OMANDAC, L.", date: "20260220", start_time: "1200", end_time: "1300"}
 
 function simplifyTime(time)
 {
@@ -130,7 +183,7 @@ function adjustEndTime() {
         looptime = ('0'+String(parseInt(looptime) + 
         hasRemainder(looptime)*(100 - parseInt(looptime) % 100) +
         hasNoRemainder(looptime)*30)).slice(-4);
-        console.log(option.innerHTML);
+        // console.log(option.innerHTML);
         options.push(option);
     }
 
@@ -146,14 +199,56 @@ function adjustEndTime() {
     }
 }
 
-function constructRoom() {
+function getDateSelection()
+{
+    let str = document.getElementById("select-day").value
+    // console.log (str.slice(0,4)+str.slice(5,7)+str.slice(8));
+    return (str.slice(0,4)+str.slice(5,7)+str.slice(8));
+}
+
+
+function adjustDay() {
+	selected_seats = [];
+	selected_day = getDateSelection();
+	adjustRoom();
+	renderReservations();
+}
+
+function searchRoom(name)
+{
+	for (let i = 0; i < rooms.length; i++)
+	{
+		if (name == rooms[i].name)
+		{
+			return rooms[i];
+		}
+	}
+}
+
+function generateSeatList(room){
+    for (let i = 0; i < room.rows; i++)
+        for (let j = 0; j < room.cols; j++)
+            all_seats.push(i+"-"+j);
+}
+
+function adjustRoom()
+{
+	selected_room = searchRoom(document.getElementById("select-room").value);
+	selected_seats = [];
+
+	generateSeatList(selected_room);
+
     // Build seats according to Rows and Cols
     let seats = document.querySelector("#seat-list");
+	seats.innerHTML = "";
 
-    for (let i = 0; i < ROWS; i++) {
+    for (let i = 0; i < selected_room.rows; i++)
+	{
         let row = document.createElement("div")
         row.setAttribute("class", "row")
-        for (let j = 0; j < COLS; j++) {
+
+        for (let j = 0; j < selected_room.cols; j++)
+		{
             let seat = document.createElement("div")
             seat.setAttribute("class", "seat");
             seat.setAttribute("id",i+"-"+j)
@@ -162,14 +257,22 @@ function constructRoom() {
         }
 
         seats.appendChild(row);
-    }
-    
+	}
+    renderReservations();
+}
+
+function constructRoom() {
+
+	adjustRoom();
+
     document.getElementById("reserve-btn").addEventListener("click",reserveSeat);
     document.getElementById("error-reserve").addEventListener("click",reserveSeat);
 
     document.getElementById("error-ok").addEventListener("click",hideError);
 
-    document.getElementById("select-start-time").addEventListener("click",adjustEndTime);
+    document.getElementById("select-start-time").addEventListener("change",adjustEndTime);
+    document.getElementById("select-day").addEventListener("change",adjustDay);
+	document.getElementById("select-room").addEventListener("change",adjustRoom);
 
     console.log("[room_constructor.js] Room constructed!");
 }
@@ -208,10 +311,10 @@ Caller to update the div. Selected seats fed to this directly updates the GUI.
 */
 function renderReservations()
 {
-    let user = (selected_seats.length == 0);
+    let view_user = (selected_seats.length == 0);
     selected_seats.sort();
 
-    if (user)
+    if (view_user)
     {
         arr = all_seats;
         document.getElementById("confirmed-text").innerHTML = "YOUR RESERVATIONS";
@@ -230,16 +333,23 @@ function renderReservations()
         row = parseInt(arr[i][0]);
         col = parseInt(arr[i][2]);
 
+		reservations = selected_room.reservations[row][col];
+
         let render = false;
 
-        if ((reservations[row][col].length != 0 && user) || !user)
+        if ((reservations.length != 0 && view_user) || !view_user)
         {
-            if (user)
-                for (let j = 0; j < reservations[row][col].length && !render; j++)
-                    if (reservations[row][col][j].name == name)
-                        render = true;
+            if (view_user)
+                for (let j = 0; j < reservations.length; j++)
+                    if (reservations[j].name == name && reservations[j].date == getDateSelection())
+					{
+						// console.log(reservations[j].name +" "+ name);
+						// console.log(reservations[j].date +" "+ getDateSelection());
+						render = true;
+                        break;
+					}
 
-            if (!user || render)
+            if (!view_user || render)
             {
                 let block = document.createElement("div");
 
@@ -251,27 +361,26 @@ function renderReservations()
 
                 block_children[1] = document.createElement("div");
                 block_children[1].setAttribute("class", "list");
-            
-                if (reservations[row][col].length == 0)
-                    block_children[0].innerHTML="SEAT <span style=\"font-weight:bold\">"+row+" "+col+"</span>"+"<span style=\"color:#6f6053;margin-left: 10px;\">N/A</span>";
-
-                for (let j = 0; j < reservations[row][col].length; j++) {
-                    let reservation = reservations[row][col][j];
-
-                    if ((user && reservation.name == name) || !user)
+                let na=true;
+				console.log("Showing reservations:");
+                for (let j = 0; j < reservations.length; j++)
+				{
+					console.log(reservations[j].name);
+                    if (((view_user && reservations[j].name == name) || (!view_user))&& reservations[j].date == getDateSelection())
                     {
+						// console.log(reservations[j].date+"=="+getDateSelection());
                         let r_name_header = document.createElement("h3");
                         r_name_header.setAttribute("class","seat-title");
-                        r_name_header.innerHTML = reservation.name;
+                        r_name_header.innerHTML = reservations[j].name;
 
-                        if (reservation.name == name)
-                            r_name_header.innerHTML = "<span style=\"color:#FFFFFF;\">"+reservation.name+"</span>";
+                        if (reservations[j].name == name)
+                            r_name_header.innerHTML = "<span style=\"color:#FFFFFF;\">"+reservations[j].name+"</span>";
 
                         let r_time_para = document.createElement("p");
                         r_time_para.setAttribute("class","seat-title");
                         r_time_para.innerHTML =
-                        complexifyTime(reservation.start_time)+
-                        ' - '+complexifyTime(reservation.end_time);
+                        complexifyTime(reservations[j].start_time)+
+                        ' - '+complexifyTime(reservations[j].end_time);
 
                         let slot = document.createElement("div");
                         slot.setAttribute("class", "info");
@@ -280,8 +389,13 @@ function renderReservations()
                         slot.appendChild(r_time_para);
 
                         block_children[1].appendChild(slot);
+						na=false;
                     }
                 }
+				if (na)
+				{
+					block_children[0].innerHTML="SEAT <span style=\"font-weight:bold\">"+row+" "+col+"</span>"+"<span style=\"color:#6f6053;margin-left: 10px;\">N/A</span>";
+				}	
 
                 block.appendChild(document.createElement("hr"));
 
@@ -304,9 +418,9 @@ function isOccupied(reserving,existing)
         if (!((reserving.start_time < existing.start_time && reserving.end_time <= existing.start_time) || 
             (reserving.start_time >= existing.end_time && reserving.end_time > existing.end_time)))
         {
-            // console.log("[room_constructor.js] Room reservation failed! Overlappting time!");
-            // console.log("Slot to be acquired: "+reserving.start_time+"-"+reserving.end_time);
-            // console.log("Occupying slot:"+existing.start_time+"-"+existing.end_time);
+            console.log("[room_constructor.js] Room reservation failed! Overlappting time!");
+            console.log("Slot to be acquired: "+reserving.start_time+"-"+reserving.end_time);
+            console.log("Occupying slot:"+existing.start_time+"-"+existing.end_time);
             return true;
         }
     return false;
@@ -325,10 +439,11 @@ function reserveSeat(event)
     {
         row = parseInt(selected_seats[i][0]);
         col = parseInt(selected_seats[i][2]);
-        console.log(row+" "+col)
+		
+		existing_reservations = selected_room.reservations[row][col];
 
-        for (let j = 0; j < reservations[row][col].length; j++)
-            if (isOccupied(reservation,reservations[row][col][j]))
+        for (let j = 0; j < existing_reservations.length; j++)
+            if (isOccupied(reservation,existing_reservations[j]))
             {
                 available = false;
                 unavailable_seats.push(" SEAT "+row+"-"+col);
@@ -337,23 +452,32 @@ function reserveSeat(event)
 
     if (available || veto)
     {
-        console.log("Reserve");
+        console.log("Reserving reservation "+reservation);
         
         for (let i = 0; i < selected_seats.length; i++)
         {
             row = parseInt(selected_seats[i][0]);
             col = parseInt(selected_seats[i][2]);
+			
+			existing_reservations = selected_room.reservations[row][col];
             
-            for (let j = 0; j < reservations[row][col].length; j++)
-                if (reservations[row][col][j].name == name)
-                    available = false;
-            
+            for (let j = 0; j < existing_reservations.length; j++)
+                if (existing_reservations[j].name == name && isOccupied(reservation,existing_reservations[j]))
+				{
+					available = false;
+				}
+			
             if (available)
             {
-                reservations[row][col].push(reservation);
-                reservations[row][col].sort(compare)
+                existing_reservations.push(reservation);
+                existing_reservations.sort(compare)
             }
+			else
+				available = true;
         }
+
+		console.log(existing_reservations);
+
         renderReservations();
     }
     else
@@ -375,5 +499,4 @@ function hideError() {
 }
 
 constructRoom();
-generateSeatList();
-renderReservations(); 
+renderReservations();
