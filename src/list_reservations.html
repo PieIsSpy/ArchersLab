@@ -40,7 +40,7 @@
             <div class="gapped col-flex">
                 <table id = "reservationTable">
                     <tr>
-                        <th>Name</th><th>Date</th><th>Time</th><th>Room</th><th>Seats Taken</th><th>Status</th>
+                        <th>Name</th><th>Date</th><th>Time</th><th>Room</th><th>Seats Taken</th><th>Status</th><th>Actions</th>
                     </tr>
                 </table>
             </div>
@@ -49,17 +49,17 @@
 
     <script>
         let list = [
-            ["ASDF, J.", "20260607", "1200-1300", "G404", "1, 2", "Finished"],
-            ["Omandac, K. D.", "20260608", "1200-1300", "G404", "1, 2", "Canceled"],
-            ["ASDF, J.", "20260609", "1200-1300", "G404", "1, 2", "Pending"],
-            ["Devito, D.", "20260610", "1200-1300", "G404", "2", "Pending"],
-            ["Mordecai, A.", "20260610", "1200-1300", "G404", "1", "Canceled"],
+            ["ASDF, J.", "6/7", "1200-1300", "G404", "1, 2", "Finished"],
+            ["Omandac, K. D.", "6/8", "1200-1300", "G404", "1, 2", "Canceled"],
+            ["ASDF, J.", "6/9", "1200-1300", "G404", "1, 2", "Pending"],
+            ["Devito, D.", "6/10", "1200-1300", "G404", "2", "Pending"],
+            ["Mordecai, A.", "6/10", "1200-1300", "G404", "1", "Canceled"],
         ]
 
         function listReservations() {
             let table = document.querySelector("#reservationTable");
 
-            list.forEach(x => {
+            list.forEach((x, i) => {
                 let row = document.createElement("tr");
 
                 x.forEach(y => {
@@ -72,8 +72,28 @@
                     row.appendChild(col);
                 });
 
+                let button = document.createElement("button");
+                button.textContent = "Cancel";
+                button.className = "cells";
+                button.style = "background-color: red; color: white";
+                button.onclick = () => deleteReservation(i);
+                row.appendChild(button);
+
                 table.appendChild(row);
             });
+        }
+
+        function deleteReservation(i){
+            chosenReservation = "room " + list[i][3] + " - " + list[i][1] + " - " + list[i][2];
+            if (confirm("Are you sure you want to cancel your reservation at " + chosenReservation + "?") == true) {
+                alert("Reservation at " + chosenReservation + " cancelled!")
+                list.splice(i,1);
+                document.getElementById("reservationTable").innerHTML = "";
+                listReservations();
+            } else {
+            }
+
+
         }
 
         listReservations();
