@@ -1,0 +1,247 @@
+.page-header {
+    margin-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 5px;
+}
+
+.dashboard-grid {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+.profile-card {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.profile-card.edit-mode-left {
+    margin: 0;
+}
+
+.profile-header-centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-pic {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #006341;
+    margin-bottom: 15px;
+}
+
+.header-text h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+.toggle-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.detail-row {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    color: #006341;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.value {
+    font-size: 16px;
+    color: #444;
+    margin: 0;
+}
+
+.hidden-panel {
+    display: none;
+    flex: 2;
+    min-width: 300px;
+}
+
+.hidden-panel.active {
+    display: block;
+}
+
+.edit-card {
+    background: #fff;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.edit-card h2 {
+    margin-top: 0;
+    font-size: 20px;
+}
+
+.row-group {
+    display: flex;
+    gap: 15px;
+}
+
+.form-group {
+    margin-bottom: 12px;
+    width: 100%;
+}
+
+.form-group.half-width {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    font-size: 12px;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 6px 10px;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #006341;
+    outline: none;
+}
+
+.btn {
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    border: 2px solid transparent;
+    transition: background-color 0.2s;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.btn-primary {
+    padding: 10px 20px;
+    background-color: #006341;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #004d33;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.cancel-mode {
+    background-color: #666 !important;
+    color: white;
+}
+
+.cancel-mode:hover {
+    background-color: #444 !important;
+}
+
+.small-btn {
+    padding: 5px 10px;
+    font-size: 14px;
+    background-color: #efefef;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.small-btn:hover {
+    background-color: #e2e2e2;
+    border-color: #bbb;
+}
+
+.warning-btn {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+}
+
+.warning-btn:hover {
+    background-color: #c9302c;
+}
+
+.account-settings-section {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border-top: 4px solid #006341;
+}
+
+.account-settings-section h2 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.settings-row {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.setting-item {
+    flex: 1;
+    background: white;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    min-width: 200px;
+}
+
+.setting-item h3 {
+    font-size: 16px;
+    margin: 0 0 5px 0;
+}
+
+.setting-item p {
+    font-size: 12px;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.delete-zone {
+    border-color: #ffcccc;
+    background-color: #fff5f5;
+}
+
+.delete-zone p {
+    color: #d9534f;
+}
