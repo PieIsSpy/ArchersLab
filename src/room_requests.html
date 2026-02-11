@@ -15,5 +15,89 @@
 </head>
 <body>
     <nav></nav>
+    <div class="main">
+        <h1>Manage Room Requests</h1>
+
+        <div class="box container gapped">
+            <div class="container narrow">
+                <p>Search ID number: </p>
+                <input type="text">
+            </div>
+            
+            <div class="container narrow">
+                <p>Filter Room</p>
+                <select class="inverse-color">
+                    <option>G301</option>
+                    <option>G302</option>
+                    <option>G303</option>
+                    <option>G304</option>
+                    <option>G305</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="box">
+            <h2>Current Reservations</h2>
+            <div class="gapped col-flex">
+                <table id = "reservationTable">
+                    <tr>
+                        <th>Name</th><th>Date</th><th>Time</th><th>Room</th><th>Status</th><th>Actions</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let list = [
+            ["Tiam-Lee, T.", "3/1", "1200-1300", "G404", "Finished"],
+            ["Lim-Cheng, N.", "2/2", "1200-1300", "G404", "Canceled"],
+            ["Fernandez, A.", "4/9", "1200-1300", "G404", "Pending"],
+            ["Caronongan, A.", "4/10", "1200-1300", "G404", "Pending"],
+            ["Tan, P.", "4/11", "1200-1300", "G404", "Canceled"],
+        ]
+
+        function listReservations() {
+            let table = document.querySelector("#reservationTable");
+
+            list.forEach((x, i) => {
+                let row = document.createElement("tr");
+
+                x.forEach(y => {
+                    let col = document.createElement("td");
+                    let container = document.createElement("div");
+                    container.className = "cells";
+                    container.textContent = y;
+
+                    col.appendChild(container);
+                    row.appendChild(col);
+                });
+
+                let button = document.createElement("button");
+                button.textContent = "Cancel";
+                button.className = "cells";
+                button.style = "background-color: red; color: white";
+                button.onclick = () => deleteReservation(i);
+                row.appendChild(button);
+
+                table.appendChild(row);
+            });
+        }
+
+        function deleteReservation(i){
+            chosenReservation = "room " + list[i][3] + " - " + list[i][1] + " - " + list[i][2];
+            if (confirm("Are you sure you want to cancel your reservation at " + chosenReservation + "?") == true) {
+                alert("Reservation at " + chosenReservation + " cancelled!")
+                list.splice(i,1);
+                document.getElementById("reservationTable").innerHTML = "";
+                listReservations();
+            } else {
+            }
+
+
+        }
+
+        listReservations();
+    </script>
 </body>
 </html>
