@@ -17,6 +17,7 @@ nav a {
     margin-bottom:1em;
     font-size: 20px;
     text-decoration: none;
+	transition: all .1s ease-in;
 }
 
 nav a:hover {
@@ -25,6 +26,7 @@ nav a:hover {
 }
 
 body {
+	background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
     font-family: "Inter", sans-serif;
     display: flex;
     margin: 0;
@@ -66,14 +68,20 @@ br{
 
 .box {
     border-radius: 6px;
-    background-color: #567257;
-    color: whitesmoke;
     padding: 10px;
     margin-bottom: 5px;
     overflow-wrap:break-word;
 }
 
+.shadow {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
+	padding-left: 30px;
+	padding-right: 30px;
+	border-radius:10px;
+}
+
 #seat-list {
+	background-color: #00634100;
     display: flex;
     flex-direction: column;
     width: 35vw;
@@ -83,34 +91,41 @@ br{
 .row {
     display: flex;
     height: 400vw;
+	margin: 0px;
+	padding: 0px;
 }
 
 .seat {
     background-color: whitesmoke;
-    border: 3px #567257 solid;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
     border-radius: 5px;
     width:100%;
     height: 95%;
-}
-
-.selected-seat 
-{
-    background-color: #979e8d;
-    border: 3px #567257 solid;
-    border-radius: 5px;
-    width:100%;
-    height: 95%;
+	margin-right:6px;
 }
 
 .seat:hover
 {
-    background-color: rgb(207, 226, 180);
+    background-color: #4da888;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.55);
     transition: all .1s ease-in;
+	transform: scale(1.08);
+}
+
+.selected-seat 
+{
+    background-color: #97aaa3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
+    border-radius: 5px;
+    width:100%;
+    height: 95%;
+	margin-right:6px;
 }
 
 .selected-seat:hover
 {
-    background-color: rgb(127, 169, 100);
+    background-color: #00744b;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.55);
     transition: all .1s ease-in;
 }
 
@@ -128,21 +143,20 @@ br{
 }
 
 #reserve-list-box {
-    /* color: green; */
-    background-color: #2A2420;
-    border: 3px #2A2420 solid;
+    color: #2A2420;
+	margin-top:10px;
+    background-color: #00000000;
     width: 18vw;
-    height: 40vw;
+    height: 39vw;
     overflow-y:scroll;
 }
 
-.seat-title {
-    color:#e5dcd6;
-}
-
 hr{
-    border-color:#6f6053;
+    border-color:#cbc7c5;
     border-style:solid;
+	margin-top: 20px;
+	margin-bottom: 20px;
+	border-width: 0.5px;
 }
 
 ::-webkit-scrollbar {
@@ -161,12 +175,6 @@ hr{
   scrollbar-color: #888 transparent;
 }
 
-#reserve-btn {
-    align-self:flex-end;
-    width: 100%;
-    margin-top: 8px;
-}
-
 .remove-reservation {
     margin-top: 8px;
 }
@@ -177,9 +185,9 @@ hr{
 
 select {
     font-family: "Inter", sans-serif;
-    border: 3px #567257 solid;
+    border: 3px #006341 solid;
     border-radius: 6px;
-    background-color: #567257;
+    background-color: #006341;
     color: white;
 }
 
@@ -197,9 +205,9 @@ button:active, input[type=submit]:active, input[type=button]:active {
 
 button, input[type=submit], input[type=button] {
     font-family: "Inter", sans-serif;
-    border: 3px #567257 solid;
+    border: 3px #006341 solid;
     border-radius: 6px;
-    background-color: #567257;
+    background-color: #006341;
     color: white;
 }
 
@@ -235,17 +243,35 @@ button, input[type=submit], input[type=button] {
 }
 
 .cells{
-    background-color: white;
     height: 50px;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    color: black;
+}
+
+th, td {
+	border-bottom: 1px solid #cbc7c5;
 }
 
 .warning {
-    color: red;
+    color: rgb(186, 46, 46);
+}
+
+
+#cancel-btn {
+    background-color: rgb(186, 46, 46);
+	color: white;
+	border:none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.55);
+	height:30px;
+	width:150px;
+}
+
+#cancel-btn:hover
+{
+    transition: all .1s ease-in;
+	transform: scale(1.008);
 }
 
 .inverse-color {
@@ -320,12 +346,12 @@ button, input[type=submit], input[type=button] {
 }
 
 .modal-input {
-    background-color:#567257;
+    background-color:#006341;
     color: white;
     border-style:solid;
     /* border-width: 4px; */
     border-radius:3px;
-    border-color:#567257;
+    border-color:#006341;
     outline:none;
 }
 
@@ -352,7 +378,6 @@ button, input[type=submit], input[type=button] {
 }
 
 #confirmed-text {
-    color: #FFFFFF;
     font-weight:bold;
     font-size:30px;
 }

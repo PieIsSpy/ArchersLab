@@ -24,7 +24,6 @@
             </div>
             <br>
 
-            <div class = "box">
                 <div class = "container">
                     <strong style = "font-size: xx-large;">Current reservations:</strong>
                 </div>
@@ -35,20 +34,18 @@
 
                     </table>
                 </div>
-
-            </div>
         </div>
 
         <script>
             //dummy variables for now...
             const reservation =
             [
-            ["1/29", "10:00-12:00", "G404", "2/30", "1,3", "Ongoing"],
-            ["1/30", "16:00-18:00", "G304a", "5/30", "1,2,3,4", "Ongoing"],
-            ["2/1", "7:00-7:30", "G305a", "5/30", "1,2,3,4", "Ongoing"],
-            ["2/4", "8:00-9:00", "G306a", "5/30", "1,4", "Ongoing"],
-            ["2/12", "16:00-18:00", "G307a", "5/30", "11", "Ongoing"],
-            ["2/15", "16:00-18:00", "G308a", "5/30", "3,4", "Ongoing"],
+            ["2/16", "10:00AM - 12:00PM", "G404", "2/30", "1 1, 3 2", "Ongoing"],
+            ["2/17", "4:00PM - 6:00PM", "G304A", "5/30", "1 2, 2 1, 3 2,4 3", "Ongoing"],
+            ["2/18", "7:00AM - 7:30AM", "G305A", "5/30", "1 3, 2 3, 3,4", "Ongoing"],
+            ["2/19", "8:00AM - 9:00AM", "G306A", "5/30", "1 1, 4 2", "Ongoing"],
+            ["2/20", "4:00PM - 6:00PM", "G307A", "5/30", "1 1", "Ongoing"],
+            ["2/20", "4:00PM - 6:00PM", "G308A", "5/30", "3 2, 1 4", "Ongoing"],
             ];
 
             //reservations[0][1][0]={name: "Ang, B.", date: "20260608", start_time: "1200", end_time: "1300"}
@@ -74,26 +71,25 @@
 
                 for(let i = 0; i < reservation.length; i++){
                     const row = document.createElement("tr");
-                    for(let j = 0; j < reservation[i].length; j++){
+                    for(let j = 0; j < reservation[i].length+1; j++){
                         const td = document.createElement("td");
                         const div = document.createElement("div");
-                        const buttonTd = document.createElement("td");
 
                         div.className = "cells";
                         div.textContent = reservation[i][j];
-                        div.style = "color: black;";
-                        td.appendChild(div);
-                        row.appendChild(td);
 
-                        if(j === reservation[i].length - 1){
+                        if(j == reservation[i].length)
+						{
                             const button = document.createElement("button");
                             button.textContent = "Cancel";
-                            button.className = "cells";
-                            button.style = "background-color: red; color: white";
+							button.id = "cancel-btn";
+							
                             button.onclick = () => deleteReservation(i);
-                            buttonTd.appendChild(button);
-                            row.appendChild(buttonTd);
+							div.appendChild(button);
                         }
+
+                        td.appendChild(div);
+                        row.appendChild(td);
                     }
                     table.appendChild(row);
                 }
@@ -122,8 +118,10 @@
                 var time = today.toLocaleTimeString();
 
                 document.getElementById("datetime").innerHTML =
-                "Today is currently " + week + ", " + month + " " + date + "  -  " + time;
+                "<span style=\"font-weight:400\">It is currently </span>" + week + ", " + month + " " + date + 
+				"<span style=\"font-weight:400\">, </span>" + time +".";
             }
+
             showCurrentTime();
             setInterval(showCurrentTime, 1000);
             viewReservations();

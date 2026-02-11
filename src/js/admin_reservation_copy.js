@@ -1,4 +1,3 @@
-
 var ROWS = 5;
 var COLS = 5;
 
@@ -118,6 +117,7 @@ function constructRoom() {
         seats.appendChild(row);
     }
 
+    document.querySelector("#reserve-btn").addEventListener("click", displayModal);
     console.log("[room_constructor.js] Room constructed!");
 }
 
@@ -139,6 +139,27 @@ function onSeatClick(event)
     }
 
     renderReservations();
+}
+
+function displayModal() {
+    if (selected_seats.length > 0) {
+        let modal = document.querySelector(".modal");
+        modal.style.display = "block";
+    }
+}
+
+function hideModal() {
+    let modal = document.querySelector(".modal");
+    modal.style.display = "none";
+
+    let inputs = document.querySelectorAll(".modal-content input[type=text]");
+
+    inputs.forEach(input => {
+        console.log(input.value)
+        input.value = "";
+        input.style.backgroundColor = "#567257";
+        input.style.border = ""
+    });
 }
 
 function compare(a, b)
@@ -225,6 +246,15 @@ function renderReservations()
     }
 }
 
+function removeReservation(event)
+{
+    console.log("Epsteinifying row "+event.currentTarget.id.slice(7,8)+" and column "+event.currentTarget.id.slice(9,10)+" and 3rd dimension "+event.currentTarget.id.slice(11,12));
+    
+    reservations[parseInt(event.currentTarget.id.slice(7,8))][parseInt(event.currentTarget.id.slice(9,10))].splice(parseInt(event.currentTarget.id.slice(11,12)));
+
+    renderReservations();
+}
+
 function isOccupied(reserving,existing)
 {
     if (reserving.date == existing.date)
@@ -270,7 +300,47 @@ function reserveSeat()
         console.log("Can't reserve");
 }
 
+function inpersonReserve() {
+    console.log("Reserve called");
+    let available = true;
+    let reservation = {
+        name: 
+        document.getElementById("input-last").value.toUpperCase().slice(0,1)+
+        document.getElementById("input-last").value.toLowerCase().slice(1)+
+        ", "+document.getElementById("input-first").value.toUpperCase()[0]+".", 
+        date: getDateSelection(),     
+        start_time: simplifyTime(document.getElementById("select-start-time").value), 
+        end_time: simplifyTime(document.getElementById("select-end-time").value)
+    }
+    for (let i = 0; i < selected_seats.length; i++)
+    {
+        row = parseInt(selected_seats[i][0]);
+        col = parseInt(selected_seats[i][2]);
 
+        for (let j = 0; j < reservations[row][col].length; j++)
+            if (isOccupied(reservation,reservations[row][col][j]))
+                available = false;
+    }
+
+    if (available && checkInputs())
+    {
+        console.log("Reserve");
+        
+        for (let i = 0; i < selected_seats.length; i++)
+        {
+            console.log(row+" "+col)
+            row = parseInt(selected_seats[i][0]);
+            col = parseInt(selected_seats[i][2]);
+            reservations[row][col].push(reservation);
+        }
+
+        reservations[row][col].sort(compare)
+        renderReservations();
+        hideModal();
+    }
+    else
+        console.log("Can't reserve");
+}
 
 constructRoom();
 generateSeatList();

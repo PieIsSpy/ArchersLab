@@ -15,39 +15,33 @@
 </head>
 <body>
     <nav></nav>
-    <div class="main">
-        <h1>Manage Room Requests</h1>
+    	<div class="main aligned col-flex">
+			<div class="container center aligned shadow">
+					<p>Search ID number: </p>
+					<input type="text">
+				
+					<p>Filter Room</p>
+					<select class="inverse-color">
+						<option>G301</option>
+						<option>G302</option>
+						<option>G303</option>
+						<option>G304</option>
+						<option>G305</option>
+					</select>
+			</div>
 
-        <div class="box container gapped">
-            <div class="container narrow">
-                <p>Search ID number: </p>
-                <input type="text">
-            </div>
-            
-            <div class="container narrow">
-                <p>Filter Room</p>
-                <select class="inverse-color">
-                    <option>G301</option>
-                    <option>G302</option>
-                    <option>G303</option>
-                    <option>G304</option>
-                    <option>G305</option>
-                </select>
-            </div>
-        </div>
+			<div class="box">
+				<h2>Current Reservations</h2>
+				<div class="gapped col-flex">
+					<table id = "reservationTable">
+						<tr>
+							<th>Name</th><th>Date</th><th>Time</th><th>Room</th><th>Status</th><th>Actions</th>
+						</tr>
+					</table>
+			</div>
+    	</div>
 
-        <div class="box">
-            <h2>Current Reservations</h2>
-            <div class="gapped col-flex">
-                <table id = "reservationTable">
-                    <tr>
-                        <th>Name</th><th>Date</th><th>Time</th><th>Room</th><th>Status</th><th>Actions</th>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </div>
-
+	</div>
     <script>
         let list = [
             ["Tiam-Lee, T.", "3/1", "1200-1300", "G404", "Finished"],
@@ -73,12 +67,16 @@
                     row.appendChild(col);
                 });
 
+				let div = document.createElement("td");
+                div.className = "cells";
+
                 let button = document.createElement("button");
                 button.textContent = "Cancel";
-                button.className = "cells";
-                button.style = "background-color: red; color: white";
+				button.id = "cancel-btn";
                 button.onclick = () => deleteReservation(i);
-                row.appendChild(button);
+
+                div.appendChild(button);
+                row.appendChild(div);
 
                 table.appendChild(row);
             });

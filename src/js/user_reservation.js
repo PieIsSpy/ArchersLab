@@ -1,92 +1,3 @@
-const name = "Tee, J.";
-
-var selected_seats = [];
-var all_seats = [];
-var selected_room;
-var selected_day;
-
-const rooms = [];
-
-rooms[0] = {
-	name: "GK201",
-	reservations: [],
-	rows: 5,
-	cols: 5
-}
-
-rooms[1] = {
-	name: "GK301",
-	reservations: [],
-	rows: 7,
-	cols: 5
-}
-
-rooms[2] = {
-	name: "GK302",
-	reservations: [],
-	rows: 10,
-	cols: 4
-}
-
-rooms[3] = {
-	name: "GK306",
-	reservations: [],
-	rows: 4,
-	cols: 8
-}
-
-rooms[4] = {
-	name: "GK401",
-	reservations: [],
-	rows: 5,
-	cols: 6
-}
-
-rooms[5] = {
-	name: "GK403",
-	reservations: [],
-	rows: 7,
-	cols: 9
-}
-
-for (let h = 0; h < rooms.length; h++)
-{
-	for (let i = 0; i < rooms[h].rows; i++)
-	{
-		rooms[h].reservations[i] = [];
-		for (let j = 0; j < rooms[h].cols; j++)
-			rooms[h].reservations[i][j] = [];
-	}
-}
-
-console.log(rooms)
-
-rooms[0].reservations[0][1][0]={name: "Tee, J.", date: "20260216", start_time: "1200", end_time: "1300"}
-rooms[0].reservations[0][3][0]={name: "Ang, K.", date: "20260216", start_time: "1200", end_time: "1300"}
-rooms[0].reservations[1][0][0]={name: "Ang, D.", date: "20260216", start_time: "1200", end_time: "1300"}
-rooms[0].reservations[1][2][0]={name: "Ang, J.", date: "20260217", start_time: "1200", end_time: "1300"}
-rooms[0].reservations[1][4][0]={name: "Ang, A.", date: "20260217", start_time: "1200", end_time: "1300"}
-rooms[0].reservations[2][1][0]={name: "Ang, L.", date: "20260217", start_time: "1200", end_time: "1300"}
-rooms[0].reservations[3][1][0]={name: "Tee, J.", date: "20260218", start_time: "1200", end_time: "1300"}
-rooms[0].reservations[3][3][0]={name: "Ang, K.", date: "20260218", start_time: "1200", end_time: "1300"}
-rooms[0].reservations[4][0][0]={name: "Ang, D.", date: "20260219", start_time: "1200", end_time: "1300"}
-rooms[0].reservations[4][2][0]={name: "Ang, J.", date: "20260219", start_time: "1200", end_time: "1300"}
-rooms[0].reservations[4][4][0]={name: "Ang, A.", date: "20260220", start_time: "1200", end_time: "1300"}
-rooms[0].reservations[4][1][0]={name: "Ang, L.", date: "20260220", start_time: "1200", end_time: "1300"}
-
-rooms[1].reservations[0][1][0]={name: "OMANDAC, B.", date: "20260216", start_time: "1200", end_time: "1300"}
-rooms[1].reservations[0][3][0]={name: "OMANDAC, K.", date: "20260216", start_time: "1200", end_time: "1300"}
-rooms[1].reservations[1][0][0]={name: "OMANDAC, D.", date: "20260216", start_time: "1200", end_time: "1300"}
-rooms[1].reservations[1][2][0]={name: "OMANDAC, J.", date: "20260217", start_time: "1200", end_time: "1300"}
-rooms[1].reservations[1][4][0]={name: "OMANDAC, A.", date: "20260217", start_time: "1200", end_time: "1300"}
-rooms[1].reservations[2][1][0]={name: "OMANDAC, L.", date: "20260217", start_time: "1200", end_time: "1300"}
-rooms[1].reservations[3][1][0]={name: "OMANDAC, B.", date: "20260218", start_time: "1200", end_time: "1300"}
-rooms[1].reservations[3][3][0]={name: "OMANDAC, K.", date: "20260218", start_time: "1200", end_time: "1300"}
-rooms[1].reservations[4][0][0]={name: "OMANDAC, D.", date: "20260219", start_time: "1200", end_time: "1300"}
-rooms[1].reservations[4][2][0]={name: "OMANDAC, J.", date: "20260219", start_time: "1200", end_time: "1300"}
-rooms[1].reservations[4][4][0]={name: "OMANDAC, A.", date: "20260220", start_time: "1200", end_time: "1300"}
-rooms[1].reservations[4][1][0]={name: "OMANDAC, L.", date: "20260220", start_time: "1200", end_time: "1300"}
-
 function simplifyTime(time)
 {
     switch (time) {
@@ -317,7 +228,7 @@ function renderReservations()
     if (view_user)
     {
         arr = all_seats;
-        document.getElementById("confirmed-text").innerHTML = "YOUR RESERVATIONS";
+        document.getElementById("confirmed-text").innerHTML = "YOUR CURRENT RESERVATIONS";
     }    
     else 
     {
@@ -327,6 +238,13 @@ function renderReservations()
 
     let reservation_list = document.querySelector("#reserve-list");
     reservation_list.innerHTML = '';
+
+	let na_block = document.createElement("div"); // Block for all N/As
+
+	let naaaa_text = document.createElement("p");
+	naaaa_text.innerHTML = "<span style=\"color:#6f6053;font-weight:bold;\">N/A</span>"
+
+	na_block.appendChild(naaaa_text);
 
     for (let i = 0; i < arr.length; i++)
     {
@@ -357,7 +275,6 @@ function renderReservations()
 
                 block_children[0] = document.createElement("p");
                 block_children[0].setAttribute("class","seat-title");
-                block_children[0].innerHTML="SEAT <span style=\"font-weight:bold\">"+row+" "+col+"</span>";
 
                 block_children[1] = document.createElement("div");
                 block_children[1].setAttribute("class", "list");
@@ -374,7 +291,7 @@ function renderReservations()
                         r_name_header.innerHTML = reservations[j].name;
 
                         if (reservations[j].name == name)
-                            r_name_header.innerHTML = "<span style=\"color:#FFFFFF;\">"+reservations[j].name+"</span>";
+                            r_name_header.innerHTML = "<span style=\"color:#FFFFFF;background-color:#006341;\">"+reservations[j].name+"</span>";
 
                         let r_time_para = document.createElement("p");
                         r_time_para.setAttribute("class","seat-title");
@@ -392,24 +309,32 @@ function renderReservations()
 						na=false;
                     }
                 }
+
+
 				if (na)
 				{
-					block_children[0].innerHTML="SEAT <span style=\"font-weight:bold\">"+row+" "+col+"</span>"+"<span style=\"color:#6f6053;margin-left: 10px;\">N/A</span>";
+					let p = document.createElement("p");
+                    p.setAttribute("class", "seat-title");
+					p.innerHTML="SEAT <span style=\"font-weight:bold\">"+row+" "+col+"</span>";
+					na_block.appendChild(p);
 				}	
-
-                block.appendChild(document.createElement("hr"));
-
-                block.appendChild(block_children[0]);
-                block.appendChild(block_children[1]);
-
-                reservation_list.appendChild(block);
+				else {
+					block.appendChild(document.createElement("hr"));
+                	block_children[0].innerHTML="SEAT <span style=\"font-weight:bold\">"+row+" "+col+"</span>";
+					block.appendChild(block_children[0]);
+					block.appendChild(block_children[1]);
+                	reservation_list.appendChild(block);
+				}
             }
         }
     }
 
-    if (document.title == "View Slot") {
-        addRemoveButton();
-    }
+	reservation_list.appendChild(document.createElement("hr"));
+	
+	if (na_block.children.length > 0)
+	{
+		reservation_list.appendChild(na_block);
+	}
 }
 
 function isOccupied(reserving,existing)
@@ -497,6 +422,308 @@ function hideError() {
     let modal = document.querySelector(".error-bg");
     modal.style.display = "none";
 }
+
+const name = "Tee, J.";
+
+var selected_seats = [];
+var all_seats = [];
+var selected_room;
+var selected_day;
+
+const rooms = [];
+
+rooms[0] = {
+	name: "GK201",
+	reservations: [],
+	rows: 5,
+	cols: 5
+}
+
+rooms[1] = {
+	name: "GK301",
+	reservations: [],
+	rows: 7,
+	cols: 5
+}
+
+rooms[2] = {
+	name: "GK302",
+	reservations: [],
+	rows: 10,
+	cols: 4
+}
+
+rooms[3] = {
+	name: "GK306",
+	reservations: [],
+	rows: 4,
+	cols: 8
+}
+
+rooms[4] = {
+	name: "GK401",
+	reservations: [],
+	rows: 5,
+	cols: 6
+}
+
+rooms[5] = {
+	name: "GK403",
+	reservations: [],
+	rows: 7,
+	cols: 9
+}
+
+for (let h = 0; h < rooms.length; h++)
+{
+	for (let i = 0; i < rooms[h].rows; i++)
+	{
+		rooms[h].reservations[i] = [];
+		for (let j = 0; j < rooms[h].cols; j++)
+			rooms[h].reservations[i][j] = [];
+	}
+}
+
+rooms[0].reservations[1][2][0]={name: "Tan, J.", date: "20260216", start_time: "0700", end_time: "0800"}
+rooms[0].reservations[3][1][0]={name: "Lim, A.", date: "20260216", start_time: "0900", end_time: "1000"}
+rooms[0].reservations[0][4][0]={name: "Dy, M.", date: "20260216", start_time: "1400", end_time: "1500"}
+rooms[0].reservations[2][2][0]={name: "Sy, K.", date: "20260216", start_time: "1000", end_time: "1100"}
+rooms[0].reservations[4][0][0]={name: "Ang, L.", date: "20260216", start_time: "1600", end_time: "1700"}
+rooms[0].reservations[1][3][0]={name: "Go, R.", date: "20260216", start_time: "0800", end_time: "0900"}
+rooms[0].reservations[0][0][0]={name: "Chua, B.", date: "20260216", start_time: "1100", end_time: "1200"}
+rooms[0].reservations[3][4][0]={name: "Yap, S.", date: "20260216", start_time: "1300", end_time: "1400"}
+rooms[0].reservations[2][0][0]={name: "Chen, T.", date: "20260217", start_time: "0700", end_time: "0830"}
+rooms[0].reservations[0][1][0]={name: "Lee, D.", date: "20260217", start_time: "0900", end_time: "1000"}
+rooms[0].reservations[4][2][0]={name: "Cruz, J.", date: "20260217", start_time: "1500", end_time: "1600"}
+rooms[0].reservations[1][1][0]={name: "Santos, M.", date: "20260217", start_time: "1030", end_time: "1130"}
+rooms[0].reservations[3][0][0]={name: "Reyes, A.", date: "20260217", start_time: "1200", end_time: "1300"}
+rooms[0].reservations[2][4][0]={name: "Garcia, P.", date: "20260217", start_time: "1400", end_time: "1500"}
+rooms[0].reservations[0][3][0]={name: "Torres, L.", date: "20260217", start_time: "1600", end_time: "1700"}
+rooms[0].reservations[4][4][0]={name: "Lopez, K.", date: "20260217", start_time: "1700", end_time: "1800"}
+rooms[0].reservations[1][0][0]={name: "Gonzales, H.", date: "20260218", start_time: "0800", end_time: "0900"}
+rooms[0].reservations[3][3][0]={name: "Ong, C.", date: "20260218", start_time: "1000", end_time: "1100"}
+rooms[0].reservations[0][2][0]={name: "Co, E.", date: "20260218", start_time: "1300", end_time: "1400"}
+rooms[0].reservations[2][1][0]={name: "Sison, F.", date: "20260218", start_time: "0900", end_time: "1000"}
+rooms[0].reservations[4][3][0]={name: "Tan, J.", date: "20260218", start_time: "1500", end_time: "1600"}
+rooms[0].reservations[1][4][0]={name: "Lim, A.", date: "20260218", start_time: "1100", end_time: "1200"}
+rooms[0].reservations[3][2][0]={name: "Dy, M.", date: "20260218", start_time: "1400", end_time: "1500"}
+rooms[0].reservations[2][3][0]={name: "Sy, K.", date: "20260218", start_time: "1600", end_time: "1700"}
+rooms[0].reservations[0][1][1]={name: "Ang, L.", date: "20260219", start_time: "0700", end_time: "0800"}
+rooms[0].reservations[4][1][0]={name: "Go, R.", date: "20260219", start_time: "0930", end_time: "1030"}
+rooms[0].reservations[1][2][1]={name: "Chua, B.", date: "20260219", start_time: "1200", end_time: "1300"}
+rooms[0].reservations[3][4][1]={name: "Yap, S.", date: "20260219", start_time: "1400", end_time: "1500"}
+rooms[0].reservations[2][0][1]={name: "Chen, T.", date: "20260219", start_time: "1000", end_time: "1100"}
+rooms[0].reservations[0][4][1]={name: "Lee, D.", date: "20260219", start_time: "1500", end_time: "1600"}
+rooms[0].reservations[4][0][1]={name: "Cruz, J.", date: "20260219", start_time: "1700", end_time: "1800"}
+rooms[0].reservations[2][2][1]={name: "Santos, M.", date: "20260219", start_time: "1300", end_time: "1400"}
+rooms[0].reservations[1][3][1]={name: "Reyes, A.", date: "20260220", start_time: "0800", end_time: "0900"}
+rooms[0].reservations[3][1][1]={name: "Garcia, P.", date: "20260220", start_time: "1000", end_time: "1100"}
+rooms[0].reservations[0][0][1]={name: "Torres, L.", date: "20260220", start_time: "1100", end_time: "1200"}
+rooms[0].reservations[2][4][1]={name: "Lopez, K.", date: "20260220", start_time: "1300", end_time: "1400"}
+rooms[0].reservations[4][2][1]={name: "Gonzales, H.", date: "20260220", start_time: "1500", end_time: "1600"}
+rooms[0].reservations[1][1][1]={name: "Ong, C.", date: "20260220", start_time: "1600", end_time: "1700"}
+rooms[0].reservations[3][0][1]={name: "Co, E.", date: "20260220", start_time: "0900", end_time: "1000"}
+rooms[0].reservations[2][3][1]={name: "Sison, F.", date: "20260220", start_time: "1400", end_time: "1500"}
+rooms[1].reservations[2][3][0]={name: "Tan, J.", date: "20260216", start_time: "0700", end_time: "0800"}
+rooms[1].reservations[5][1][0]={name: "Lim, A.", date: "20260216", start_time: "0900", end_time: "1000"}
+rooms[1].reservations[0][4][0]={name: "Dy, M.", date: "20260216", start_time: "1100", end_time: "1200"}
+rooms[1].reservations[4][2][0]={name: "Sy, K.", date: "20260216", start_time: "1300", end_time: "1400"}
+rooms[1].reservations[6][0][0]={name: "Ang, L.", date: "20260216", start_time: "1500", end_time: "1600"}
+rooms[1].reservations[1][3][0]={name: "Go, R.", date: "20260216", start_time: "1700", end_time: "1800"}
+rooms[1].reservations[3][0][0]={name: "Chua, B.", date: "20260216", start_time: "0800", end_time: "0900"}
+rooms[1].reservations[2][1][0]={name: "Yap, S.", date: "20260216", start_time: "1000", end_time: "1100"}
+rooms[1].reservations[5][4][0]={name: "Chen, T.", date: "20260217", start_time: "0730", end_time: "0830"}
+rooms[1].reservations[0][2][0]={name: "Lee, D.", date: "20260217", start_time: "0930", end_time: "1030"}
+rooms[1].reservations[4][3][0]={name: "Cruz, J.", date: "20260217", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[6][1][0]={name: "Santos, M.", date: "20260217", start_time: "1400", end_time: "1500"}
+rooms[1].reservations[1][0][0]={name: "Reyes, A.", date: "20260217", start_time: "1600", end_time: "1700"}
+rooms[1].reservations[3][4][0]={name: "Garcia, P.", date: "20260217", start_time: "1000", end_time: "1100"}
+rooms[1].reservations[2][0][0]={name: "Torres, L.", date: "20260217", start_time: "1300", end_time: "1400"}
+rooms[1].reservations[5][2][0]={name: "Lopez, K.", date: "20260217", start_time: "1500", end_time: "1600"}
+rooms[1].reservations[0][3][0]={name: "Gonzales, H.", date: "20260218", start_time: "0800", end_time: "0900"}
+rooms[1].reservations[4][1][0]={name: "Ong, C.", date: "20260218", start_time: "1000", end_time: "1100"}
+rooms[1].reservations[6][4][0]={name: "Co, E.", date: "20260218", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[1][2][0]={name: "Sison, F.", date: "20260218", start_time: "1400", end_time: "1500"}
+rooms[1].reservations[3][3][0]={name: "Tan, J.", date: "20260218", start_time: "1600", end_time: "1700"}
+rooms[1].reservations[2][4][0]={name: "Lim, A.", date: "20260218", start_time: "0900", end_time: "1000"}
+rooms[1].reservations[5][0][0]={name: "Dy, M.", date: "20260218", start_time: "1100", end_time: "1200"}
+rooms[1].reservations[0][1][0]={name: "Sy, K.", date: "20260218", start_time: "1300", end_time: "1400"}
+rooms[1].reservations[4][0][0]={name: "Ang, L.", date: "20260219", start_time: "0700", end_time: "0800"}
+rooms[1].reservations[6][3][0]={name: "Go, R.", date: "20260219", start_time: "0900", end_time: "1000"}
+rooms[1].reservations[1][1][0]={name: "Chua, B.", date: "20260219", start_time: "1100", end_time: "1200"}
+rooms[1].reservations[3][2][0]={name: "Yap, S.", date: "20260219", start_time: "1300", end_time: "1400"}
+rooms[1].reservations[2][2][0]={name: "Chen, T.", date: "20260219", start_time: "1500", end_time: "1600"}
+rooms[1].reservations[5][3][0]={name: "Lee, D.", date: "20260219", start_time: "1700", end_time: "1800"}
+rooms[1].reservations[0][0][0]={name: "Cruz, J.", date: "20260219", start_time: "1000", end_time: "1100"}
+rooms[1].reservations[4][4][0]={name: "Santos, M.", date: "20260219", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[6][2][0]={name: "Reyes, A.", date: "20260220", start_time: "0800", end_time: "0900"}
+rooms[1].reservations[1][4][0]={name: "Garcia, P.", date: "20260220", start_time: "1000", end_time: "1100"}
+rooms[1].reservations[3][1][0]={name: "Torres, L.", date: "20260220", start_time: "1200", end_time: "1300"}
+rooms[1].reservations[2][4][0]={name: "Lopez, K.", date: "20260220", start_time: "1400", end_time: "1500"}
+rooms[1].reservations[5][4][1]={name: "Gonzales, H.", date: "20260220", start_time: "1600", end_time: "1700"}
+rooms[1].reservations[0][4][1]={name: "Ong, C.", date: "20260220", start_time: "0900", end_time: "1000"}
+rooms[1].reservations[4][0][1]={name: "Co, E.", date: "20260220", start_time: "1100", end_time: "1200"}
+rooms[1].reservations[6][0][1]={name: "Sison, F.", date: "20260220", start_time: "1300", end_time: "1400"}
+rooms[2].reservations[3][2][0]={name: "Tan, J.", date: "20260216", start_time: "0700", end_time: "0800"}
+rooms[2].reservations[8][1][0]={name: "Lim, A.", date: "20260216", start_time: "0900", end_time: "1000"}
+rooms[2].reservations[1][3][0]={name: "Dy, M.", date: "20260216", start_time: "1100", end_time: "1200"}
+rooms[2].reservations[6][0][0]={name: "Sy, K.", date: "20260216", start_time: "1300", end_time: "1400"}
+rooms[2].reservations[0][2][0]={name: "Ang, L.", date: "20260216", start_time: "1500", end_time: "1600"}
+rooms[2].reservations[9][3][0]={name: "Go, R.", date: "20260216", start_time: "1700", end_time: "1800"}
+rooms[2].reservations[4][1][0]={name: "Chua, B.", date: "20260216", start_time: "1000", end_time: "1100"}
+rooms[2].reservations[7][2][0]={name: "Yap, S.", date: "20260216", start_time: "1200", end_time: "1300"}
+rooms[2].reservations[2][0][0]={name: "Chen, T.", date: "20260217", start_time: "0700", end_time: "0830"}
+rooms[2].reservations[5][3][0]={name: "Lee, D.", date: "20260217", start_time: "0900", end_time: "1000"}
+rooms[2].reservations[3][1][0]={name: "Cruz, J.", date: "20260217", start_time: "1100", end_time: "1200"}
+rooms[2].reservations[8][2][0]={name: "Santos, M.", date: "20260217", start_time: "1300", end_time: "1400"}
+rooms[2].reservations[1][0][0]={name: "Reyes, A.", date: "20260217", start_time: "1500", end_time: "1600"}
+rooms[2].reservations[6][3][0]={name: "Garcia, P.", date: "20260217", start_time: "1700", end_time: "1800"}
+rooms[2].reservations[0][1][0]={name: "Torres, L.", date: "20260217", start_time: "1400", end_time: "1500"}
+rooms[2].reservations[9][0][0]={name: "Lopez, K.", date: "20260217", start_time: "0800", end_time: "0900"}
+rooms[2].reservations[4][2][0]={name: "Gonzales, H.", date: "20260218", start_time: "0800", end_time: "0900"}
+rooms[2].reservations[7][1][0]={name: "Ong, C.", date: "20260218", start_time: "1000", end_time: "1100"}
+rooms[2].reservations[2][3][0]={name: "Co, E.", date: "20260218", start_time: "1200", end_time: "1300"}
+rooms[2].reservations[5][0][0]={name: "Sison, F.", date: "20260218", start_time: "1400", end_time: "1500"}
+rooms[2].reservations[3][0][0]={name: "Tan, J.", date: "20260218", start_time: "1600", end_time: "1700"}
+rooms[2].reservations[8][3][0]={name: "Lim, A.", date: "20260218", start_time: "1100", end_time: "1200"}
+rooms[2].reservations[1][2][0]={name: "Dy, M.", date: "20260218", start_time: "0900", end_time: "1000"}
+rooms[2].reservations[6][1][0]={name: "Sy, K.", date: "20260218", start_time: "1300", end_time: "1400"}
+rooms[2].reservations[0][0][0]={name: "Ang, L.", date: "20260219", start_time: "0700", end_time: "0800"}
+rooms[2].reservations[9][1][0]={name: "Go, R.", date: "20260219", start_time: "0930", end_time: "1030"}
+rooms[2].reservations[4][3][0]={name: "Chua, B.", date: "20260219", start_time: "1200", end_time: "1300"}
+rooms[2].reservations[7][0][0]={name: "Yap, S.", date: "20260219", start_time: "1400", end_time: "1500"}
+rooms[2].reservations[2][2][0]={name: "Chen, T.", date: "20260219", start_time: "1600", end_time: "1700"}
+rooms[2].reservations[5][1][0]={name: "Lee, D.", date: "20260219", start_time: "1000", end_time: "1100"}
+rooms[2].reservations[3][3][0]={name: "Cruz, J.", date: "20260219", start_time: "1300", end_time: "1400"}
+rooms[2].reservations[8][0][0]={name: "Santos, M.", date: "20260219", start_time: "1500", end_time: "1600"}
+rooms[2].reservations[1][1][0]={name: "Reyes, A.", date: "20260220", start_time: "0800", end_time: "0900"}
+rooms[2].reservations[6][2][0]={name: "Garcia, P.", date: "20260220", start_time: "1000", end_time: "1100"}
+rooms[2].reservations[0][3][0]={name: "Torres, L.", date: "20260220", start_time: "1200", end_time: "1300"}
+rooms[2].reservations[9][2][0]={name: "Lopez, K.", date: "20260220", start_time: "1400", end_time: "1500"}
+rooms[2].reservations[4][0][0]={name: "Gonzales, H.", date: "20260220", start_time: "1600", end_time: "1700"}
+rooms[2].reservations[7][3][0]={name: "Ong, C.", date: "20260220", start_time: "0900", end_time: "1000"}
+rooms[2].reservations[2][1][0]={name: "Co, E.", date: "20260220", start_time: "1100", end_time: "1200"}
+rooms[2].reservations[5][2][0]={name: "Sison, F.", date: "20260220", start_time: "1300", end_time: "1400"}
+rooms[3].reservations[1][4][0]={name: "Tan, J.", date: "20260216", start_time: "0700", end_time: "0800"}
+rooms[3].reservations[3][2][0]={name: "Lim, A.", date: "20260216", start_time: "0900", end_time: "1000"}
+rooms[3].reservations[0][6][0]={name: "Dy, M.", date: "20260216", start_time: "1100", end_time: "1200"}
+rooms[3].reservations[2][3][0]={name: "Sy, K.", date: "20260216", start_time: "1300", end_time: "1400"}
+rooms[3].reservations[1][0][0]={name: "Ang, L.", date: "20260216", start_time: "1500", end_time: "1600"}
+rooms[3].reservations[3][7][0]={name: "Go, R.", date: "20260216", start_time: "1700", end_time: "1800"}
+rooms[3].reservations[0][1][0]={name: "Chua, B.", date: "20260216", start_time: "0800", end_time: "0900"}
+rooms[3].reservations[2][5][0]={name: "Yap, S.", date: "20260216", start_time: "1000", end_time: "1100"}
+rooms[3].reservations[1][6][0]={name: "Chen, T.", date: "20260217", start_time: "0730", end_time: "0830"}
+rooms[3].reservations[3][0][0]={name: "Lee, D.", date: "20260217", start_time: "0930", end_time: "1030"}
+rooms[3].reservations[0][4][0]={name: "Cruz, J.", date: "20260217", start_time: "1200", end_time: "1300"}
+rooms[3].reservations[2][2][0]={name: "Santos, M.", date: "20260217", start_time: "1400", end_time: "1500"}
+rooms[3].reservations[1][7][0]={name: "Reyes, A.", date: "20260217", start_time: "1600", end_time: "1700"}
+rooms[3].reservations[3][3][0]={name: "Garcia, P.", date: "20260217", start_time: "1000", end_time: "1100"}
+rooms[3].reservations[0][0][0]={name: "Torres, L.", date: "20260217", start_time: "1300", end_time: "1400"}
+rooms[3].reservations[2][6][0]={name: "Lopez, K.", date: "20260217", start_time: "1500", end_time: "1600"}
+rooms[3].reservations[1][2][0]={name: "Gonzales, H.", date: "20260218", start_time: "0800", end_time: "0900"}
+rooms[3].reservations[3][5][0]={name: "Ong, C.", date: "20260218", start_time: "1000", end_time: "1100"}
+rooms[3].reservations[0][3][0]={name: "Co, E.", date: "20260218", start_time: "1200", end_time: "1300"}
+rooms[3].reservations[2][0][0]={name: "Sison, F.", date: "20260218", start_time: "1400", end_time: "1500"}
+rooms[3].reservations[1][5][0]={name: "Tan, J.", date: "20260218", start_time: "1600", end_time: "1700"}
+rooms[3].reservations[3][1][0]={name: "Lim, A.", date: "20260218", start_time: "0900", end_time: "1000"}
+rooms[3].reservations[0][7][0]={name: "Dy, M.", date: "20260218", start_time: "1100", end_time: "1200"}
+rooms[3].reservations[2][4][0]={name: "Sy, K.", date: "20260218", start_time: "1300", end_time: "1400"}
+rooms[3].reservations[1][1][0]={name: "Ang, L.", date: "20260219", start_time: "0700", end_time: "0800"}
+rooms[3].reservations[3][4][0]={name: "Go, R.", date: "20260219", start_time: "0900", end_time: "1000"}
+rooms[3].reservations[0][2][0]={name: "Chua, B.", date: "20260219", start_time: "1100", end_time: "1200"}
+rooms[3].reservations[2][7][0]={name: "Yap, S.", date: "20260219", start_time: "1300", end_time: "1400"}
+rooms[3].reservations[1][3][0]={name: "Chen, T.", date: "20260219", start_time: "1500", end_time: "1600"}
+rooms[3].reservations[3][6][0]={name: "Lee, D.", date: "20260219", start_time: "1700", end_time: "1800"}
+rooms[3].reservations[0][5][0]={name: "Cruz, J.", date: "20260219", start_time: "1000", end_time: "1100"}
+rooms[3].reservations[2][1][0]={name: "Santos, M.", date: "20260219", start_time: "1200", end_time: "1300"}
+rooms[3].reservations[1][6][1]={name: "Reyes, A.", date: "20260220", start_time: "0800", end_time: "0900"}
+rooms[3].reservations[3][0][1]={name: "Garcia, P.", date: "20260220", start_time: "1000", end_time: "1100"}
+rooms[3].reservations[0][1][1]={name: "Torres, L.", date: "20260220", start_time: "1200", end_time: "1300"}
+rooms[3].reservations[2][3][1]={name: "Lopez, K.", date: "20260220", start_time: "1400", end_time: "1500"}
+rooms[3].reservations[1][0][1]={name: "Gonzales, H.", date: "20260220", start_time: "1600", end_time: "1700"}
+rooms[3].reservations[3][7][1]={name: "Ong, C.", date: "20260220", start_time: "0900", end_time: "1000"}
+rooms[3].reservations[0][6][1]={name: "Co, E.", date: "20260220", start_time: "1100", end_time: "1200"}
+rooms[3].reservations[2][2][1]={name: "Sison, F.", date: "20260220", start_time: "1300", end_time: "1400"}
+rooms[4].reservations[2][3][0]={name: "Tan, J.", date: "20260216", start_time: "0700", end_time: "0800"}
+rooms[4].reservations[0][1][0]={name: "Lim, A.", date: "20260216", start_time: "0900", end_time: "1000"}
+rooms[4].reservations[4][5][0]={name: "Dy, M.", date: "20260216", start_time: "1100", end_time: "1200"}
+rooms[4].reservations[1][2][0]={name: "Sy, K.", date: "20260216", start_time: "1300", end_time: "1400"}
+rooms[4].reservations[3][4][0]={name: "Ang, L.", date: "20260216", start_time: "1500", end_time: "1600"}
+rooms[4].reservations[2][0][0]={name: "Go, R.", date: "20260216", start_time: "1700", end_time: "1800"}
+rooms[4].reservations[0][3][0]={name: "Chua, B.", date: "20260216", start_time: "0800", end_time: "0900"}
+rooms[4].reservations[4][1][0]={name: "Yap, S.", date: "20260216", start_time: "1000", end_time: "1100"}
+rooms[4].reservations[1][4][0]={name: "Chen, T.", date: "20260217", start_time: "0730", end_time: "0830"}
+rooms[4].reservations[3][2][0]={name: "Lee, D.", date: "20260217", start_time: "0930", end_time: "1030"}
+rooms[4].reservations[2][5][0]={name: "Cruz, J.", date: "20260217", start_time: "1200", end_time: "1300"}
+rooms[4].reservations[0][0][0]={name: "Santos, M.", date: "20260217", start_time: "1400", end_time: "1500"}
+rooms[4].reservations[4][3][0]={name: "Reyes, A.", date: "20260217", start_time: "1600", end_time: "1700"}
+rooms[4].reservations[1][1][0]={name: "Garcia, P.", date: "20260217", start_time: "1000", end_time: "1100"}
+rooms[4].reservations[3][5][0]={name: "Torres, L.", date: "20260217", start_time: "1300", end_time: "1400"}
+rooms[4].reservations[2][2][0]={name: "Lopez, K.", date: "20260217", start_time: "1500", end_time: "1600"}
+rooms[4].reservations[0][4][0]={name: "Gonzales, H.", date: "20260218", start_time: "0800", end_time: "0900"}
+rooms[4].reservations[4][0][0]={name: "Ong, C.", date: "20260218", start_time: "1000", end_time: "1100"}
+rooms[4].reservations[1][3][0]={name: "Co, E.", date: "20260218", start_time: "1200", end_time: "1300"}
+rooms[4].reservations[3][1][0]={name: "Sison, F.", date: "20260218", start_time: "1400", end_time: "1500"}
+rooms[4].reservations[2][4][0]={name: "Tan, J.", date: "20260218", start_time: "1600", end_time: "1700"}
+rooms[4].reservations[0][2][0]={name: "Lim, A.", date: "20260218", start_time: "0900", end_time: "1000"}
+rooms[4].reservations[4][4][0]={name: "Dy, M.", date: "20260218", start_time: "1100", end_time: "1200"}
+rooms[4].reservations[1][5][0]={name: "Sy, K.", date: "20260218", start_time: "1300", end_time: "1400"}
+rooms[4].reservations[3][0][0]={name: "Ang, L.", date: "20260219", start_time: "0700", end_time: "0800"}
+rooms[4].reservations[2][1][0]={name: "Go, R.", date: "20260219", start_time: "0900", end_time: "1000"}
+rooms[4].reservations[0][5][0]={name: "Chua, B.", date: "20260219", start_time: "1100", end_time: "1200"}
+rooms[4].reservations[4][2][0]={name: "Yap, S.", date: "20260219", start_time: "1300", end_time: "1400"}
+rooms[4].reservations[1][0][0]={name: "Chen, T.", date: "20260219", start_time: "1500", end_time: "1600"}
+rooms[4].reservations[3][3][0]={name: "Lee, D.", date: "20260219", start_time: "1700", end_time: "1800"}
+rooms[4].reservations[2][5][1]={name: "Cruz, J.", date: "20260219", start_time: "1000", end_time: "1100"}
+rooms[4].reservations[0][0][1]={name: "Santos, M.", date: "20260219", start_time: "1200", end_time: "1300"}
+rooms[4].reservations[4][1][1]={name: "Reyes, A.", date: "20260220", start_time: "0800", end_time: "0900"}
+rooms[4].reservations[1][2][1]={name: "Garcia, P.", date: "20260220", start_time: "1000", end_time: "1100"}
+rooms[4].reservations[3][4][1]={name: "Torres, L.", date: "20260220", start_time: "1200", end_time: "1300"}
+rooms[4].reservations[2][0][1]={name: "Lopez, K.", date: "20260220", start_time: "1400", end_time: "1500"}
+rooms[4].reservations[0][3][1]={name: "Gonzales, H.", date: "20260220", start_time: "1600", end_time: "1700"}
+rooms[4].reservations[4][5][1]={name: "Ong, C.", date: "20260220", start_time: "0900", end_time: "1000"}
+rooms[4].reservations[1][4][1]={name: "Co, E.", date: "20260220", start_time: "1100", end_time: "1200"}
+rooms[4].reservations[3][2][1]={name: "Sison, F.", date: "20260220", start_time: "1300", end_time: "1400"}
+rooms[5].reservations[3][4][0]={name: "Tan, J.", date: "20260216", start_time: "0700", end_time: "0800"}
+rooms[5].reservations[1][7][0]={name: "Lim, A.", date: "20260216", start_time: "0900", end_time: "1000"}
+rooms[5].reservations[5][2][0]={name: "Dy, M.", date: "20260216", start_time: "1100", end_time: "1200"}
+rooms[5].reservations[0][8][0]={name: "Sy, K.", date: "20260216", start_time: "1300", end_time: "1400"}
+rooms[5].reservations[6][0][0]={name: "Ang, L.", date: "20260216", start_time: "1500", end_time: "1600"}
+rooms[5].reservations[2][5][0]={name: "Go, R.", date: "20260216", start_time: "1700", end_time: "1800"}
+rooms[5].reservations[4][3][0]={name: "Chua, B.", date: "20260216", start_time: "0800", end_time: "0900"}
+rooms[5].reservations[1][1][0]={name: "Yap, S.", date: "20260216", start_time: "1000", end_time: "1100"}
+rooms[5].reservations[3][6][0]={name: "Chen, T.", date: "20260217", start_time: "0730", end_time: "0830"}
+rooms[5].reservations[0][4][0]={name: "Lee, D.", date: "20260217", start_time: "0930", end_time: "1030"}
+rooms[5].reservations[5][8][0]={name: "Cruz, J.", date: "20260217", start_time: "1200", end_time: "1300"}
+rooms[5].reservations[2][2][0]={name: "Santos, M.", date: "20260217", start_time: "1400", end_time: "1500"}
+rooms[5].reservations[6][7][0]={name: "Reyes, A.", date: "20260217", start_time: "1600", end_time: "1700"}
+rooms[5].reservations[4][5][0]={name: "Garcia, P.", date: "20260217", start_time: "1000", end_time: "1100"}
+rooms[5].reservations[1][3][0]={name: "Torres, L.", date: "20260217", start_time: "1300", end_time: "1400"}
+rooms[5].reservations[3][0][0]={name: "Lopez, K.", date: "20260217", start_time: "1500", end_time: "1600"}
+rooms[5].reservations[0][6][0]={name: "Gonzales, H.", date: "20260218", start_time: "0800", end_time: "0900"}
+rooms[5].reservations[5][1][0]={name: "Ong, C.", date: "20260218", start_time: "1000", end_time: "1100"}
+rooms[5].reservations[2][8][0]={name: "Co, E.", date: "20260218", start_time: "1200", end_time: "1300"}
+rooms[5].reservations[6][4][0]={name: "Sison, F.", date: "20260218", start_time: "1400", end_time: "1500"}
+rooms[5].reservations[4][2][0]={name: "Tan, J.", date: "20260218", start_time: "1600", end_time: "1700"}
+rooms[5].reservations[1][5][0]={name: "Lim, A.", date: "20260218", start_time: "0900", end_time: "1000"}
+rooms[5].reservations[3][7][0]={name: "Dy, M.", date: "20260218", start_time: "1100", end_time: "1200"}
+rooms[5].reservations[0][0][0]={name: "Sy, K.", date: "20260218", start_time: "1300", end_time: "1400"}
+rooms[5].reservations[5][3][0]={name: "Ang, L.", date: "20260219", start_time: "0700", end_time: "0800"}
+rooms[5].reservations[2][6][0]={name: "Go, R.", date: "20260219", start_time: "0900", end_time: "1000"}
+rooms[5].reservations[6][1][0]={name: "Chua, B.", date: "20260219", start_time: "1100", end_time: "1200"}
+rooms[5].reservations[4][8][0]={name: "Yap, S.", date: "20260219", start_time: "1300", end_time: "1400"}
+rooms[5].reservations[1][4][0]={name: "Chen, T.", date: "20260219", start_time: "1500", end_time: "1600"}
+rooms[5].reservations[3][2][0]={name: "Lee, D.", date: "20260219", start_time: "1700", end_time: "1800"}
+rooms[5].reservations[0][5][0]={name: "Cruz, J.", date: "20260219", start_time: "1000", end_time: "1100"}
+rooms[5].reservations[5][7][0]={name: "Santos, M.", date: "20260219", start_time: "1200", end_time: "1300"}
+rooms[5].reservations[2][3][0]={name: "Reyes, A.", date: "20260220", start_time: "0800", end_time: "0900"}
+rooms[5].reservations[6][5][0]={name: "Garcia, P.", date: "20260220", start_time: "1000", end_time: "1100"}
+rooms[5].reservations[4][0][0]={name: "Torres, L.", date: "20260220", start_time: "1200", end_time: "1300"}
+rooms[5].reservations[1][8][0]={name: "Lopez, K.", date: "20260220", start_time: "1400", end_time: "1500"}
+rooms[5].reservations[3][1][0]={name: "Gonzales, H.", date: "20260220", start_time: "1600", end_time: "1700"}
+rooms[5].reservations[0][7][0]={name: "Ong, C.", date: "20260220", start_time: "0900", end_time: "1000"}
+rooms[5].reservations[5][4][0]={name: "Co, E.", date: "20260220", start_time: "1100", end_time: "1200"}
+rooms[5].reservations[2][2][1]={name: "Sison, F.", date: "20260220", start_time: "1300", end_time: "1400"}
 
 constructRoom();
 renderReservations();

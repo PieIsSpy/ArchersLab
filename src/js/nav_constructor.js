@@ -7,7 +7,12 @@ function construct_nav() {
     let pages = ["dashboard", "profile", "reservations"];
 
     let head = document.createElement("h2");
-    head.textContent = "Navigation";
+    head.textContent = "Archer's Lab";
+
+	head.style.fontSize = "20px";
+	head.style.fontWeight = "200";
+	head.style.marginBottom = "50px";
+
     nav.appendChild(head);
 
     pages.forEach(page => {
