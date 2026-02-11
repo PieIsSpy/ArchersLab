@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Room</title>
+    
+    <link rel="stylesheet" media="all" type="text/css" href="css/style.css"/>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+    <script src="js/nav_constructor.js" defer></script>
+    <script type="module" src="js/request_room.js" defer></script>
+</head>
+
+<body>
+    <nav></nav>
+
+    <div class="modal">
+        <div class="modal-content">
+            <h2 class="modal-h2">Confirm Request</h2>
+            <form>
+                <table>
+                    <tr>
+                        <td class="modal-td">Room:</td>
+                        <td class="modal-td" id="room"></td>
+                    </tr>
+                    <tr>
+                        <td class="modal-td">Time:</td>
+                        <td class="modal-td"><input class="modal-input" type="text" id="time"></td>
+                    </tr>
+                    <tr>
+                        <td class="modal-td">Reason:</td>
+                        <td class="modal-td"><input class="modal-input" type="text"></td>
+                    </tr>
+                    <tr>
+                        <td class="modal-td">
+                            <input type="button" id="cancel" onclick="hideModal()" value="Cancel">
+                            <input type="button" value="Confirm" onclick="confirmRequest()">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+
+    <div class="main">
+        <h1>Request Room</h1>
+
+        <div class="box container gapped">
+            <div class="container narrow">
+                <p>Date</p>
+                <select class="inverse-color">
+                    <option>2026/02/23</option>
+                    <option>2026/02/24</option>
+                    <option>2026/02/25</option>
+                    <option>2026/02/26</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="box">
+            <h2>Room List</h2>
+            <div class="gapped col-flex">
+                <table id="reservationTable">
+                    <tr>
+                        <th>Room</th>
+                        <th>Number of Seats</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="box">
+            <h2>Requested Rooms</h2>
+            <div class="gapped col-flex">
+                <table id="pending">
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
