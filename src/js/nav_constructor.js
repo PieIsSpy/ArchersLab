@@ -23,7 +23,7 @@ function construct_nav() {
     nav.appendChild(manage);
 
     let logout = document.createElement("a");
-    logout.setAttribute("href", "login.html")
+    logout.setAttribute("href", "both_login_register.html")
     logout.textContent = "Log Out"
     nav.appendChild(logout);
 
