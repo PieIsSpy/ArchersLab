@@ -17,6 +17,11 @@ function construct_nav() {
         nav.appendChild(link);
     });
 
+    let request_room = document.createElement("a");
+    request_room.setAttribute("href", "request_room.html")
+    request_room.textContent = "Request Room";
+    nav.appendChild(request_room);
+
     let manage = document.createElement("a");
     manage.setAttribute("href", "manage_reservations.html")
     manage.textContent = "Manage Reservations"
