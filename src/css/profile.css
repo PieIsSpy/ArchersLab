@@ -1,7 +1,31 @@
-.page-header {
-    margin-bottom: 10px;
-    border-bottom: 2px solid #e0e0e0;
-    padding-bottom: 5px;
+
+.gapped {
+    display: flex;
+    /* flex-direction: column; */
+    gap: 5px;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    gap: 10px;
+    align-content: center;
+}
+
+.container h2 {
+    margin-top: 0px;
+}
+
+.col-flex {
+    flex-direction: column;
+}
+
+h1 {
+    margin: 0px;
+    margin-bottom:10px;
 }
 
 .dashboard-grid {
@@ -15,8 +39,7 @@
 .profile-card {
     width: 100%;
     max-width: 400px;
-    margin: 0 auto;
-    background: #fff;
+    background: #ffffff00;
     padding: 30px;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -24,8 +47,25 @@
     transition: all 0.3s ease;
 }
 
+.adminprofile {
+    margin: 0 auto;
+}
+
+.show {
+    display: block;
+}
+
+.hidden {
+    display: none !important;
+}
+
 .profile-card.edit-mode-left {
     margin: 0;
+}
+
+.dashboard-grid{
+    
+	background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
 }
 
 .profile-header-centered {

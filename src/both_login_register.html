@@ -37,19 +37,19 @@
 
             <!-- login input -->
             <div class="form-container sign-in-container">
-                <form action="dashboard.html">
+                <form>
                     <h1>Log in</h1>
                     <span>Use your DLSU Student ID to log in</span>
 
-                    <input type="text" placeholder="Student ID" required />
-                    <input type="password" placeholder="Password" required />
+                    <input id="adminid" type="text" placeholder="Student ID" required />
+                    <input id="adminpass" type="password" placeholder="Password" required />
 
                     <div class="remember-me">
                         <input type="checkbox" id="remember" />
                         <label for="remember">Remember me (3 Weeks)</label>
                     </div>
 
-                    <button>Log In</button>
+                    <button type="button" id="log-in">Log In</button>
                 </form>
             </div>
 
@@ -76,6 +76,7 @@
             const signInButton = document.getElementById('signIn');
             const container = document.getElementById('container');
             const registerForm = document.getElementById('registerForm');
+            const loginbutton = document.getElementById('log-in')
 
             signUpButton.addEventListener('click', () => {
                 container.classList.add("right-panel-active");
@@ -85,13 +86,32 @@
                 container.classList.remove("right-panel-active");
             });
 
-            // I added this so that there is a successful registration popup
-            registerForm.addEventListener('submit', (event) => {
-                event.preventDefault();
-                alert("Registration Successful! Please log in.");
-                container.classList.remove("right-panel-active");
-                registerForm.reset();
+            loginbutton.addEventListener('click', () => {
+                const adminID = document.getElementById('adminid').value;
+                const adminPass = document.getElementById('adminpass').value;
+                console.log(adminID +" "+adminPass)
+                if (adminID == "67" && adminPass == "89")
+                    {
+                        console.log("ACCEPT");
+                        window.location.href = "manage_reservations.html";
+
+                    }
+                else
+                    {
+                        console.log("REJECT");
+                    window.location.href = "dashboard.html";
+                    }
             });
+
+                // I added this so that there is a successful registration popup
+                registerForm.addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    alert("Registration Successful! Please log in.");
+                    container.classList.remove("right-panel-active");
+                    registerForm.reset();
+                });
+
+
         </script>
     </body>
 </html>
