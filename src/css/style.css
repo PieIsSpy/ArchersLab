@@ -392,6 +392,14 @@ th, td {
     gap: 5px;
 }
 
+.profile-div a {
+    color: #2A2420;
+}
+
+.left-justify {
+    justify-content: left;
+}
+
 .profile-div h3 {
     margin: 0;
     display: flex;
