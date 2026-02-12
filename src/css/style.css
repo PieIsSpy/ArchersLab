@@ -30,6 +30,28 @@ nav a:hover {
     color: whitesmoke;
 }
 
+#select-day {
+    background-color: #006341;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    height: 23px; 
+    cursor: pointer;
+    font-family: "Inter", sans-serif;
+
+}
+
+#select-day:focus {
+    outline: none;
+    box-shadow: 0 0 2px 2px rgba(0, 99, 65, 0.5);
+}
+
+#select-day::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
 body {
 	background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
     font-family: "Inter", sans-serif;
