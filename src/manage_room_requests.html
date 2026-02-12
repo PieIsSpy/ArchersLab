@@ -21,7 +21,7 @@
 					<input type="text">
 				
 					<p>Filter Room</p>
-					<select class="inverse-color">
+					<select>
 						<option>G301</option>
 						<option>G302</option>
 						<option>G303</option>
@@ -35,7 +35,12 @@
 				<div class="gapped col-flex">
 					<table id = "reservationTable">
 						<tr>
-							<th>Name</th><th>Date</th><th>Time</th><th>Room</th><th>Status</th><th>Actions</th>
+							<th align="left">Name</th>
+                            <th align="left">Date</th>
+                            <th align="left">Time</th>
+                            <th align="left">Room</th>
+                            <th align="left">Status</th>
+                            <th align="left">Actions</th>
 						</tr>
 					</table>
 			</div>
@@ -57,18 +62,41 @@
             list.forEach((x, i) => {
                 let row = document.createElement("tr");
 
-                x.forEach(y => {
+                x.forEach((y, index) => {
                     let col = document.createElement("td");
                     let container = document.createElement("div");
-                    container.className = "cells";
-                    container.textContent = y;
+                    
+
+                    if (index == 0) {
+                        container.className = "cells profile-div left-justify";
+                        let img = document.createElement("img");
+                        let img_link = document.createElement("a");
+
+                        img.className = "mini-profile"
+                        img.setAttribute("src", "img/profile_icon.png");
+
+                        img_link.setAttribute("href", "other_profile.html");
+
+                        img_link.appendChild(img);
+
+                        let name = document.createElement("a");
+                        name.setAttribute("href", "other_profile.html");
+                        name.textContent = y;
+
+                        container.appendChild(name);
+                        container.appendChild(img_link);
+                    }
+                    else {
+                        container.className = "cells left-justify";
+                        container.textContent = y;
+                    }
 
                     col.appendChild(container);
                     row.appendChild(col);
                 });
 
 				let div = document.createElement("td");
-                div.className = "cells";
+                // div.className = "cells";
 
                 let button = document.createElement("button");
                 button.textContent = "Cancel";

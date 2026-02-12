@@ -295,7 +295,7 @@ function renderReservations()
                         img_link.setAttribute("href", "other_profile.html");
                         
                         img.className = "mini-profile"
-                        img.setAttribute("src", "https://i.redd.it/w3c2by4oacjf1.png");
+                        img.setAttribute("src", "./img/profile_icon.png");
 
                         img_link.appendChild(img)
 
@@ -308,8 +308,8 @@ function renderReservations()
                         r_name_header.setAttribute("class","seat-title");
                         r_name_header.appendChild(profile_link);
 
-                        profile_div.appendChild(img_link);
                         profile_div.appendChild(r_name_header);
+                        profile_div.appendChild(img_link);
 
                         if (reservations[j].name == name)
                             r_name_header.innerHTML = "<span style=\"color:#FFFFFF;background-color:#006341;\">"+reservations[j].name+"</span>";
