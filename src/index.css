@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import "tailwindcss";
+
+body {
+	background-color:rgb(46, 46, 49);
+	font-family: "Inter", sans-serif; 
+	color: rgb(237, 237, 237);
+}
+
+.google {
+	font-family:"Google Sans",sans-serif;
+}
+
+.grayy {
+	background-color:rgb(42, 42, 46);
+	color: rgb(197, 197, 197);
+}
+
+th, td {
+	padding-top:18px;
+	padding-bottom:18px;
+	padding-left:6px;
+	padding-right:6px;
+}
