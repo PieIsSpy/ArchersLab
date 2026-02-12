@@ -381,3 +381,39 @@ th, td {
     font-weight:bold;
     font-size:30px;
 }
+
+.seat-title a {
+    color: #2A2420;
+}
+
+.profile-div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.profile-div h3 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.profile-div h3 a {
+    display: inline-block; 
+    line-height: 1;
+    text-decoration: none; 
+    border-bottom: 2px solid #333;
+}
+
+.profile-div h3 a {
+    position: relative;
+    top: -5px;
+}
+
+.mini-profile {
+    display: block;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    border-radius: 40px;
+}

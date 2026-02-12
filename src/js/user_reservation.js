@@ -286,9 +286,30 @@ function renderReservations()
                     if (((view_user && reservations[j].name == name) || (!view_user))&& reservations[j].date == getDateSelection())
                     {
 						// console.log(reservations[j].date+"=="+getDateSelection());
+                        let profile_div = document.createElement("div");
+                        let img = document.createElement("img");
+
+                        profile_div.className = "profile-div"
+
+                        let img_link = document.createElement("a")
+                        img_link.setAttribute("href", "other_profile.html");
+                        
+                        img.className = "mini-profile"
+                        img.setAttribute("src", "https://i.redd.it/w3c2by4oacjf1.png");
+
+                        img_link.appendChild(img)
+
                         let r_name_header = document.createElement("h3");
+                        let profile_link = document.createElement("a");
+
+                        profile_link.setAttribute("href", "other_profile.html");
+                        profile_link.innerHTML = reservations[j].name;
+
                         r_name_header.setAttribute("class","seat-title");
-                        r_name_header.innerHTML = reservations[j].name;
+                        r_name_header.appendChild(profile_link);
+
+                        profile_div.appendChild(img_link);
+                        profile_div.appendChild(r_name_header);
 
                         if (reservations[j].name == name)
                             r_name_header.innerHTML = "<span style=\"color:#FFFFFF;background-color:#006341;\">"+reservations[j].name+"</span>";
@@ -302,7 +323,7 @@ function renderReservations()
                         let slot = document.createElement("div");
                         slot.setAttribute("class", "info");
 
-                        slot.appendChild(r_name_header);
+                        slot.appendChild(profile_div);
                         slot.appendChild(r_time_para);
 
                         block_children[1].appendChild(slot);
