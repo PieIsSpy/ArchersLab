@@ -12,8 +12,13 @@ body {
 	font-family:"Google Sans",sans-serif;
 }
 
-.grayy {
-	background-color:rgb(42, 42, 46);
+.gray-67 {
+	background-color:rgb(34, 34, 37);
+	color: rgb(197, 197, 197);
+}
+
+.gray-89 {
+	background-color:rgb(46, 46, 49); 
 	color: rgb(197, 197, 197);
 }
 
