@@ -8,6 +8,40 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+class Student {
+  constructor(name, id, bio, email, college, course, about) {
+    this.name = name;
+    this.id = id;
+    this.bio = bio;
+    this.email = email;
+    this.college = college;
+    this.course = course;
+    this.about = about;
+	this.password = "password";
+	this.reservations = [];
+  }
+}
+
+const initialStudent = new Student(
+  "Karl Omandac",
+  "06706789",
+  "I invoke the fifth amendment.",
+  "karl_omandac@dlsu.edu.ph",
+  "College of Computer Studies",
+  "Bachelor of Science in Computer Science",
+  "Epstein's most prized possession"
+);
+
+const fields = [
+  { label: "NAME", key: "name", editable: false, display: false},
+  { label: "ID", key: "id", editable: false, display: true},
+  { label: "BIO", key: "bio", editable: true, display: false},
+  { label: "EMAIL", key: "email", editable: true, display: true},
+  { label: "COLLEGE", key: "college", editable: true, display: true},
+  { label: "COURSE", key: "course", editable: true, display: true},
+  { label: "ABOUT", key: "about", editable: true, display: true},
+];
+
 function PencilSvg () 
 {
 	return (<svg
@@ -59,7 +93,7 @@ function Home () {
 	return (
 	<div className="m-5">
 		<div className="google">
-			<h2 className="font-bold text-xl">Good day, John!</h2>
+			<h2 className="font-bold text-xl">Good day, {initialStudent.name}!</h2>
 			<h2 className="ml-auto text-gray-500 text-l"><Clock /></h2>
 		</div>
 		<h2 className="mt-12 font-black google text-4xl">Current Reservations:</h2>
@@ -146,38 +180,6 @@ function Home () {
 		</div>
 	</div>);
 }
-
-class Student {
-  constructor(name, id, bio, email, college, course, about) {
-    this.name = name;
-    this.id = id;
-    this.bio = bio;
-    this.email = email;
-    this.college = college;
-    this.course = course;
-    this.about = about;
-  }
-}
-
-const initialStudent = new Student(
-  "Karl Omandac",
-  "06706789",
-  "I invoke the fifth amendment.",
-  "karl_omandac@dlsu.edu.ph",
-  "College of Computer Studies",
-  "Bachelor of Science in Computer Science",
-  "Epstein's most prized possession"
-);
-
-const fields = [
-  { label: "NAME", key: "name", editable: false, display: false},
-  { label: "ID", key: "id", editable: false, display: true},
-  { label: "BIO", key: "bio", editable: true, display: false},
-  { label: "EMAIL", key: "email", editable: true, display: true},
-  { label: "COLLEGE", key: "college", editable: true, display: true},
-  { label: "COURSE", key: "course", editable: true, display: true},
-  { label: "ABOUT", key: "about", editable: true, display: true},
-];
 
 export function StudentProfile() {
 	const [student, setStudent] = useState(initialStudent);
