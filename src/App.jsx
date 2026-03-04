@@ -8,29 +8,18 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-class Student {
-  constructor(name, id, bio, email, college, course, about) {
-    this.name = name;
-    this.id = id;
-    this.bio = bio;
-    this.email = email;
-    this.college = college;
-    this.course = course;
-    this.about = about;
-	this.password = "password";
-	this.reservations = [];
-  }
-}
+// components
+import { PencilSvg } from "./components/PencilSvg.jsx";
 
-const initialStudent = new Student(
-  "Karl Omandac",
-  "06706789",
-  "I invoke the fifth amendment.",
-  "karl_omandac@dlsu.edu.ph",
-  "College of Computer Studies",
-  "Bachelor of Science in Computer Science",
-  "Epstein's most prized possession"
-);
+// pages
+import { Home } from "./pages/Home.jsx";
+
+import { initialStudent } from "./models/Student.jsx";
+
+
+
+
+
 
 const fields = [
   { label: "NAME", key: "name", editable: false, display: false},
@@ -41,145 +30,6 @@ const fields = [
   { label: "COURSE", key: "course", editable: true, display: true},
   { label: "ABOUT", key: "about", editable: true, display: true},
 ];
-
-function PencilSvg () 
-{
-	return (<svg
-							xmlns="http://www.w3.org/2000/svg"
-							className="w-4 h-4 mr-1"
-							viewBox="0 0 24 24"
-							fill="currentColor"
-						>
-						<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-						</svg>);
-}
-
-export function Clock() {
-  const [time, setTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(new Date());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  const formatTime = (date) => {
-    const year = date.getFullYear();
-    const month = date.toLocaleString("default", { month: "long" });
-    const day = date.getDate();
-
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const seconds = date.getSeconds();
-
-    const ampm = hours >= 12 ? " PM" : " AM";
-    const h12 = hours % 12 || 12;
-
-    return `It is currently ${month} ${day}, ${year}, ${h12
-      .toString()
-      .padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}${ampm}`;
-  };
-
-  return <div>{formatTime(time)}</div>;
-}
-
-function Home () {
-	return (
-	<div className="m-5">
-		<div className="google">
-			<h2 className="font-bold text-xl">Good day, {initialStudent.name}!</h2>
-			<h2 className="ml-auto text-gray-500 text-l"><Clock /></h2>
-		</div>
-		<h2 className="mt-12 font-black google text-4xl">Current Reservations:</h2>
-		<div className="mt-4 pl-4 pr-4 rounded-2xl gray-67 shadow-lg">
-			<table className="table-auto w-full text-left">
-				<thead className="font-bold border-b border-gray-600">
-					<tr>
-						<th>
-							Date
-						</th>
-						<th>
-							Time
-						</th>
-						<th>
-							Room
-						</th>
-						<th>
-							Capacity
-						</th>
-						<th>
-							Seats Reserved
-						</th>
-						<th>
-							Status
-						</th>
-						<th>
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr className="border-b border-gray-600">
-						<td>2/16/2025</td>
-						<td>6:00AM-7:00AM</td>
-						<td>GK201</td>
-						<td>30/41</td>
-						<td>1 1, 1 2</td>
-						<td>Cancelled</td>
-						<td className="flex items-center gap-2">
-							<button className="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200">
-								Cancel
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									height="20px"
-									width="20px"
-									viewBox="0 -960 960 960"
-									className="flex-shrink-0"
-								>
-									<path
-									d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
-									fill="currentColor"
-									/>
-								</svg>
-							</button>
-						</td>
-					</tr>
-					
-					<tr>
-						<td>2/16/2025</td>
-						<td>6:00AM-7:00AM</td>
-						<td>GK201</td>
-						<td>30/41</td>
-						<td>1 1, 1 2</td>
-						<td>Cancelled</td>
-						<td className="flex items-center gap-2 ">
-							<button className="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200">
-								Cancel
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									height="20px"
-									width="20px"
-									viewBox="0 -960 960 960"
-									className="flex-shrink-0"
-								>
-									<path
-									d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
-									fill="currentColor"
-									/>
-								</svg>
-							</button>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>);
-}
 
 export function StudentProfile() {
 	const [student, setStudent] = useState(initialStudent);
