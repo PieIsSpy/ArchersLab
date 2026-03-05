@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Link
 } from "react-router-dom";
-import DatePicker from "react-datepicker";
+
 import "react-datepicker/dist/react-datepicker.css";
 
+<<<<<<< HEAD
 function PencilSvg () 
 {
 	return (<svg
@@ -652,6 +652,12 @@ function Reservations(){
 		</div>
 	);
 }
+=======
+// pages
+import { Home } from "./pages/Home.jsx";
+import { Profile } from "./pages/Profile.jsx";
+import { Reservations } from "./pages/Reservation.jsx";
+>>>>>>> 7417bb5d617de88f8cb2289aa72d3af19dab6d77
 
 export default function App() {
 	return ( 
