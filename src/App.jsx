@@ -303,10 +303,33 @@ function Profile() {
 	);
 }
 
+const days = 14;
+const rooms = 10;
+const tslots = 7;
+const seats = 44;
+
+const reservations = [];
+
+for (let i = 0; i < days; i++) {
+	reservations[i] = [];
+
+	for (let j = 0; j < rooms; j++) {
+		reservations[i][j] = [];
+
+		for (let k = 0; k < tslots; k++) {
+			reservations[i][j][k] = [];
+
+			for (let l = 0; l < seats; l++) {
+				reservations[i][j][k][l] = false; // if false seat is gay
+			}
+		}
+	}
+}
+
 function Reservations(){
 	// TODO
 	// maximum 5 reservations only per room (make an error message)
-	// reserve button will turn it (idk what color)
+	// reserve button will turn it (idk what color) (done)
 	// make hard coded data
 	// ensure that an error pops up if you clicked on a booked seat
 	// fix ui, everything must be centered add combobox for rooms
@@ -316,25 +339,94 @@ function Reservations(){
 	// bawal sundays to book kasi walang pasok
 	// dont forget the time ig... [day][room][seat][timeslot]
 	// <reservation done>
-
+	const timeSlots = [
+		"07:30-09:00", "09:15-10:45", "11:00-12:30", "12:45-14:15", 
+		"14:30-16:00", "16:15-17:45", "18:00-19:30",
+	];
+	const room = ["GK201", "GK202", "GK203", "GK204", "GK205", "GK206", "GK207", "GK208", "GK209", "GK210"]
+	const [selectedDate, setSelectedDate] = useState(()=>{
+		const today = new Date();
+		return today;
+	});
+	const [timeValue, setTimeValue] = useState(timeSlots[0]);
+	const [roomValue, setRoomValue] = useState(room[0])
 	const row = document.createElement("tr");
-	const [selectedDate, setSelectedDate] = useState(null);
-
 	const DateChange = (date) => {
 		setSelectedDate(date)
 	};
+	
 	const mindate = () => new Date();
 
-	const chosenSeatsList = []
+	const chosenSeatsList = []; //la mesa sa right
+
 	const selectedSeats = []; //stores a number
 
+	const table = document.getElementById("chosenSeatsTable");
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+	const selected = new Date(selectedDate);
+	selected.setHours(0, 0, 0, 0);
+	const dayIndex = Math.floor((selected - today) / (1000 * 60 * 60 * 24));
+
+	const roomIndex = room.indexOf(roomValue);
+	const timeIndex = timeSlots.indexOf(timeValue);
+
+	function reserveSeat(timeValue, roomValue, selectedSeats){
+		console.log(
+		`Date: ${selectedDate.toLocaleDateString()},
+		Time: ${timeValue},
+		Room: ${roomValue}, 
+		Seats: ${selectedSeats.join(", ")}`
+		);
+
+		selectedSeats.forEach(seatID => {
+			reservations[dayIndex][roomIndex][timeIndex][seatID] = true;
+		});
+	
+		refreshSeats(dayIndex, roomIndex, timeIndex);
+		
+		selectedSeats.splice(0, selectedSeats.length); // clear selected
+		chosenSeatsList.splice(0, chosenSeatsList.length);
+		if (table) table.innerHTML = "";
+	}
+
+	function refreshSeats() {
+		const today = new Date();
+		today.setHours(0,0,0,0);
+		const selected = new Date(selectedDate);
+		selected.setHours(0,0,0,0);
+		const dayIndex = Math.floor((selected - today) / (1000*60*60*24));
+		const roomIndex = room.indexOf(roomValue);
+		const timeIndex = timeSlots.indexOf(timeValue);
+		const seatStatus = reservations[dayIndex][roomIndex][timeIndex];
+		
+
+		for (let seatID = 0; seatID < seatStatus.length; seatID++) {
+        const element = document.getElementById(seatID);
+        if (!element) continue;
+
+        element.classList.remove("bg-blue-500");
+
+        if (seatStatus[seatID]) element.classList.add("bg-green-500");
+        else element.classList.remove("bg-green-500"); // clear if not reserved
+    }
+
+    const table = document.getElementById("chosenSeatsTable");
+    if (table) table.innerHTML = "";
+    selectedSeats.splice(0, selectedSeats.length);
+    chosenSeatsList.splice(0, chosenSeatsList.length);
+		
+	}
 
 	function selectSeat(seatID){
-		
+		if(chosenSeatsList.length >= 5){
+			alert("You can only reserve up to 5 seats.");
+			return;
+		}
 		const element = document.getElementById(seatID);
-		const table = document.getElementById("chosenSeatsTable");
 		const existingRow = document.getElementById(`seat-row-${seatID}`); //will appear sa chosen seats 
-
+		
+		const table = document.getElementById("chosenSeatsTable");
 		if (!element.classList.contains("bg-blue-500")){
 			element.classList.add("bg-blue-500");
 			selectedSeats.push(seatID);
@@ -343,7 +435,6 @@ function Reservations(){
 			row.className = "border-b border-gray-600";
 
 			row.id = `seat-row-${seatID}`; // unique id for chosen seats
-
 
 			chosenSeatsList.push({room: "GK201", seat: seatID});
 
@@ -381,8 +472,11 @@ function Reservations(){
 				selectedSeats.splice(selectedSeats.indexOf(seatID), 1);
 				row.remove();
 			};
-			
 			table.appendChild(row);
+
+			for(let i = 0 ; i<selectedSeats.length; i++){
+				console.log(selectedSeats[i]);
+			}
 		}
 		else {
 			element.classList.remove("bg-blue-500");
@@ -395,7 +489,7 @@ function Reservations(){
 	for(let i = 1; i<=5; i++){
 		const computerRow = []
 		for(let j = 1; j<=9; j++){
-			const seatID = 9*(i-1)+j
+			const seatID = 9*(i-1)+j   
 			computerRow.push(
 				
 				<button
@@ -417,21 +511,118 @@ function Reservations(){
 			</div>
 		);
 	}
-	
 
+	
+	const optionRoom = [];
+	for (let i = 0; i< room.length; i++){
+		optionRoom.push(
+			<option
+				key={i}
+				value={room[i]}
+				style={{ backgroundColor: "#e0e0e0", color: "#000" }}
+			>
+				{room[i]}
+			</option>
+		);
+	}
+
+	const timeSlotOptions = [];
+	for (let i = 0; i<timeSlots.length;i++){
+		timeSlotOptions.push(
+			<option
+				key={i}
+				value={timeSlots[i]}
+				style={{ backgroundColor: "#e0e0e0", color: "#000" }}
+			>
+				{timeSlots[i]}
+			</option>
+		)
+	}
+	
 	return(
-		<div className="flex flex-row items-center rounded-2xl gap-7">
+		<div className="flex flex-row justify-center items-center rounded-2xl gap-7">
 			<div className="flex items-center justify-center  flex flex-col">
-				<div className="w-[800px] h-[100px] flex items-center justify-center">
+				<div className="text-4xl google mt-5">
+					Reserve a room:
+				</div>
+
+				<div className="flex flex-row">
+					<div className="text-2xl google flex items-center justify-center">
+						Select a date:
+					</div>
+					<div className="w-[300px] h-[100px] flex items-center justify-center">
 						<DatePicker
-						className="p-2 border rounded text-center"
-						selected={selectedDate}
-						onChange={DateChange}
-						minDate={mindate()}
-						dateFormat="MM/dd/yyyy"
-						>
+							className="p-2 border rounded text-center"
+							selected={selectedDate}
+							onChange={(date) => {
+								setSelectedDate(date);
+								refreshSeats();
+							}}
+	
+							minDate={mindate()}
+							dateFormat="MM/dd/yyyy"
+							>
 						</DatePicker>
-					</div>       
+					</div>
+				</div>
+
+				<div className="text-2xl google flex items-center justify-center gap-4">
+					<label>
+						Room:  
+						<select
+						style={{
+							width: "100px",
+							height: "40px",
+							border: "2px solid #fff",
+							borderRadius: "8px",
+							padding: "6px 10px",
+							fontSize: "16px",
+						}}
+						value={roomValue}
+						onChange={(e) => {
+							const newRoom = e.target.value;
+							setRoomValue(newRoom);
+							const newRoomIndex = room.indexOf(newRoom);
+							const newTimeIndex = timeSlots.indexOf(timeValue);
+							refreshSeats();
+						}}
+						>
+						<option value="" style={{ backgroundColor: "#e0e0e0", color: "#000" }}>
+							Select
+						</option>
+						{optionRoom}
+						</select>
+					</label>
+
+					<label>
+						Timeslot:  
+						<select
+						style={{
+							width: "140px",
+							height: "40px",
+							border: "2px solid #fff",
+							borderRadius: "8px",
+							padding: "6px 10px",
+							fontSize: "16px",
+						}}
+						value={timeValue}
+						onChange={(e) => {
+							const newTime = e.target.value;
+							setTimeValue(newTime);
+							const newRoomIndex = room.indexOf(roomValue);
+							const newTimeIndex = timeSlots.indexOf(newTime);
+							refreshSeats();
+						}}
+						>
+						<option value="" style={{ backgroundColor: "#e0e0e0", color: "#000" }}>
+							Select
+						</option>
+							{timeSlotOptions}
+						</select>
+					</label>
+				</div>
+
+     
 				<div className="w-[800px] h-[600px] gray-67 rounded-2xl">
 					{computerCol}
 				</div>
@@ -450,7 +641,10 @@ function Reservations(){
 
 
 				<div className="p-4 border-t border-gray-600">
-					<button className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700">
+					<button 
+						className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700"
+						onClick={()=> reserveSeat(timeValue, roomValue, selectedSeats)}
+						>
 						Reserve
 					</button>
 				</div>
