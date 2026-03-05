@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import DatePicker from "react-datepicker";
 
-const days = 14;
+const days = 14; // you can only book 14 days after
 const rooms = 10;
 const tslots = 7;
-const seats = 44;
+const seats = 45;
 
 const reservations = [];
 
@@ -18,7 +18,7 @@ for (let i = 0; i < days; i++) {
 			reservations[i][j][k] = [];
 
 			for (let l = 0; l < seats; l++) {
-				reservations[i][j][k][l] = false; // if false seat is gay
+				reservations[i][j][k][l] = false; // if false seat is gray
 			}
 		}
 	}
@@ -52,8 +52,14 @@ export function Reservations(){
 	const DateChange = (date) => {
 		setSelectedDate(date)
 	};
+
+	useEffect(() => {
+		refreshSeats();
+		displayState();
+	}, [selectedDate, roomValue, timeValue]);
 	
 	const mindate = () => new Date();
+	
 
 	const chosenSeatsList = []; //la mesa sa right
 
@@ -64,48 +70,50 @@ export function Reservations(){
 	today.setHours(0, 0, 0, 0);
 	const selected = new Date(selectedDate);
 	selected.setHours(0, 0, 0, 0);
-	const dayIndex = Math.floor((selected - today) / (1000 * 60 * 60 * 24));
+	const dayIndex = Math.floor((selected - today) / (1000 * 60 * 60 * 24)); //subtracts current - reservation date
 
 	const roomIndex = room.indexOf(roomValue);
 	const timeIndex = timeSlots.indexOf(timeValue);
 
-	function reserveSeat(timeValue, roomValue, selectedSeats){
-		console.log(
-		`Date: ${selectedDate.toLocaleDateString()},
-		Time: ${timeValue},
-		Room: ${roomValue}, 
-		Seats: ${selectedSeats.join(", ")}`
-		);
+	const maxdate = () => {
+		return today.setDate(today.getDate() + 13);
+	}
 
+	function reserveSeat(timeValue, roomValue, selectedSeats){
 		selectedSeats.forEach(seatID => {
-			reservations[dayIndex][roomIndex][timeIndex][seatID] = true;
+			reservations[dayIndex][roomIndex][timeIndex][seatID-1] = true;
 		});
+
+		const seatList = selectedSeats.join(", ");
+		console.log(
+			`
+			User have reserved Seat for\n
+			Date: ${selectedDate.toLocaleDateString()}
+			Time: ${timeValue},
+			Room: ${roomValue}, 
+			Seat: ${seatList},
+			`
+		);
 	
 		refreshSeats(dayIndex, roomIndex, timeIndex);
-		
+
 		selectedSeats.splice(0, selectedSeats.length); // clear selected
 		chosenSeatsList.splice(0, chosenSeatsList.length);
 		if (table) table.innerHTML = "";
+		
 	}
 
 	function refreshSeats() {
-		const today = new Date();
-		today.setHours(0,0,0,0);
-		const selected = new Date(selectedDate);
-		selected.setHours(0,0,0,0);
-		const dayIndex = Math.floor((selected - today) / (1000*60*60*24));
-		const roomIndex = room.indexOf(roomValue);
-		const timeIndex = timeSlots.indexOf(timeValue);
 		const seatStatus = reservations[dayIndex][roomIndex][timeIndex];
-		
+	
 
-		for (let seatID = 0; seatID < seatStatus.length; seatID++) {
+		for (let seatID = 1; seatID <= seatStatus.length; seatID++) {
         const element = document.getElementById(seatID);
         if (!element) continue;
 
         element.classList.remove("bg-blue-500");
 
-        if (seatStatus[seatID]) element.classList.add("bg-green-500");
+        if (seatStatus[seatID-1]) element.classList.add("bg-green-500");
         else element.classList.remove("bg-green-500");
     }
 
@@ -113,11 +121,40 @@ export function Reservations(){
     if (table) table.innerHTML = "";
     selectedSeats.splice(0, selectedSeats.length);
     chosenSeatsList.splice(0, chosenSeatsList.length);
-		
+
 	}
 
+	function displayState(){
+
+		let seatMatrixConsole = "";
+		const reservedSeatList = reservations[dayIndex][roomIndex][timeIndex]
+		for(let i = 0; i<5; i++){
+			for(let j = 0; j<9; j++){
+				if(reservedSeatList[9*(i)+ j] === false){
+					seatMatrixConsole += " - ";
+				}
+				else{
+					seatMatrixConsole += " X ";
+				}
+				
+			}
+			seatMatrixConsole += "\n";
+
+		}
+		console.log(
+			`currently looking at:
+			Date: ${selectedDate.toLocaleDateString()}
+			Time: ${timeValue},
+			Room: ${roomValue}, 
+
+			Reserved seats: \n${seatMatrixConsole}
+			`
+		);
+	}
+	
+
 	function selectSeat(seatID){
-		if(chosenSeatsList.length >= 5){
+		if(chosenSeatsList.length >= 100000){
 			alert("You can only reserve up to 5 seats.");
 			return;
 		}
@@ -134,17 +171,22 @@ export function Reservations(){
 
 			row.id = `seat-row-${seatID}`; // unique id for chosen seats
 
-			chosenSeatsList.push({room: "GK201", seat: seatID});
+			chosenSeatsList.push({room: roomValue, seat: seatID});
 
 			row.innerHTML = 
 				`
 					<td class="font-medium google text-center">
-						GK201:
+						${roomValue}:
 					</td>
 
 					<td class="text-center google">
 						Seat #${seatID}
 					</td>
+
+					<td class="text-center google">
+						Time: ${timeSlots[timeIndex]}
+					</td>
+
 
 					<td class="px-2 py-1 text-right google">
 						<button class="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200">
@@ -171,10 +213,6 @@ export function Reservations(){
 				row.remove();
 			};
 			table.appendChild(row);
-
-			for(let i = 0 ; i<selectedSeats.length; i++){
-				console.log(selectedSeats[i]);
-			}
 		}
 		else {
 			element.classList.remove("bg-blue-500");
@@ -254,10 +292,10 @@ export function Reservations(){
 							selected={selectedDate}
 							onChange={(date) => {
 								setSelectedDate(date);
-								refreshSeats();
 							}}
 	
 							minDate={mindate()}
+							maxDate={maxdate()}
 							dateFormat="MM/dd/yyyy"
 							>
 						</DatePicker>
@@ -278,16 +316,13 @@ export function Reservations(){
 						}}
 						value={roomValue}
 						onChange={(e) => {
+							
 							const newRoom = e.target.value;
 							setRoomValue(newRoom);
 							const newRoomIndex = room.indexOf(newRoom);
 							const newTimeIndex = timeSlots.indexOf(timeValue);
-							refreshSeats();
 						}}
 						>
-						<option value="" style={{ backgroundColor: "#e0e0e0", color: "#000" }}>
-							Select
-						</option>
 						{optionRoom}
 						</select>
 					</label>
@@ -305,16 +340,13 @@ export function Reservations(){
 						}}
 						value={timeValue}
 						onChange={(e) => {
+							
 							const newTime = e.target.value;
-							setTimeValue(newTime);
+							setTimeValue(e.target.value);
 							const newRoomIndex = room.indexOf(roomValue);
 							const newTimeIndex = timeSlots.indexOf(newTime);
-							refreshSeats();
 						}}
 						>
-						<option value="" style={{ backgroundColor: "#e0e0e0", color: "#000" }}>
-							Select
-						</option>
 							{timeSlotOptions}
 						</select>
 					</label>
