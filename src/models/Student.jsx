@@ -11,16 +11,20 @@ export class Student {
     course: string
     about: string
   */
-  constructor(name, id, bio, email, college, course, about) {
+  constructor(name, id, bio, email, college, program, about) {
     this.name = name;
+    this.nickname = "";
     this.id = id;
     this.bio = bio;
     this.email = email;
     this.college = college;
-    this.course = course;
+    this.program = program;
     this.about = about;
     this.password = "password";
-    this.reservations = [new Reservation(new Date("2025-2-16"), "6:00AM-7:00AM", "GK201", [11, 12])];
+    this.reservations = [
+      new Reservation(new Date("2025-2-16"), "6:00AM-7:00AM", "GK201", [11, 12], "Upcoming"),
+      new Reservation(new Date("2025-2-16"), "6:00AM-7:00AM", "GK201", [11, 12], "Cancelled"),
+    ];
   }
 }
 
