@@ -1,5 +1,6 @@
 import { useState, useEffect} from "react";
 import DatePicker from "react-datepicker";
+import { NavLink } from "react-router-dom";
 
 const days = 14; // you can only book 14 days after
 const rooms = 10;
@@ -113,8 +114,8 @@ export function Reservations(){
 
         element.classList.remove("bg-blue-500");
 
-        if (seatStatus[seatID-1]) element.classList.add("bg-green-500");
-        else element.classList.remove("bg-green-500");
+        if (seatStatus[seatID-1]) element.classList.add("gray-booked");
+        else element.classList.remove("gray-booked");
     }
 
     const table = document.getElementById("chosenSeatsTable");
@@ -154,7 +155,7 @@ export function Reservations(){
 	
 
 	function selectSeat(seatID){
-		if(chosenSeatsList.length >= 100000){
+		if(chosenSeatsList.length >= 5){
 			alert("You can only reserve up to 5 seats.");
 			return;
 		}
@@ -175,20 +176,13 @@ export function Reservations(){
 
 			row.innerHTML = 
 				`
-					<td class="font-medium google text-center">
-						${roomValue}:
-					</td>
-
-					<td class="text-center google">
+					<td class="text-left google m-10">
 						Seat #${seatID}
 					</td>
 
-					<td class="text-center google">
-						Time: ${timeSlots[timeIndex]}
-					</td>
 
 
-					<td class="px-2 py-1 text-right google">
+					<td class="w-1/3  py-1 google">
 						<button class="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200">
 							Remove
 							<svg
@@ -276,109 +270,145 @@ export function Reservations(){
 	}
 	
 	return(
-		<div className="flex flex-row justify-center items-center rounded-2xl gap-7">
-			<div className="flex items-center justify-center  flex flex-col">
-				<div className="text-4xl google mt-5">
-					Reserve a room:
-				</div>
-
-				<div className="flex flex-row">
-					<div className="text-2xl google flex items-center justify-center">
-						Select a date:
-					</div>
-					<div className="w-[300px] h-[100px] flex items-center justify-center">
-						<DatePicker
-							className="p-2 border rounded text-center"
-							selected={selectedDate}
-							onChange={(date) => {
-								setSelectedDate(date);
-							}}
-	
-							minDate={mindate()}
-							maxDate={maxdate()}
-							dateFormat="MM/dd/yyyy"
-							>
-						</DatePicker>
-					</div>
-				</div>
-
-				<div className="text-2xl google flex items-center justify-center gap-4">
-					<label>
-						Room:  
-						<select
-						style={{
-							width: "100px",
-							height: "40px",
-							border: "2px solid #fff",
-							borderRadius: "8px",
-							padding: "6px 10px",
-							fontSize: "16px",
-						}}
-						value={roomValue}
-						onChange={(e) => {
-							
-							const newRoom = e.target.value;
-							setRoomValue(newRoom);
-							const newRoomIndex = room.indexOf(newRoom);
-							const newTimeIndex = timeSlots.indexOf(timeValue);
-						}}
-						>
-						{optionRoom}
-						</select>
-					</label>
-
-					<label>
-						Timeslot:  
-						<select
-						style={{
-							width: "140px",
-							height: "40px",
-							border: "2px solid #fff",
-							borderRadius: "8px",
-							padding: "6px 10px",
-							fontSize: "16px",
-						}}
-						value={timeValue}
-						onChange={(e) => {
-							
-							const newTime = e.target.value;
-							setTimeValue(e.target.value);
-							const newRoomIndex = room.indexOf(roomValue);
-							const newTimeIndex = timeSlots.indexOf(newTime);
-						}}
-						>
-							{timeSlotOptions}
-						</select>
-					</label>
-				</div>
-
-     
-				<div className="w-[800px] h-[600px] gray-67 rounded-2xl">
-					{computerCol}
-				</div>
+		<div className="flex flex-col justify-center items-center rounded-2xl gap-8">
+			<div className="text-4xl google mt-5">
+				Reserve a room: 					
 			</div>
+			<div className="flex flex-row gap-8">
+				<div className="flex flex-row justify-center items-center rounded-2xl gap-8">
+					<div className="flex items-center justify-center  flex flex-col gap-4">
+						<div className="gray-67 justify-center items-center rounded-2xl text-2xl google flex items-center justify-center gap-8 px-4">
+							<div className="gap-2 flex flex-row justify-center items-center">
+								<div className="text-2xl google flex items-center justify-center">
+									Date:
+								</div>
+								<div className="w-[150px] h-[100px] flex items-center justify-center">
+									<DatePicker
+										className="gray-89 text-white w-full p-2 rounded-xl text-center"
+										selected={selectedDate}
+										onChange={(date) => {
+											setSelectedDate(date);
+										}}
+										
+										minDate={mindate()}
+										maxDate={maxdate()}
+										dateFormat="MM/dd/yyyy"
+										>
+									</DatePicker>
+								</div>
+							</div>
+
+							<label className="gap-3 flex flex-row justify-center items-center">
+								<div>
+									Room:  
+								</div>
+								
+								<select
+								className = "gray-89 text-white"
+								style={{
+									width: "120px",
+									height: "50px",
+									borderRadius: "8px",
+									padding: "6px 10px",
+									fontSize: "22px",
+								}}
+								value={roomValue}
+								onChange={(e) => {
+									
+									const newRoom = e.target.value;
+									setRoomValue(newRoom);
+									const newRoomIndex = room.indexOf(newRoom);
+									const newTimeIndex = timeSlots.indexOf(timeValue);
+								}}
+								>
+								{optionRoom}
+								</select>
+							</label>
+
+							<label className="gap-3 flex flex-row justify-center items-center">
+								<div>
+									Timeslot:  
+								</div>
+								<select
+								className = "gray-89 text-white"
+								style={{
+									width: "180px",
+									height: "50px",
+									borderRadius: "8px",
+									padding: "6px 10px",
+									fontSize: "22px",
+								}}
+								value={timeValue}
+								onChange={(e) => {
+									
+									const newTime = e.target.value;
+									setTimeValue(e.target.value);
+									const newRoomIndex = room.indexOf(roomValue);
+									const newTimeIndex = timeSlots.indexOf(newTime);
+								}}
+								>
+									{timeSlotOptions}
+								</select>
+							</label>
+						</div>
+
 			
-			<div className="w-[400px] h-[600px] gray-67 justify-center items-center rounded-2xl">
-				<div className="flex justify-center py-3 text-xl font-bold google border-b border-gray-600">
-					Chosen Seats:
+						<div className="w-[800px] h-[600px] gray-67 rounded-2xl">
+							{computerCol}
+						</div>
+					</div>
 				</div>
 
-				{/* the list of chosen seats go here*/}
-				<div className="[400px] h-[470px] overflow-auto justify-center">
-					<table id="chosenSeatsTable" className="w-full text-left border-collapse text-left">
-					</table>
-				</div>
+				<div className="w-[400px] h-[715px] gray-67 justify-center items-center rounded-2xl">
+					<div className="flex justify-center py-3 text-xl font-bold google border-b-2 border-gray-600 mx-auto w-90">
+						Chosen Seats
+					</div>
+
+					<div className="flex justify-center items-center py-3 text-xl font-bold google border-b border-gray-600 gap-4  mx-auto w-90">
+						<span>
+							Room<br></br>
+							<div className="font-normal">
+								{roomValue}
+							</div>
+						</span>
+
+						<div className="h-12 w-px bg-gray-500"></div>
+						
+						<span>
+							Timeslot<br></br>
+							<div className="font-normal">
+								{timeSlots[timeIndex]}
+							</div>
+						</span>
+
+						<div className="h-12 w-px bg-gray-500"></div>
+
+						<span>
+							Date<br></br>
+							<div className="font-normal">
+								{selectedDate.toLocaleDateString()}
+							</div>
+						</span>
+					</div>
+					
+					{/* the list of chosen seats go here*/}
+					<div className="[400px] h-[500px] overflow-auto justify-center">
+						<table id="chosenSeatsTable" className=" w-[90%] mx-auto">
+						</table>
+					</div>
 
 
-				<div className="p-4 border-t border-gray-600">
-					<button 
-						className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700"
-						onClick={()=> reserveSeat(timeValue, roomValue, selectedSeats)}
-						>
-						Reserve
-					</button>
+					<div className="flex justify-center items-center py-3 text-xl font-bold google border-t border-gray-600 gap-4  mx-auto w-90">
+						<button 
+							className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 hover:scale-105"
+							onClick={()=> reserveSeat(timeValue, roomValue, selectedSeats)}
+							>
+							Reserve
+						</button>
+					</div>
 				</div>
 			</div>
+
 		</div>
 	);
 }
