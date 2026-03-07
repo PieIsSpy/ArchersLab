@@ -2,7 +2,7 @@ import { initialStudent } from "../models/Student";
 
 function ListReservations({student}) {
     return student.reservations.map((res, index) => (
-        <tr key={`${res.date}-${res.time}`} className="border-b border-gray-600">
+        <tr key={`${res.date}-${res.time}`} className="border-t-2 border-gray-67">
             <td>{res.date.toLocaleDateString()}</td>
             <td>{res.time}</td>
             <td>{res.room}</td>

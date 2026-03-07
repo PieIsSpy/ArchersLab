@@ -161,7 +161,7 @@ export function Profile() {
                 </button>
             </div>
 			{showFirst ? (
-				<div className="rounded-2xl pb-2 gray-67 flex flex-col items-center w-2/3">
+				<div className="rounded-2xl px-4 pb-2 gray-67 flex flex-col items-center w-2/3">
 					<div className="text-3xl mb-6 google font-bold mt-4">
 						Reservations
 					</div>

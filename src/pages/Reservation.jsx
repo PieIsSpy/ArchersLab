@@ -98,8 +98,7 @@ export function Reservations(){
 	
 		refreshSeats(dayIndex, roomIndex, timeIndex);
 
-		selectedSeats.splice(0, selectedSeats.length); // clear selected
-		chosenSeatsList.splice(0, chosenSeatsList.length);
+		selectedSeats.splice(0, selectedSeats.length);
 		if (table) table.innerHTML = "";
 		
 	}
@@ -112,7 +111,7 @@ export function Reservations(){
         const element = document.getElementById(seatID);
         if (!element) continue;
 
-        element.classList.remove("bg-blue-500");
+        element.classList.remove("blue");
 
         if (seatStatus[seatID-1]) element.classList.add("gray-booked");
         else element.classList.remove("gray-booked");
@@ -155,32 +154,28 @@ export function Reservations(){
 	
 
 	function selectSeat(seatID){
-		if(chosenSeatsList.length >= 5){
-			alert("You can only reserve up to 5 seats.");
-			return;
-		}
 		const element = document.getElementById(seatID);
 		const existingRow = document.getElementById(`seat-row-${seatID}`); //will appear sa chosen seats 
 		
 		const table = document.getElementById("chosenSeatsTable");
-		if (!element.classList.contains("bg-blue-500")){
-			element.classList.add("bg-blue-500");
+		if (!element.classList.contains("blue")){
+			if(selectedSeats.length >= 5){
+				alert("You can only reserve up to 5 seats.");
+				return;
+			}
+			element.classList.add("blue");
 			selectedSeats.push(seatID);
 
 			const row = document.createElement("tr");
 			row.className = "border-b border-gray-600";
 
-			row.id = `seat-row-${seatID}`; // unique id for chosen seats
-
-			chosenSeatsList.push({room: roomValue, seat: seatID});
+			row.id = `seat-row-${seatID}`;
 
 			row.innerHTML = 
 				`
 					<td class="text-left google m-10">
 						Seat #${seatID}
 					</td>
-
-
 
 					<td class="w-1/3  py-1 google">
 						<button class="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200">
@@ -202,14 +197,14 @@ export function Reservations(){
 				`;
 			const removeButton = row.querySelector("button");
 			removeButton.onclick = () => {
-				element.classList.remove("bg-blue-500");
+				element.classList.remove("blue");
 				selectedSeats.splice(selectedSeats.indexOf(seatID), 1);
 				row.remove();
 			};
 			table.appendChild(row);
 		}
 		else {
-			element.classList.remove("bg-blue-500");
+			element.classList.remove("blue");
 			selectedSeats.splice(selectedSeats.indexOf(seatID), 1);
 			if(existingRow) existingRow.remove();
 		}
@@ -226,7 +221,7 @@ export function Reservations(){
 					id={seatID} 
 					onClick={() => selectSeat(seatID)}
 					className={`
-						w-16 h-12 hover:bg-gray-600 flex flex-col items-center justify-center my-9 
+						w-16 h-12 hover:bg-gray-500 flex flex-col items-center justify-center my-9 
 						${j % 3 === 0 ? "mr-10" : "mr-0"}
 						`}>
 					<h1 className="m-0 text-xs">{9*(i-1)+j}</h1>
@@ -400,7 +395,7 @@ export function Reservations(){
 
 					<div className="flex justify-center items-center py-3 text-xl font-bold google border-t border-gray-600 gap-4  mx-auto w-90">
 						<button 
-							className="w-full py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 hover:scale-105"
+							className="w-full py-3 rounded-xl blue text-white font-bold hover:scale-105 transition-all "
 							onClick={()=> reserveSeat(timeValue, roomValue, selectedSeats)}
 							>
 							Reserve
