@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { currentUser } from "../models/Student";
+import { currentUser } from "../models/User";
 import { PencilSvg } from "../components/PencilSvg";
 import { StudentReservationTable } from "../components/ReservationTable";
 
@@ -168,23 +168,26 @@ export function Profile() {
                 <div className="w-full px-2 google">
                     <StudentProfile />
                 </div>
-                <button 
-                    className="border p-2 rounded-xl flex items-center transition-transform transform hover:scale-103
-                    transition transform active:scale-95 "
-                    onClick={handleToggle}>
-                    {showFirst ? (
-						<>
-							<PencilSvg /> Edit Profile
-						</>
-						
-					) : (
-						<>
-							<PencilSvg /> Cancel Editing
-						</>
-					)}
-                </button>
+				{!(currentUser.isAdmin) ? (
+					<button 
+						className="border p-2 rounded-xl flex items-center transition-transform transform hover:scale-103
+						transition transform active:scale-95 "
+						onClick={handleToggle}>
+						{showFirst ? (
+							<>
+								<PencilSvg /> Edit Profile
+							</>
+							
+						) : (
+							<>
+								<PencilSvg /> Cancel Editing
+							</>
+						)}
+					</button>
+				) : null}
+
             </div>
-			{showFirst ? (
+			{showFirst && !(currentUser.isAdmin) ? (
 				<div className="rounded-2xl px-4 pb-2 gray-67 flex flex-col items-center w-2/3">
 					<div className="text-3xl mb-6 google font-bold mt-4">
 						Reservations

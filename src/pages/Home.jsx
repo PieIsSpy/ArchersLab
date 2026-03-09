@@ -1,5 +1,5 @@
 import { Clock } from "../components/Clock";
-import { currentUser } from "../models/Student";
+import { currentUser } from "../models/User";
 import { StudentReservationTable } from "../components/ReservationTable";
 
 export function Home () {
