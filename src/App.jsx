@@ -11,6 +11,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Home } from "./pages/Home.jsx";
 import { Profile } from "./pages/Profile.jsx";
 import { Reservations } from "./pages/Reservation.jsx";
+import { ChangePassword } from "./pages/ChangePassword.jsx";
+import { DeleteAccount } from "./pages/DeleteAccount";
 
 export default function App() {
 	return ( 
@@ -24,10 +26,10 @@ export default function App() {
 					<a className="ml-10 text-l font" href="/">
 							Dashboard
 					</a>
-					<a className="ml-10 text-l font" href="profile">
+					<a className="ml-10 text-l font" href="Profile">
 							Profile
 					</a>
-					<a className="ml-10 text-l font" href="reservations">
+					<a className="ml-10 text-l font" href="Reservations">
 							Reservations
 					</a>
 					<a className="ml-10 text-l font">
@@ -39,8 +41,10 @@ export default function App() {
 				</nav>
 				<Routes>
 					<Route path="/" element={<Home />} />
-					<Route path="/profile" element={<Profile />} />
+					<Route path="/Profile" element={<Profile />} />
 					<Route path="/Reservations" element={<Reservations />} />
+					<Route path="/ChangePassword" element={<ChangePassword />} />
+					<Route path="/DeleteAccount" element={<DeleteAccount />} />
 				</Routes>
 			</div>
 		</Router>
