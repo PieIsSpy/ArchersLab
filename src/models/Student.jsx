@@ -29,7 +29,7 @@ export class Student {
   }
 }
 
-export const initialStudent = new Student(
+export const currentUser = new Student(
   "Karl Omandac",
   "06706789",
   "I invoke the fifth amendment.",

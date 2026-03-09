@@ -1,6 +1,6 @@
-import { initialStudent } from "../models/Student";
+import { currentUser } from "../models/Student";
 
-function ListReservations({student}) {
+function ListStudentReservations({student}) {
     return student.reservations.map((res, index) => (
         <tr key={`${res.date}-${res.time}`} className="border-b border-gray-600">
             <td>{res.date.toLocaleDateString()}</td>
@@ -32,7 +32,7 @@ function ListReservations({student}) {
     ))
 }
 
-export function ReservationTable() {
+export function StudentReservationTable() {
     return (
         <table className="table-auto w-full text-left">
             <thead className="font-bold border-b border-gray-600">
@@ -60,7 +60,7 @@ export function ReservationTable() {
                 </tr>
             </thead>
             <tbody>
-                <ListReservations student={initialStudent}/>
+                <ListStudentReservations student={currentUser}/>
             </tbody>
         </table>
     )
