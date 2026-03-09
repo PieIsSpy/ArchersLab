@@ -10,7 +10,7 @@ export function Home () {
             <h2 className="ml-auto text-gray-500 text-l"><Clock /></h2>
         </div>
         <h2 className="mt-12 font-black google text-4xl">Current Reservations:</h2>
-        <div className="mt-4 pl-4 pr-4 rounded-2xl gray-67 shadow-lg">
+        <div className="px-4 mt-4 rounded-2xl gray-67 shadow-lg">
             <StudentReservationTable/>
         </div>
     </div>);

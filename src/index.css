@@ -17,6 +17,10 @@ body {
 	color: rgb(197, 197, 197);
 }
 
+.border-gray-67 {
+	border-color:rgb(50, 50, 53);
+}
+
 .gray-89 {
 	background-color:rgb(46, 46, 49); 
 	color: rgb(197, 197, 197);
@@ -27,4 +31,12 @@ th, td {
 	padding-bottom:18px;
 	padding-left:6px;
 	padding-right:6px;
+}
+
+.gray-booked{
+	background-color: #36582e;
+}
+
+.blue{
+	background-color: #145b92;
 }
