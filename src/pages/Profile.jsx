@@ -141,7 +141,22 @@ export function AccountSettings() {
 							</button>
 						</Link>
 					</div>
-				) : null
+				) : (
+					<div className="w-1/2 px-[10px] py-[6px] border-2 border-[#ccc] rounded-md text-sm font-['Inter',sans-serif] box-border">
+						<div className="text-xlgoogle font-bold">
+							Create Admin Account
+						</div>
+						Create an admin account for lab technicians
+						<Link to="/DeleteAccount">
+							<button 
+								className="mt-[3px] px-[6px] py-[3px] bg-[#C5C5C5] text-black
+								rounded-md flex justify-center items-center
+								active:scale-95 transition-transform transform hover:scale-103">
+								Create
+							</button>
+						</Link>
+					</div>
+				)
 			}
 			
 		</div>
