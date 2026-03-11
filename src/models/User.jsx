@@ -1,4 +1,4 @@
-export class Student {
+export class User {
   /*
     Parameters:
     name: string
@@ -29,7 +29,7 @@ export class Student {
 }
 
 let users = [
-  new Student(
+  new User(
     "Karl Omandac",
     "06706789",
     "I invoke the fifth amendment.",

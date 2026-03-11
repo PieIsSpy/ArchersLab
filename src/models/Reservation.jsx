@@ -8,8 +8,8 @@ export class Reservation {
 		room: string
 		seats: int[5]
 	*/
-	constructor(student, date, time, room, seats, status, isAnnonymous) {
-		this.student = student;
+	constructor(user, date, time, room, seats, status, isAnnonymous) {
+		this.user = user;
 		this.date = date;
 		this.time = time;
 		this.room = room;
