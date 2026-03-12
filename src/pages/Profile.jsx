@@ -126,17 +126,22 @@ export function AccountSettings() {
 			</div>
 
 			{
-				!(currentUser.isAdmin) ? (
 					<div className="w-1/2 px-[10px] py-[6px] border-2 border-[#ccc] rounded-md text-sm font-['Inter',sans-serif] box-border">
 						<div className="text-xlgoogle font-bold">
+				<div className="w-1/2 px-[10px] py-[6px] gray-89 rounded-xl text-sm font-['Inter',sans-serif] box-border">
+					<div className="my-2 text-xlgoogle font-bold">
 							Delete Account
 						</div>
 						Action is permanent.
+				<p className="mt-2">Action is permanent.</p>
+				<br/>
 						<Link to="/DeleteAccount">
 							<button 
 								className="mt-[3px] px-[6px] py-[3px] bg-[#C5C5C5] text-black
 								rounded-md flex justify-center items-center
 								active:scale-95 transition-transform transform hover:scale-103">
+								className="px-[15px] py-[5px] mb-2
+								bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 hover:bg-[#7f0202] active:shadow-inner select-none">
 								Delete
 							</button>
 						</Link>

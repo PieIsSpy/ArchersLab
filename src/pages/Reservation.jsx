@@ -388,7 +388,8 @@ export function Reservations(){
 
 					<div className="flex justify-center items-center py-3 text-xl font-bold google border-t border-gray-600 gap-4  mx-auto w-90">
 						<button 
-							className="w-full py-3 rounded-xl blue text-white font-bold hover:scale-105 transition-all "
+							className="w-full font-bold
+							bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:bg-[#02497F] active:shadow-inner select-none"
 							onClick={()=> reserveSeat(timeValue, roomValue, selectedSeats)}
 							>
 							Reserve
