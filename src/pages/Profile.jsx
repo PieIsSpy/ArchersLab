@@ -4,6 +4,11 @@ import { currentUser } from "../models/User";
 import { PencilSvg } from "../components/PencilSvg";
 import { StudentReservationTable } from "../components/ReservationTable";
 
+const formelement =
+  "w-full px-[10px] py-[6px] rounded-xl gray-89 text-sm font-['Inter',sans-serif] box-border " +
+  "focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]" +
+  " selection:bg-blue-300 selection:text-black";
+
 const fields = [
   { label: "NAME", key: "name", editable: false, display: true},
   { label: "ID", key: "id", editable: false, display: true},
@@ -20,12 +25,14 @@ export function StudentProfile() {
 		<div className="space-y-2">
 			{fields.map((field) => (
 				field.display ? (
-					<div
-						key={field.key}
-						className="my-2 rounded-2xl gray-89 p-2 transition-transform transform hover:scale-103"
-					>
-						<h2 className="font-bold text-xs">{field.label}</h2>
-						<h1>{student[field.key]}</h1>
+					<div className="m-3">
+						<h2 className="font-bold text-xs mb-1">{field.label}</h2>
+						<div
+							key={field.key}
+							className="rounded-xl gray-89 p-2 transition-transform transform hover:scale-103"
+						>
+							<h1>{student[field.key]}</h1>
+						</div>
 					</div>
 				):
 				null
@@ -39,67 +46,66 @@ export function StudentForm() {
 		<form className="w-full px-4">
 			<div className="flex gap-[15px]">
 				<div className="mb-3 w-full flex-1">
-					<label className="block font-bold text-xs mb-1">Name</label>
+					<label className="block font-bold text-xs mb-1">NAME</label>
 					<input 
-					className="w-full px-[10px] py-[6px] border-2 border-[#ccc] rounded-md text-sm font-['Inter',sans-serif] box-border"
+					className={`${formelement}`}
 					type="text" value={currentUser.name}></input>
 				</div>
 				<div className="mb-3 w-full flex-1">
-					<label className="block font-bold text-xs mb-1">Nickname</label>
+					<label className="block font-bold text-xs mb-1">DISPLAY NAME</label>
 					<input 
-					className="w-full px-[10px] py-[6px] border-2 border-[#ccc] rounded-md text-sm font-['Inter',sans-serif] box-border"
+					className={`${formelement}`}
 					type="text" value={currentUser.nickname}></input>
 				</div>
 			</div>
 
 			<div className="flex gap-[15px]">
 				<div className="mb-3 w-full flex-1">
-					<label className="block font-bold text-xs mb-1">Student ID</label>
+					<label className="block font-bold text-xs mb-1">STUDENT ID</label>
 					<input 
-					className="w-full px-[10px] py-[6px] border-2 border-[#ccc] rounded-md text-sm font-['Inter',sans-serif] box-border"
+					className={`${formelement}`}
 					type="text" value={currentUser.id}></input>
 				</div>
 				<div className="mb-3 w-full flex-1">
-					<label className="block font-bold text-xs mb-1">Email</label>
+					<label className="block font-bold text-xs mb-1">EMAIL</label>
 					<input 
-					className="w-full px-[10px] py-[6px] border-2 border-[#ccc] rounded-md text-sm font-['Inter',sans-serif] box-border"
+					className={`${formelement}`}
 					type="text" value={currentUser.email}></input>
 				</div>
 			</div>
 
 			<div className="mb-3 w-full">
-				<label className="block font-bold text-xs mb-1">College</label>
+				<label className="block font-bold text-xs mb-1">COLLEGE</label>
 				<input 
-				className="w-full px-[10px] py-[6px] border-2 border-[#ccc] rounded-md text-sm font-['Inter',sans-serif] box-border"
+					className={`${formelement}`}
 				type="text" value={currentUser.college}></input>
 			</div>
 
 			<div className="mb-3 w-full">
-				<label className="block font-bold text-xs mb-1">Program</label>
+				<label className="block font-bold text-xs mb-1">PROGRAM</label>
 				<input 
-				className="w-full px-[10px] py-[6px] border-2 border-[#ccc] rounded-md text-sm font-['Inter',sans-serif] box-border"
+					className={`${formelement}`}
 				type="text" value={currentUser.program}></input>
 			</div>
 
 			<div className="mb-3 w-full">
-				<label className="block font-bold text-xs mb-1">Bio</label>
+				<label className="block font-bold text-xs mb-1">BIO</label>
 				<input 
-				className="w-full px-[10px] py-[6px] border-2 border-[#ccc] rounded-md text-sm font-['Inter',sans-serif] box-border"
+					className={`${formelement}`}
 				type="text" value={currentUser.bio}></input>
 			</div>
 
 			<div className="mb-3 w-full">
-				<label className="block font-bold text-xs mb-1">Description</label>
+				<label className="block font-bold text-xs mb-1">DESCRIPTION</label>
 				<textarea rows="2" 
-				className="w-full px-[10px] py-[6px] border-2 border-[#ccc] rounded-md text-sm font-['Inter',sans-serif] box-border"
+					className={`${formelement}`}
 				type="text" value={currentUser.about}></textarea>
 			</div>
 
-			<div className="flex justify-center mt-4">
+			<div className="flex justify-center mt-4 mb-3">
 				<button 
-					className=" px-[10px] py-[6px] bg-[#C5C5C5] text-black
-					 rounded-md flex justify-center items-center
-					 active:scale-95 transition-transform transform hover:scale-103">
+					className=" px-[10px] py-[6px]
+						bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none">
 					Save Changes
 				</button>
 			</div>
@@ -109,43 +115,39 @@ export function StudentForm() {
 
 export function AccountSettings() {
 	return (
-		<div className="flex gap-5 w-full m-5 px-4">
-			<div className="w-1/2 px-[10px] py-[6px] border-2 border-[#ccc] rounded-md text-sm font-['Inter',sans-serif] box-border">
-				<div className="text-xlgoogle font-bold">
+		<div className="w-full flex gap-5 m-5 px-4">
+			<div className="w-1/2 px-[10px] py-[6px] gray-89 rounded-xl text-sm font-['Inter',sans-serif] box-border">
+				<div className="my-2 text-xlgoogle font-bold">
 					Change Password
 				</div>
-				Update your password.
+				<p className="mt-2">Update your password.</p>
+				<br/>
 				<Link to="/ChangePassword">
 					<button 
-						className="mt-[3px] px-[6px] py-[3px] bg-[#C5C5C5] text-black
-						rounded-md flex justify-center items-center
-						active:scale-95 transition-transform transform hover:scale-103">
+						className="px-[15px] py-[5px] mb-2
+						bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none">
 						Update
 					</button>
 				</Link>
 			</div>
 
 			{
-					<div className="w-1/2 px-[10px] py-[6px] border-2 border-[#ccc] rounded-md text-sm font-['Inter',sans-serif] box-border">
-						<div className="text-xlgoogle font-bold">
+				// !(currentUser.isAdmin) ? (
 				<div className="w-1/2 px-[10px] py-[6px] gray-89 rounded-xl text-sm font-['Inter',sans-serif] box-border">
 					<div className="my-2 text-xlgoogle font-bold">
 							Delete Account
 						</div>
-						Action is permanent.
 				<p className="mt-2">Action is permanent.</p>
 				<br/>
 						<Link to="/DeleteAccount">
 							<button 
-								className="mt-[3px] px-[6px] py-[3px] bg-[#C5C5C5] text-black
-								rounded-md flex justify-center items-center
-								active:scale-95 transition-transform transform hover:scale-103">
 								className="px-[15px] py-[5px] mb-2
 								bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 hover:bg-[#7f0202] active:shadow-inner select-none">
 								Delete
 							</button>
 						</Link>
 					</div>
+<<<<<<< Updated upstream
 				) : (
 					<div className="w-1/2 px-[10px] py-[6px] border-2 border-[#ccc] rounded-md text-sm font-['Inter',sans-serif] box-border">
 						<div className="text-xlgoogle font-bold">
@@ -162,6 +164,9 @@ export function AccountSettings() {
 						</Link>
 					</div>
 				)
+=======
+				// ) : null
+>>>>>>> Stashed changes
 			}
 			
 		</div>
@@ -223,7 +228,7 @@ export function Profile() {
 						<StudentForm/>
 					</div>
 					<div className="rounded-2xl pb-2 gray-67 flex flex-col items-center">
-						<div className="text-3xl mb-6 google font-bold mt-4">
+						<div className="text-3xl mb-2 google font-bold mt-4">
 							Account Settings
 						</div>
 						<AccountSettings/>
