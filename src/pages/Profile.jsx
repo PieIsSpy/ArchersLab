@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { currentUser } from "../models/User";
 import { PencilSvg } from "../components/PencilSvg";
-import { StudentReservationTable } from "../components/ReservationTable";
+import { ReservationTable } from "../components/ReservationTable";
 
 const formelement =
   "w-full px-[10px] py-[6px] rounded-xl gray-89 text-sm font-['Inter',sans-serif] box-border " +
@@ -213,7 +213,7 @@ export function Profile() {
 					<div className="text-3xl mb-6 google font-bold mt-4">
 						Reservations
 					</div>
-					<StudentReservationTable/>
+					<ReservationTable/>
 				</div>
 			) : (
 				<div className="flex flex-col w-2/3 gap-4">

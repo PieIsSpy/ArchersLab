@@ -1,7 +1,7 @@
 import { currentUser } from "../models/User";
 import { reservations } from "../models/Reservation";
 
-function ListStudentReservations({student, reservations}) {
+function StudentReservation({student, reservations}) {
     return reservations.filter(
         res => student.equals(res.student)
     ).map((res, index) => (
@@ -35,7 +35,7 @@ function ListStudentReservations({student, reservations}) {
     ))
 }
 
-export function StudentReservationTable() {
+export function ReservationTable({user}) {
     return (
         <table className="table-auto w-full text-left">
             <thead className="font-bold border-b border-gray-600">
@@ -63,7 +63,7 @@ export function StudentReservationTable() {
                 </tr>
             </thead>
             <tbody>
-                <ListStudentReservations student={currentUser} reservations={reservations}/>
+                <StudentReservation student={currentUser} reservations={reservations}/>
             </tbody>
         </table>
     )
