@@ -28,16 +28,26 @@ export class User {
   }
 }
 
-let users = [
+export let users = [
   new User(
     "Karl Omandac",
     "06706789",
-    "I invoke the fifth amendment.",
+    "Backend Rat",
     "karl_omandac@dlsu.edu.ph",
     "College of Computer Studies",
     "Bachelor of Science in Computer Science",
-    "Epstein's most prized possession",
+    "Man I dont even know what i want, excuse me do you sell crab legs?",
     0
+  ),
+  new User(
+    "Byron Ang",
+    "124676767",
+    "Frontend God",
+    "byron_ang@dlsu.edu.ph",
+    "College of Computer Studies",
+    "Bachelor of Science in Computer Science",
+    "Burger? Your last name is burger?",
+    1
   )
 ]
 
