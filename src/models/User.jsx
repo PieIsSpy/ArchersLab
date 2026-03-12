@@ -37,7 +37,7 @@ let users = [
     "College of Computer Studies",
     "Bachelor of Science in Computer Science",
     "Epstein's most prized possession",
-    1
+    0
   )
 ]
 

@@ -2,9 +2,9 @@ import { currentUser } from "../models/User";
 import { reservations } from "../models/Reservation";
 
 function StudentReservation({student, reservations}) {
-    return reservations.filter(
-        res => student.equals(res.student)
-    ).map((res, index) => (
+    let list = student ? reservations.filter(res => student.equals(res.user)) : reservations;
+
+    return list.map((res, index) => (
         <tr key={`${index}`} className="border-t-2 border-gray-67">
         <td>{res.date.toLocaleDateString()}</td>
         <td>{res.time}</td>
@@ -35,7 +35,7 @@ function StudentReservation({student, reservations}) {
     ))
 }
 
-export function ReservationTable({user}) {
+export function ReservationTable({student}) {
     return (
         <table className="table-auto w-full text-left">
             <thead className="font-bold border-b border-gray-600">
@@ -63,7 +63,7 @@ export function ReservationTable({user}) {
                 </tr>
             </thead>
             <tbody>
-                <StudentReservation student={currentUser} reservations={reservations}/>
+                <StudentReservation student={student} reservations={reservations}/>
             </tbody>
         </table>
     )

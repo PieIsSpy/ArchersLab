@@ -213,7 +213,7 @@ export function Profile() {
 					<div className="text-3xl mb-6 google font-bold mt-4">
 						Reservations
 					</div>
-					<ReservationTable/>
+					<ReservationTable student={currentUser}/>
 				</div>
 			) : (
 				<div className="flex flex-col w-2/3 gap-4">
