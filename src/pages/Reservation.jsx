@@ -2,18 +2,19 @@ import { useState, useEffect} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../dark-datepicker.css";
+import { rooms } from "../models/Room";
 
 const days = 14; // you can only book 14 days after
-const rooms = 10;
 const tslots = 7;
 const seats = 45;
 
 const reservations = [];
+let computerArray = [];
 
 for (let i = 0; i < days; i++) {
 	reservations[i] = [];
 
-	for (let j = 0; j < rooms; j++) {
+	for (let j = 0; j < rooms.length; j++) {
 		reservations[i][j] = [];
 
 		for (let k = 0; k < tslots; k++) {
@@ -46,10 +47,6 @@ export function Reservations(){
 		"07:30-09:00", "09:15-10:45", "11:00-12:30", "12:45-14:15", 
 		"14:30-16:00", "16:15-17:45", "18:00-19:30",
 	];
-	const room = [
-		"GK201", "GK202", "GK203", "GK204", "GK205",
-		"GK206", "GK207", "GK208", "GK209", "GK210"
-	];
 
 	// Set states for React
 	const [selectedDate, setSelectedDate] = useState(()=>{
@@ -57,7 +54,7 @@ export function Reservations(){
 		return today;
 	});
 	const [timeValue, setTimeValue] = useState(timeSlots[0]);
-	const [roomValue, setRoomValue] = useState(room[0])
+	const [roomValue, setRoomValue] = useState(rooms[0])
 
 	const DateChange = (date) => {
 		setSelectedDate(date)
@@ -79,7 +76,7 @@ export function Reservations(){
 
 	// Set indexes
 	const dayIndex = Math.floor((selected - today) / (1000 * 60 * 60 * 24)); //subtracts current - reservation date
-	const roomIndex = room.indexOf(roomValue);
+	const roomIndex = rooms.indexOf(roomValue);
 	const timeIndex = timeSlots.indexOf(timeValue);
 
 	// Set minimum and maximum date (earliest and latest)
@@ -88,43 +85,19 @@ export function Reservations(){
 		return today.setDate(today.getDate() + 13);
 	}
 
-	// Initialize computer seats array
-	const computerArray = []
-	for (let i = 1; i<=5; i++)
-	{
-		const computerRow = []
-		for (let j = 1; j<=9; j++)
-		{
-			const seatID = (i-1)*9+j   
-			computerRow.push(
-				<button
-					id={seatID} 
-					onClick={() => selectSeat(seatID)}
-					className={`
-						w-16 h-12 hover:bg-gray-500 flex flex-col items-center justify-center my-9 
-						${j % 9 === 0? "mr-0" : j % 3 === 0 ? "mr-10" : "mr-0"}
-						`}>
-					<h1 className="m-0 text-xs">{9*(i-1)+j}</h1>
-					<img src="./src/resources/computers.png" alt="computer" className="w-50 h-25 object-contain"/>
-				</button>
-			);
-		}
-		computerArray.push(
-			<div className={`flex justify-center`}>
-				{computerRow}
-			</div>
-		);
+	const handleRoomChange = (e) => {
+		const newRoom = rooms.find(r => r.name === e.target.value);
+		setRoomValue(newRoom)
 	}
-
 	
 	const optionRoom = [];
-	for (let i = 0; i< room.length; i++){
+	for (let i = 0; i< rooms.length; i++){
 		optionRoom.push(
 			<option
 				key={i}
-				value={room[i]}
+				value={rooms[i].name}
 			>
-				{room[i]}
+				{rooms[i].name}
 			</option>
 		);
 	}
@@ -139,6 +112,35 @@ export function Reservations(){
 				{timeSlots[i]}
 			</option>
 		)
+	}
+
+	const renderSeats = () => {
+		const rows = [];
+		for (let i = 1; i <= roomValue.row; i++) {
+			const cols = [];
+			for (let j = 1; j <= roomValue.col; j++) {
+				const seatID = (i - 1) * roomValue.col + j;
+				cols.push(
+					<button
+						id={seatID} 
+						onClick={() => selectSeat(seatID)}
+						className={`
+							w-16 h-12 hover:bg-gray-500 flex flex-col items-center justify-center my-9 
+							${j % roomValue.col === 0? "mr-0" : j % 3 === 0 ? "mr-10" : "mr-0"}
+							`}>
+						<h1 className="m-0 text-xs">{(roomValue.col)*(i-1)+j}</h1>
+						<img src="./src/resources/computers.png" alt="computer" className="w-50 h-25 object-contain"/>
+					</button>
+				)
+			}
+			rows.push(
+				<div className={`flex justify-center`}>
+					{cols}
+				</div>
+			)
+		}
+
+		return rows;
 	}
 
 	function reserveSeat(timeValue, roomValue, selectedSeats){
@@ -305,14 +307,8 @@ export function Reservations(){
 									borderRadius: "8px",
 									padding: "6px 10px",
 								}}
-								value={roomValue}
-								onChange={(e) => {
-									
-									const newRoom = e.target.value;
-									setRoomValue(newRoom);
-									const newRoomIndex = room.indexOf(newRoom);
-									const newTimeIndex = timeSlots.indexOf(timeValue);
-								}}
+								value={roomValue.name}
+								onChange={handleRoomChange}
 								>
 								{optionRoom}
 								</select>
@@ -345,8 +341,8 @@ export function Reservations(){
 						</div>
 
 			
-						<div className="w-[800px] h-[600px] gray-67 rounded-2xl">
-							{computerArray}
+						<div className="min-w-[800px] min-h-[600px] w-fit h-fit p-8 gray-67 rounded-2xl">
+							{renderSeats()}
 						</div>
 					</div>
 				</div>
@@ -360,7 +356,7 @@ export function Reservations(){
 						<span>
 							Room<br></br>
 							<div className="font-normal">
-								{roomValue}
+								{roomValue.name}
 							</div>
 						</span>
 
