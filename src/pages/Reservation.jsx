@@ -55,18 +55,17 @@ export function Reservations(){
 	});
 	const [timeValue, setTimeValue] = useState(timeSlots[0]);
 	const [roomValue, setRoomValue] = useState(rooms[0])
+	const [selectedSeats, setSelectedSeats] = useState([]);
+	const [bookedSeats, setBookedSeats] = useState([]);
 
 	const DateChange = (date) => {
 		setSelectedDate(date)
 	};
 
 	useEffect(() => {
-		refreshSeats();
 		displayState();
+		renderSeats();
 	}, [selectedDate, roomValue, timeValue]);
-	
-
-	const selectedSeats = [];
 
 	const today = new Date();
 	const selected = new Date(selectedDate);
@@ -120,14 +119,19 @@ export function Reservations(){
 			const cols = [];
 			for (let j = 1; j <= roomValue.col; j++) {
 				const seatID = (i - 1) * roomValue.col + j;
+
+				const isBooked = bookedSeats.includes(seatID);
+				const isSelected = selectedSeats.includes(seatID);
 				cols.push(
 					<button
 						id={seatID} 
-						onClick={() => selectSeat(seatID)}
+						onClick={() => isBooked ? null : toggleSeatSelection(seatID)}
 						className={`
-							w-16 h-12 hover:bg-gray-500 flex flex-col items-center justify-center my-9 
+							w-16 h-12 flex flex-col items-center justify-center my-9 
 							${j % roomValue.col === 0? "mr-0" : j % 3 === 0 ? "mr-10" : "mr-0"}
-							`}>
+							${isBooked ? "booked cursor-not-allowed" : "hover:bg-gray-500"}
+							${isSelected ? "blue" : "hover:bg-gray-500"}
+						`}>
 						<h1 className="m-0 text-xs">{(roomValue.col)*(i-1)+j}</h1>
 						<img src="./src/resources/computers.png" alt="computer" className="w-50 h-25 object-contain"/>
 					</button>
@@ -143,45 +147,41 @@ export function Reservations(){
 		return rows;
 	}
 
-	function reserveSeat(timeValue, roomValue, selectedSeats){
-		selectedSeats.forEach(seatID => {
-			reservations[dayIndex][roomIndex][timeIndex][seatID-1] = true;
-		});
+	function reserveSeat(timeValue, roomValue, selectedSeats) {
+		if (!selectedSeats.length) return;
+
+		setBookedSeats(prev => [...prev, ...selectedSeats]);
+
+		const seatStatus = reservations[dayIndex][roomIndex][timeIndex];
+		selectedSeats.forEach(id => seatStatus[id - 1] = true);
+
+		setSelectedSeats([]);
 
 		const seatList = selectedSeats.join(", ");
-		console.log(
-			`
-			User have reserved Seat for\n
+		console.log(`
+			User has reserved Seats for
 			Date: ${selectedDate.toLocaleDateString()}
-			Time: ${timeValue},
-			Room: ${roomValue}, 
-			Seat: ${seatList},
-			`
-		);
-	
-		refreshSeats();
-	}
-
-	function refreshSeats() {
-		const seatStatus = reservations[dayIndex][roomIndex][timeIndex];
-
-		for (let seatID = 1; seatID <= seatStatus.length; seatID++) 
-		{
-			const element = document.getElementById(seatID);
-			if (!element) continue;
-
-			element.classList.remove("blue");
-
-			if (seatStatus[seatID-1]) 
-				element.classList.add("gray-booked");
-			else 
-				element.classList.remove("gray-booked");
-    	}
+			Time: ${timeValue}
+			Room: ${roomValue.name}
+			Seats: ${seatList}
+		`);
 
 		const table = document.getElementById("chosenSeatsTable");
-		if (table)
-			table.innerHTML = "";
-		selectedSeats.splice(0, selectedSeats.length);
+		table.innerHTML = ""
+	}
+
+	function toggleSeatSelection(seatID) {
+		setSelectedSeats(prev => {
+			if (prev.includes(seatID)) {
+				return prev.filter(id => id !== seatID);
+			} else {
+				if (prev.length + bookedSeats.length >= 5) {
+					alert("You can only reserve up to 5 seats.");
+					return prev;
+				}
+				return [...prev, seatID];
+			}
+		});
 	}
 
 	function displayState(){
@@ -210,63 +210,6 @@ export function Reservations(){
 			Reserved seats: \n${seatMatrixConsole}
 			`
 		);
-	}
-
-	function selectSeat(seatID){
-		const element = document.getElementById(seatID);
-		const existingRow = document.getElementById(`seat-row-${seatID}`); //will appear sa chosen seats 
-		
-		const table = document.getElementById("chosenSeatsTable");
-		if (!element.classList.contains("blue")){
-			if(selectedSeats.length >= 5){
-				alert("You can only reserve up to 5 seats.");
-				return;
-			}
-			element.classList.add("blue");
-			selectedSeats.push(seatID);
-
-			const row = document.createElement("tr");
-			row.className = "border-b border-gray-600";
-
-			row.id = `seat-row-${seatID}`;
-
-			row.innerHTML = 
-				`
-					<td class="text-left google m-10">
-						Seat #${seatID}
-					</td>
-
-					<td class="w-1/3  py-1 google">
-						<button class="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200">
-							Remove
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								height="20px"
-								width="20px"
-								viewBox="0 -960 960 960"
-								class="flex-shrink-0"
-							>
-								<path
-								d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
-								fill="currentColor"
-								/>
-							</svg>
-						</button>
-					</td>
-				`;
-			const removeButton = row.querySelector("button");
-			removeButton.onclick = () => {
-				element.classList.remove("blue");
-				selectedSeats.splice(selectedSeats.indexOf(seatID), 1);
-				row.remove();
-			};
-			table.appendChild(row);
-		}
-		else {
-			element.classList.remove("blue");
-			selectedSeats.splice(selectedSeats.indexOf(seatID), 1);
-			if(existingRow) existingRow.remove();
-		}
 	}
 	
 	return(
@@ -379,9 +322,35 @@ export function Reservations(){
 						</span>
 					</div>
 					
-					{/* the list of chosen seats go here*/}
 					<div className="[400px] h-[500px] overflow-auto justify-center">
-						<table id="chosenSeatsTable" className=" w-[90%] mx-auto">
+						<table className="w-[90%] mx-auto">
+							<tbody>
+							{selectedSeats.map(seatID => (
+								<tr key={seatID} className="border-b border-gray-600">
+								<td className="text-left google m-10">Seat #{seatID}</td>
+								<td className="w-1/3 py-1 google">
+									<button
+									className="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200"
+									onClick={() => toggleSeatSelection(seatID)}
+									>
+									Remove
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										height="20px"
+										width="20px"
+										viewBox="0 -960 960 960"
+										className="flex-shrink-0"
+									>
+										<path
+										d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
+										fill="currentColor"
+										/>
+									</svg>
+									</button>
+								</td>
+								</tr>
+							))}
+							</tbody>
 						</table>
 					</div>
 
