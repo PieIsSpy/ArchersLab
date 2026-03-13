@@ -9,6 +9,7 @@ import { Reservations } from "./pages/Reservation.jsx";
 import { ChangePassword } from "./pages/ChangePassword.jsx";
 import { DeleteAccount } from "./pages/DeleteAccount.jsx";
 import { RequestRoom } from "./pages/RequestRoom.jsx";
+import { AdminRegistration } from "./pages/admin/AdminRegistration.jsx";
 
 export default function App() {
 	return ( 
@@ -47,6 +48,7 @@ export default function App() {
 					<Route path="/ChangePassword" element={<ChangePassword />} />
 					<Route path="/DeleteAccount" element={<DeleteAccount />} />
 					<Route path="/RequestRoom" element={<RequestRoom />} />
+      				<Route path="/admin/AdminRegistration" element={<AdminRegistration />} />
 				</Routes>
 			</div>
 		</Router>
