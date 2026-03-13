@@ -9,38 +9,33 @@ const formelement =
   "focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]" +
   " selection:bg-blue-300 selection:text-black";
 
-const fields = [
-  { label: "NAME", key: "name", editable: false, display: true},
-  { label: "ID", key: "id", editable: false, display: true},
-  { label: "EMAIL", key: "email", editable: true, display: true},
-  { label: "COLLEGE", key: "college", editable: true, display: true},
-  { label: "PROGRAM", key: "program", editable: true, display: true},
-  { label: "ABOUT", key: "about", editable: true, display: true},
-];
-
 export function StudentProfile() {
-	const [student, setStudent] = useState(currentUser);
+  const [student, setStudent] = useState(currentUser);
 
-	return (
-		<div className="space-y-2">
-			{fields.map((field) => (
-				field.display ? (
-					<div className="m-3">
-						<h2 className="font-bold text-xs mb-1">{field.label}</h2>
-						<div
-							key={field.key}
-							className="rounded-xl gray-89 p-2 transition-transform transform hover:scale-103"
-						>
-							<h1>{student[field.key]}</h1>
-						</div>
-					</div>
-				):
-				null
-			))}
-		</div>
-	);
+  const fields = [
+    { label: "NAME", key: "name", editable: false, display: true },
+    { label: "ID", key: "id", editable: false, display: true },
+    { label: "EMAIL", key: "email", editable: true, display: true },
+    { label: "COLLEGE", key: "college", editable: true, display: true },
+    { label: "PROGRAM", key: "program", editable: true, display: true },
+    { label: "ABOUT", key: "about", editable: true, display: true },
+  ];
+
+  return (
+    <div className="space-y-2">
+      {fields
+        .filter((field) => field.display)
+        .map((field) => (
+          <div key={field.key} className="m-3">
+            <h2 className="font-bold text-xs mb-1">{field.label}</h2>
+            <div className="rounded-xl gray-89 p-2 transition-transform transform hover:scale-[1.03]">
+              <h1>{student[field.key] ?? "N/A"}</h1>
+            </div>
+          </div>
+        ))}
+    </div>
+  );
 }
-
 export function StudentForm() {
 	return (
 		<form className="w-full px-4">
