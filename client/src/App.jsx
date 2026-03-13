@@ -7,8 +7,8 @@ import { Home } from "./pages/Home.jsx";
 import { Profile } from "./pages/Profile.jsx";
 import { Reservations } from "./pages/Reservation.jsx";
 import { ChangePassword } from "./pages/ChangePassword.jsx";
-import { DeleteAccount } from "./pages/DeleteAccount";
-import { RequestRoom } from "./pages/RequestRoom";
+import { DeleteAccount } from "./pages/DeleteAccount.jsx";
+import { RequestRoom } from "./pages/RequestRoom.jsx";
 
 export default function App() {
 	return ( 
