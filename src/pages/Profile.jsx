@@ -49,13 +49,13 @@ export function StudentForm() {
 					<label className="block font-bold text-xs mb-1">NAME</label>
 					<input 
 					className={`${formelement}`}
-					type="text" value={currentUser.name}></input>
+					type="text" defaultValue={currentUser.name}></input>
 				</div>
 				<div className="mb-3 w-full flex-1">
 					<label className="block font-bold text-xs mb-1">DISPLAY NAME</label>
 					<input 
 					className={`${formelement}`}
-					type="text" value={currentUser.nickname}></input>
+					type="text" defaultValue={currentUser.nickname}></input>
 				</div>
 			</div>
 
@@ -64,13 +64,13 @@ export function StudentForm() {
 					<label className="block font-bold text-xs mb-1">STUDENT ID</label>
 					<input 
 					className={`${formelement}`}
-					type="text" value={currentUser.id}></input>
+					type="text" defaultValue={currentUser.id}></input>
 				</div>
 				<div className="mb-3 w-full flex-1">
 					<label className="block font-bold text-xs mb-1">EMAIL</label>
 					<input 
 					className={`${formelement}`}
-					type="text" value={currentUser.email}></input>
+					type="text" defaultValue={currentUser.email}></input>
 				</div>
 			</div>
 
@@ -78,28 +78,28 @@ export function StudentForm() {
 				<label className="block font-bold text-xs mb-1">COLLEGE</label>
 				<input 
 					className={`${formelement}`}
-				type="text" value={currentUser.college}></input>
+				type="text" defaultValue={currentUser.college}></input>
 			</div>
 
 			<div className="mb-3 w-full">
 				<label className="block font-bold text-xs mb-1">PROGRAM</label>
 				<input 
 					className={`${formelement}`}
-				type="text" value={currentUser.program}></input>
+				type="text" defaultValue={currentUser.program}></input>
 			</div>
 
 			<div className="mb-3 w-full">
 				<label className="block font-bold text-xs mb-1">BIO</label>
 				<input 
 					className={`${formelement}`}
-				type="text" value={currentUser.bio}></input>
+				type="text" defaultValue={currentUser.bio}></input>
 			</div>
 
 			<div className="mb-3 w-full">
 				<label className="block font-bold text-xs mb-1">DESCRIPTION</label>
 				<textarea rows="2" 
 					className={`${formelement}`}
-				type="text" value={currentUser.about}></textarea>
+				type="text" defaultValue={currentUser.about}></textarea>
 			</div>
 
 			<div className="flex justify-center mt-4 mb-3">
@@ -154,10 +154,10 @@ export function AccountSettings() {
 					</div>
 				<p className="mt-2">Create an admin account for lab technicians</p>
 				<br/>
-						<Link to="/DeleteAccount">
+						<Link to="/admin/AdminRegistration">
 							<button 
 								className="px-[15px] py-[5px] mb-2
-								bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 hover:bg-[#7f0202] active:shadow-inner select-none">
+								bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none">
 								Create
 							</button>
 						</Link>

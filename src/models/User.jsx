@@ -37,7 +37,7 @@ export let users = [
     "College of Computer Studies",
     "Bachelor of Science in Computer Science",
     "Man I dont even know what i want, excuse me do you sell crab legs?",
-    0
+    1
   ),
   new User(
     "Byron Ang",
