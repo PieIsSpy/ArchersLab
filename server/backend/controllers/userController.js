@@ -9,6 +9,10 @@ const getUsers = (req, res) => {
 // @route   POST /api/users
 // @access  Private
 const createUser = (req, res) => {
+    if (!req.body.text) {
+        res.status(400)
+        throw new Error('Invalid Creation')
+    }
     res.status(200).json({message: 'Create User'})
 }
 
