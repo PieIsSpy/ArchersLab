@@ -11,6 +11,9 @@ function StudentReservation({student, reservations}) {
         <td>{res.room}</td>
         <td>30/41</td>
         <td>{res.seats.join(", ")}</td>
+		{!student ? 
+			<td>{res.user.name}</td> : <></>
+		}
         <td>{res.status}</td>
         <td className="flex items-center gap-2">
             {res.status === "Upcoming" ? (
@@ -40,25 +43,30 @@ export function ReservationTable({student}) {
         <table className="table-auto w-full text-left">
             <thead className="font-bold border-b border-gray-600">
                 <tr>
-                    <th>
+                    <th className="w-1/7">
                         Date
                     </th>
-                    <th>
+                    <th className="w-1/7">
                         Time
                     </th>
-                    <th>
+                    <th className="w-1/7">
                         Room
                     </th>
-                    <th>
+                    <th className="w-1/7">
                         Capacity
                     </th>
-                    <th>
+                    <th className="w-1/7">
                         Seats Reserved
                     </th>
-                    <th>
+					{!student ? 
+						<th className="w-1/7">
+							User
+						</th> : <></>
+					}
+                    <th className="w-1/7">
                         Status
                     </th>
-                    <th>
+                    <th className="w-1/21">
                     </th>
                 </tr>
             </thead>

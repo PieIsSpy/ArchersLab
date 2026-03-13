@@ -76,7 +76,7 @@ export function ChangePassword() {
 				type="submit"
 				className="px-[15px] py-[5px] bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none text-white"
 				>
-				Submit
+				Change Password
 				</button>
 			</div>
 			</form>
