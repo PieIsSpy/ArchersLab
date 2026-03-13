@@ -1,11 +1,8 @@
 # Archers Lab 2
 
-Since the first one was a **huge** mess of bloat and fuck knows what, we're changing that now!
-Currently, all you need to do is:
+Installing:
+1. Clone the repo or install the zip file and unzip it
+2. Run `npm install` inside the project parent folder to install all related packages
 
-- Install node.js
-- Then from node.js, install vite, tailwindcss, and react.js. **You're college students. You can figure this out!**
-
-## Main Goals:
-- NO CHOPPED UI
-
+Running:
+Run `npm run dev` inside the project parent folder
