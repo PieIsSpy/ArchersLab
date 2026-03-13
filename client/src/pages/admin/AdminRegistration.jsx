@@ -89,7 +89,7 @@ export function AdminRegistration() {
 					type="submit"
 					className="px-[15px] py-[5px] mb-2 bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none text-white"
 					>
-					Create Admin
+					Create Admin Account
 					</button>
 				</div>
 			</form>

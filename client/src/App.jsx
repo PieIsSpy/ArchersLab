@@ -10,6 +10,8 @@ import { ChangePassword } from "./pages/ChangePassword.jsx";
 import { DeleteAccount } from "./pages/DeleteAccount.jsx";
 import { RequestRoom } from "./pages/RequestRoom.jsx";
 import { AdminRegistration } from "./pages/admin/AdminRegistration.jsx";
+import { IndividualReservations } from "./pages/admin/IndividualReservations.jsx";
+import { RoomReservations } from "./pages/admin/RoomReservations.jsx";
 
 export default function App() {
 	return ( 
@@ -49,6 +51,8 @@ export default function App() {
 					<Route path="/DeleteAccount" element={<DeleteAccount />} />
 					<Route path="/RequestRoom" element={<RequestRoom />} />
       				<Route path="/admin/AdminRegistration" element={<AdminRegistration />} />
+      				<Route path="/admin/IndividualReservations" element={<IndividualReservations />} />
+      				<Route path="/admin/RoomReservations" element={<RoomReservations />} />
 				</Routes>
 			</div>
 		</Router>
