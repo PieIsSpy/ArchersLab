@@ -18,7 +18,7 @@ export class User {
     this.college = college;
     this.program = program;
     this.about = about;
-    this.password = "password";
+    this.password = "password"; // will be depreciated in favor of user schema
     this.isAdmin = isAdmin;
   }
 
