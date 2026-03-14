@@ -1,3 +1,8 @@
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "../../dark-datepicker.css";
+import { rooms } from "../../models/Room";
+
 class ReservationClass {
 	constructor(user, date, time, room, seats, status, isAnnonymous) {
 		this.user = user;
@@ -7,6 +12,18 @@ class ReservationClass {
 		this.status = status
 		this.isAnnonymous = isAnnonymous;
 	}
+}
+
+const optionRoom = [];
+for (let i = 0; i< rooms.length; i++){
+	optionRoom.push(
+		<option
+			key={i}
+			value={rooms[i].name}
+		>
+			{rooms[i].name}
+		</option>
+	);
 }
 
 let list = [
@@ -89,9 +106,65 @@ export function ReservationTable() {
 
 export function RoomReservations () {
 		return (
-		<div className="m-5">
-			<h2 className="mt-12 font-black google text-4xl">Current Room Reservation Requests:</h2>
-			<div className="px-4 mt-4 rounded-2xl gray-67 shadow-lg">
+		<div className="m-5 w-1/2 mx-auto my-40">
+			<h2 className="mt-12 font-black google text-5xl mb-5">Room Reservation Requests</h2>
+
+			
+			{/* Outer Div that holds DATE ROOM TIMESLOT + REQ btn */}
+						<div className="p-4 gray-67 flex flex-col rounded-2xl">
+							<h2 className="google text-3xl text-gray-400 mb-3">Filter by</h2>
+								{/* Inner Div that holds DATE ROOM TIMESLOT */}
+								<div className="justify-center items-center rounded-2xl text-2xl google flex gap-12 w-full">
+									
+									{/* Inner Div that holds DATE */}
+									<div className="gap-2 flex flex-row">
+										<div className="text-xl google flex items-center justify-center">
+											Date:
+										</div>
+										<div className="text-xl flex items-center justify-center">
+											<DatePicker
+												className="gray-89 text-xl w-full rounded-xl text-center px-2
+												focus:outline-none focus:ring-2 focus:ring-[#145b92]
+												focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
+												selected={null}
+												onChange={null}
+												minDate={null}
+												maxDate={null}
+												dateFormat="MM/dd/yyyy"
+											/>
+										</div>
+									</div>
+			
+									{/* Inner Div that holds ROOM */}
+									<div className="gap-2 flex flex-row">
+										<div className="text-xl google flex items-center justify-center">
+											Room:
+										</div>
+										
+										<select
+										className = "text-xl gray-89 text-center px-2 rounded-xl"
+										value={null}
+										onChange={(e) => {
+										}}
+										>
+										{optionRoom}
+										</select>
+									</div>
+			
+									{/* Inner Div that holds NAME */}
+									<div className="gap-2 flex flex-row">
+										<div className="text-xl google flex items-center justify-center">
+											Name:
+										</div>
+										<input
+											className="rounded-xl px-2 gray-89 rounded-lg text-center justify-center bg-transparent
+											focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]
+											selection:bg-blue-300 selection:text-black"
+										/>
+									</div>
+								</div>
+						</div>
+				<div className="px-4 mt-4 rounded-2xl gray-67 shadow-lg">
 				<ReservationTable/>
 			</div>
 		</div>);

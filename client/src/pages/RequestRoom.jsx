@@ -12,44 +12,9 @@ export function RequestRoom(){
 		"GK201", "GK202", "GK203", "GK204", "GK205",
 		"GK206", "GK207", "GK208", "GK209", "GK210"
 	];
-
-	// Set states for React
-	const [selectedDate, setSelectedDate] = useState(()=>{
-		const today = new Date();
-		return today;
-	});
-	const [timeValue, setTimeValue] = useState(timeSlots[0]);
-	const [roomValue, setRoomValue] = useState(room[0])
-
-	const DateChange = (date) => {
-		setSelectedDate(date)
-	};
-
-	useEffect(() => {
-		displayState();
-	}, [selectedDate, roomValue, timeValue]);
 	
-
-	const selectedSeats = [];
-
-	const today = new Date();
-	const selected = new Date(selectedDate);
-
-	today.setHours(0, 0, 0, 0);
-	selected.setHours(0, 0, 0, 0);
-
-	// Set indexes
-	const dayIndex = Math.floor((selected - today) / (1000 * 60 * 60 * 24)); //subtracts current - reservation date
-	const roomIndex = room.indexOf(roomValue);
-	const timeIndex = timeSlots.indexOf(timeValue);
-
-	// Set minimum and maximum date (earliest and latest)
-	const minDate = () => {
-		return today.setDate(today.getDate() + 14);
-	};
-	const maxdate = () => {
-		return today.setDate(today.getDate() + 31);
-	}
+	const [timeValue, setTimeValue] = useState(timeSlots[0]);
+	const [roomValue, setRoomValue] = useState(room[0]);
 
 	const optionRoom = [];
 	for (let i = 0; i< room.length; i++){
@@ -74,18 +39,24 @@ export function RequestRoom(){
 			</option>
 		)
 	}
-	
-	function displayState(){
-		console.log("");
-	}
+
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+
+	const [selectedDate, setSelectedDate] = useState(
+		new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000)
+	);
+
+	const minDate = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
+	const maxDate = new Date(today.getTime() + 31 * 24 * 60 * 60 * 1000);
 
 	return(
 		<div className="flex flex-col justify-center items-center rounded-2xl gap-3">
 			<div className="mt-50 mr-75">
-				<div className="google text-5xl font-bold text-gray-400">
+				<div className="google text-5xl font-bold ">
 					Request for a room
 				</div>
-				<div className="google mt-2 text-gray">
+				<div className="google mt-2 text-gray-400">
 					Do note that each reservation must be made 14-31 days in advance.<br/>
 					All requests are subject for approval.
 				</div>
@@ -103,11 +74,13 @@ export function RequestRoom(){
 							</div>
 							<div className="text-xl w-[150px] h-[100px] flex items-center justify-center">
 								<DatePicker
-									className="gray-89 text-xl w-full p-3 rounded-lg text-center"
+									className="gray-89 text-xl w-full p-3 rounded-lg text-center
+									focus:outline-none focus:ring-2 focus:ring-[#145b92]
+									focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
 									selected={selectedDate}
 									onChange={(date) => setSelectedDate(date)}
-									minDate={minDate()}
-									maxDate={maxdate()}
+									minDate={minDate}
+									maxDate={maxDate}
 									dateFormat="MM/dd/yyyy"
 								/>
 							</div>
