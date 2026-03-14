@@ -65,6 +65,7 @@ export function Reservations(){
 	useEffect(() => {
 		displayState();
 		renderSeats();
+		setSelectedSeats([]);
 	}, [selectedDate, roomValue, timeValue]);
 
 	const today = new Date();
@@ -87,7 +88,6 @@ export function Reservations(){
 	const handleRoomChange = (e) => {
 		const newRoom = rooms.find(r => r.name === e.target.value);
 		setRoomValue(newRoom);
-		setSelectedSeats([]);
 	}
 	
 	const optionRoom = [];
@@ -150,6 +150,7 @@ export function Reservations(){
 	const deploySeats = (layoutArr) => {
 		const rows = [];
 		let seatidx = 1;
+		let hasReversed = layoutArr.some(row => row.includes(2));
 		for (let i = 0; i < layoutArr.length; i++) {
 			const cols = [];
 			for (let j = 0; j < layoutArr[i].length; j++) {
@@ -161,7 +162,9 @@ export function Reservations(){
 					{
 						cols.push(
 							<div className="flex flex-col items-center">
-								<h1 className="m-0 text-xs">{seatID}</h1>
+								{!hasReversed ? (
+									<h1 className="m-0 text-xs">{seatID}</h1>
+								) : null}
 								<button
 									id={seatID}
 									onClick={() => isBooked ? null : toggleSeatSelection(seatID)}
@@ -177,6 +180,9 @@ export function Reservations(){
 										className="w-16 h-16 object-contain"
 									/>
 								</button>
+								{hasReversed ? (
+									<h1 className="m-0 text-xs">{seatID}</h1>
+								) : null}
 							</div>
 						);
 					}
@@ -184,6 +190,7 @@ export function Reservations(){
 					{
 						cols.push(
 							<div className="flex flex-col items-center">
+								
 								<h1 className="m-0 text-xs">{seatID}</h1>
 								<button
 									id={seatID}
