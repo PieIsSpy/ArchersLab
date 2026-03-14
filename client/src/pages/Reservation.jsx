@@ -113,40 +113,77 @@ export function Reservations(){
 		)
 	}
 
-	const renderSeats = () => {
-		const rows = [];
-		for (let i = 1; i <= roomValue.row; i++) {
-			const cols = [];
-			for (let j = 1; j <= roomValue.col; j++) {
-				const seatID = (i - 1) * roomValue.col + j;
+	const layout1 = [
+		[1,1,1,0,1,1,1,0,1,1,1],
+		[0,0,0,0,0,0,0,0,0,0,0],
+		[1,1,1,0,1,1,1,0,1,1,1],
+		[0,0,0,0,0,0,0,0,0,0,0],
+		[1,1,1,0,1,1,1,0,1,1,1],
+		[0,0,0,0,0,0,0,0,0,0,0],
+		[1,1,1,0,1,1,1,0,1,1,1],
+		[0,0,0,0,0,0,0,0,0,0,0],
+		[1,1,1,0,1,1,1,0,1,1,1]
+	];
 
-				const isBooked = bookedSeats.includes(seatID);
-				const isSelected = selectedSeats.includes(seatID);
+	const layout2 = [
+		[1,1,1,0,0,1,1,1],
+		[0,0,0,0,0,0,0,0],
+		[1,1,1,0,0,1,1,1],
+		[0,0,0,0,0,0,0,0],
+		[1,1,1,0,0,1,1,1],
+		[0,0,0,0,0,0,0,0],
+		[1,1,1,0,0,1,1,1],
+		[0,0,0,0,0,0,0,0],
+		[1,1,1,0,0,1,1,1]
+	];
+
+	const layout3 = [
+		[0,0,0,0,0,0,0],
+		[1,1,1,0,1,1,1],
+		[1,1,1,0,1,1,1],
+		[0,0,0,0,0,0,0],
+		[1,1,1,0,1,1,1],
+		[1,1,1,0,1,1,1]
+	];
+
+	const deploySeats = (layoutArr) => {
+		const rows = [];
+		let seatidx = 1;
+		for (let i = 0; i < layoutArr.length; i++) {
+			const cols = [];
+			for (let j = 0; j < layoutArr[i].length; j++) {
+				if(layoutArr[i][j] === 1){
+					const seatID = seatidx;
+					const isBooked = bookedSeats.includes(seatID);
+					const isSelected = selectedSeats.includes(seatID);
 					cols.push(
 						<button
 							id={seatID} 
 							onClick={() => isBooked ? null : toggleSeatSelection(seatID)}
 							className={`
-								w-16 h-12 flex flex-col items-center justify-center my-9 
-								${["GK201","GK202","GK203","GK204","GK205","GK206"].includes(roomValue.name)
-                                ? j % roomValue.col === 0
-                                    ?"mr-0" 
-                                    : j % 3 === 0 
-                                        ? "mr-10" 
-                                        : "mr-0"
-                                : j % 3 === 0
-									? "mr-10"
-									: "mr-0"
-                        		}
-								${i % 2 ? "my-0" : "my-9"}
+								w-16 h-12 flex flex-col items-center justify-center my-5 
 								${isBooked ? "booked cursor-not-allowed" : "hover:bg-gray-500"}
 								${isSelected ? "blue" : "hover:bg-gray-500"}
 							`}>
-							<h1 className="m-0 text-xs">{(roomValue.col)*(i-1)+j}</h1>
+							<h1 className="m-0 text-xs">{seatID}</h1>
 							<img src="./src/resources/computers.png" alt="computer" className="w-50 h-25 object-contain"/>
 						</button>
+					);
+					seatidx++;
+				}
+				else{
+					cols.push(
+						<button
+						className="w-16 h-1 flex items-center justify-center my-5"
+						>
+						<img
+							src="./src/resources/emptyspace.png"
+							alt="empty"
+							className="w-50 h-25 object-contain"
+						/>
+						</button>
 					)
-
+				}
 			}
 			rows.push(
 				<div className={`flex justify-center`}>
@@ -154,8 +191,21 @@ export function Reservations(){
 				</div>
 			)
 		}
-
 		return rows;
+	}
+
+	const renderSeats = () => {
+		if (["GK201", "GK202", "GK203", "GK204"].includes(roomValue.name)) {
+			return deploySeats(layout1);
+		}
+
+		if (["GK205", "GK206", "GK207"].includes(roomValue.name)) {
+			return deploySeats(layout2);
+		}
+
+		if (["GK208", "GK209", "GK210"].includes(roomValue.name)) {
+			return deploySeats(layout3);
+		}
 	}
 
 	function reserveSeat(timeValue, roomValue, selectedSeats) {
@@ -164,7 +214,7 @@ export function Reservations(){
 		setBookedSeats(prev => [...prev, ...selectedSeats]);
 
 		const seatStatus = reservations[dayIndex][roomIndex][timeIndex];
-		selectedSeats.forEach(id => seatStatus[id - 1] = true);
+		selectedSeats.forEach(id => seatStatus[id] = true);
 
 		setSelectedSeats([]);
 
@@ -215,7 +265,7 @@ export function Reservations(){
 			`currently looking at:
 			Date: ${selectedDate.toLocaleDateString()}
 			Time: ${timeValue},
-			Room: ${roomValue}, 
+			Room: ${roomValue.name}, 
 
 			Reserved seats: \n${seatMatrixConsole}
 			`
@@ -276,7 +326,7 @@ export function Reservations(){
 								<select
 								className = "text-xl gray-89"
 								style={{
-									width: "150px",
+									width: "155px",
 									height: "50px",
 									borderRadius: "8px",
 									padding: "6px 10px",
