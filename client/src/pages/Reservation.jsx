@@ -86,7 +86,8 @@ export function Reservations(){
 
 	const handleRoomChange = (e) => {
 		const newRoom = rooms.find(r => r.name === e.target.value);
-		setRoomValue(newRoom)
+		setRoomValue(newRoom);
+		setSelectedSeats([]);
 	}
 	
 	const optionRoom = [];
@@ -139,10 +140,10 @@ export function Reservations(){
 
 	const layout3 = [
 		[0,0,0,0,0,0,0],
-		[1,1,1,0,1,1,1],
+		[2,2,2,0,2,2,2],
 		[1,1,1,0,1,1,1],
 		[0,0,0,0,0,0,0],
-		[1,1,1,0,1,1,1],
+		[2,2,2,0,2,2,2],
 		[1,1,1,0,1,1,1]
 	];
 
@@ -152,26 +153,60 @@ export function Reservations(){
 		for (let i = 0; i < layoutArr.length; i++) {
 			const cols = [];
 			for (let j = 0; j < layoutArr[i].length; j++) {
-				if(layoutArr[i][j] === 1){
+				if(layoutArr[i][j] != 0){
 					const seatID = seatidx;
 					const isBooked = bookedSeats.includes(seatID);
 					const isSelected = selectedSeats.includes(seatID);
-					cols.push(
-						<button
-							id={seatID} 
-							onClick={() => isBooked ? null : toggleSeatSelection(seatID)}
-							className={`
-								w-16 h-12 flex flex-col items-center justify-center my-5 
-								${isBooked ? "booked cursor-not-allowed" : "hover:bg-gray-500"}
-								${isSelected ? "blue" : "hover:bg-gray-500"}
-							`}>
-							<h1 className="m-0 text-xs">{seatID}</h1>
-							<img src="./src/resources/computers.png" alt="computer" className="w-50 h-25 object-contain"/>
-						</button>
-					);
+					if(layoutArr[i][j] === 1)
+					{
+						cols.push(
+							<div className="flex flex-col items-center">
+								<h1 className="m-0 text-xs">{seatID}</h1>
+								<button
+									id={seatID}
+									onClick={() => isBooked ? null : toggleSeatSelection(seatID)}
+									className={`
+										w-16 h-16 flex flex-col items-center justify-center 
+										${isBooked ? "booked cursor-not-allowed" : "hover:bg-gray-500"}
+										${isSelected ? "blue" : ""}
+									`}
+								>
+									<img
+										src="./src/resources/computer.png"
+										alt="computer"
+										className="w-16 h-16 object-contain"
+									/>
+								</button>
+							</div>
+						);
+					}
+					if(layoutArr[i][j] === 2)
+					{
+						cols.push(
+							<div className="flex flex-col items-center">
+								<h1 className="m-0 text-xs">{seatID}</h1>
+								<button
+									id={seatID}
+									onClick={() => isBooked ? null : toggleSeatSelection(seatID)}
+									className={`
+										w-16 h-16 flex flex-col items-center justify-center 
+										${isBooked ? "booked cursor-not-allowed" : "hover:bg-gray-500"}
+										${isSelected ? "blue" : ""}
+									`}
+								>
+									<img
+										src="./src/resources/computer_flipped.png"
+										alt="computer"
+										className="w-16 h-16 object-contain"
+									/>
+								</button>
+							</div>
+						);
+					}
 					seatidx++;
 				}
-				else{
+				else
+				{
 					cols.push(
 						<button
 						className="w-16 h-1 flex items-center justify-center my-5"
@@ -183,6 +218,7 @@ export function Reservations(){
 						/>
 						</button>
 					)
+					
 				}
 			}
 			rows.push(
@@ -273,13 +309,13 @@ export function Reservations(){
 	}
 	
 	return(
-		<div className="flex flex-col justify-center items-center rounded-2xl mt-5 gap-3">
+		<div className="flex flex-col justify-center items-center rounded-2xl mt-10 gap-3">
 			<div className="text-5xl google font-bold mr-220">
 				Reserve a seat		
 			</div>
 			<div className="flex flex-row gap-4">
-				<div className="flex flex-row justify-center items-center rounded-2xl gap-8">
-					<div className="flex items-center justify-center  flex flex-col gap-4">
+				<div className="flex flex-row justify-center items-center rounded-2xl">
+					<div className="flex items-center justify-center flex-col gap-4">
 						<div className="gray-67 justify-center items-center rounded-2xl text-2xl google flex items-center justify-center gap-8 w-[800px]">
 							<div className="gap-2 flex flex-row justify-center items-center">
 								<div className="text-xl google flex items-center justify-center">
@@ -346,7 +382,7 @@ export function Reservations(){
 						</div>
 
 			
-						<div className="min-w-[800px] min-h-[600px] w-fit h-fit p-8 gray-67 rounded-2xl">
+						<div className="min-w-[800px] min-h-[665px] w-fit h-fit p-8 gray-67 rounded-2xl">
 							{renderSeats()}
 						</div>
 					</div>
