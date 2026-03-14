@@ -5,7 +5,7 @@ import { PencilSvg } from "../components/PencilSvg";
 import { ReservationTable } from "../components/ReservationTable";
 
 const formelement =
-  "w-full px-[10px] py-[6px] rounded-xl gray-89 text-sm font-['Inter',sans-serif] box-border " +
+  "w-full px-[10px] py-[6px] rounded-xl gray-89 text-lg font-['Inter',sans-serif] box-border " +
   "focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]" +
   " selection:bg-blue-300 selection:text-black";
 
@@ -13,7 +13,7 @@ export function StudentProfile() {
   const [student, setStudent] = useState(currentUser);
 
   const fields = [
-    { label: "NAME", key: "name", editable: false, display: true },
+    { label: "FULL NAME", key: "name", editable: false, display: true },
     { label: "ID", key: "id", editable: false, display: true },
     { label: "EMAIL", key: "email", editable: true, display: true },
     { label: "COLLEGE", key: "college", editable: true, display: true },
@@ -26,10 +26,10 @@ export function StudentProfile() {
       {fields
         .filter((field) => field.display)
         .map((field) => (
-          <div key={field.key} className="m-3">
-            <h2 className="font-bold text-xs mb-1">{field.label}</h2>
+          <div key={field.key}>
+            <h2 className="font-bold text-s mb-1">{field.label}</h2>
             <div className="rounded-xl gray-89 p-2 transition-transform transform hover:scale-[1.03]">
-              <h1>{student[field.key] ?? "N/A"}</h1>
+              <h1 className="text-lg">{student[field.key] ?? "N/A"}</h1>
             </div>
           </div>
         ))}
@@ -41,7 +41,7 @@ export function StudentForm() {
 		<form className="w-full px-4">
 			<div className="flex gap-[15px]">
 				<div className="mb-3 w-full flex-1">
-					<label className="block font-bold text-xs mb-1">NAME</label>
+					<label className="block font-bold text-xs mb-1">FULL NAME</label>
 					<input 
 					className={`${formelement}`}
 					type="text" defaultValue={currentUser.name}></input>
@@ -171,61 +171,70 @@ export function Profile() {
         setShowFirst((prev) => !prev);
     };
     
-    return(
-        <div className="m-5 flex gap-4">
-            <div className="rounded-2xl pb-2 gray-67 flex flex-col items-center w-1/3">
-                <img className="mt-10 mb-5 rounded-full w-40" src="./src/resources/karl.png"></img>
-                <h1 className="text-3xl mb-6 google font-bold">{
-					currentUser.nickname.length == 0 ? currentUser.name : currentUser.nickname
-				}</h1>
-                <div className="text-center mb-6">
-                    <h2 className="font-[serif] italic text-xl">{currentUser.bio}</h2>
-                </div>
-                <div className="w-full px-2 google">
-                    <StudentProfile />
-                </div>
-				{!(currentUser.isAdmin) ? (
-					<button 
-						className="border p-2 rounded-xl flex items-center transition-transform transform hover:scale-103
-						transition transform active:scale-95 "
-						onClick={handleToggle}>
-						{showFirst ? (
-							<>
-								<PencilSvg /> Edit Profile
-							</>
-							
-						) : (
-							<>
-								<PencilSvg /> Cancel Editing
-							</>
-						)}
-					</button>
-				) : null}
+    return (
+		<div className="m-5 grid grid-cols-3 gap-4 items-stretch">
+			<div className="col-span-1 min-h-[50vh] flex flex-col">
+			<div className="text-4xl font-black google mb-4 w-full">Profile</div>
+			<div className="gray-67 flex flex-col rounded-2xl p-4 items-center flex-1">
+				<img
+				className="rounded-full w-40"
+				src="./src/resources/karl.png"
+				alt="Profile"
+				/>
 
-            </div>
-			{showFirst && !(currentUser.isAdmin) ? (
-				<div className="rounded-2xl px-4 pb-2 gray-67 flex flex-col items-center w-2/3">
-					<div className="text-3xl mb-6 google font-bold mt-4">
-						Reservations
-					</div>
-					<ReservationTable student={currentUser}/>
+				<h1 className="text-5xl font-bold google">
+				{currentUser.nickname.length === 0 ? currentUser.name : currentUser.nickname}
+				</h1>
+
+				<div className="text-center">
+				<h2 className="font-[serif] italic text-xl">{currentUser.bio}</h2>
+				</div>
+
+				<div className="w-full flex-1">
+				<StudentProfile />
+				</div>
+
+				{!currentUser.isAdmin && (
+				<button
+					className="border p-2 rounded-xl flex items-center transition-transform transform hover:scale-103 active:scale-95 mt-4"
+					onClick={handleToggle}
+				>
+					{showFirst ? (
+					<>
+						<PencilSvg /> Edit Profile
+					</>
+					) : (
+					<>
+						<PencilSvg /> Cancel Editing
+					</>
+					)}
+				</button>
+				)}
+			</div>
+			</div>
+
+			<div className="col-span-2 min-h-[50vh] flex flex-col">
+			{showFirst && !currentUser.isAdmin ? (
+				<div className="flex flex-col flex-1">
+				<div className="text-3xl font-bold google mb-4 w-full">Reservations</div>
+				<div className="rounded-2xl p-4 gray-67 flex flex-col items-center flex-1">
+					<ReservationTable student={currentUser} />
+				</div>
 				</div>
 			) : (
-				<div className="flex flex-col w-2/3 gap-4">
-					<div className="rounded-2xl pb-2 gray-67 flex flex-col items-center">
-						<div className="text-3xl mb-6 google font-bold mt-4">
-							Edit Details
-						</div>
-						<StudentForm/>
+				<div className="flex flex-col flex-1">
+					<div className="text-3xl font-bold google w-full mb-4">Edit Details</div>
+					<div className="gray-67 flex flex-col rounded-2xl p-4 items-center mb-4 flex-1">
+						<StudentForm />
 					</div>
-					<div className="rounded-2xl pb-2 gray-67 flex flex-col items-center">
-						<div className="text-3xl mb-2 google font-bold mt-4">
-							Account Settings
-						</div>
-						<AccountSettings/>
+
+					<div className="text-3xl font-bold google w-full mb-4">Account Settings</div>
+					<div className="rounded-2xl pb-2 gray-67 flex flex-col items-center flex-1">
+						<AccountSettings />
 					</div>
 				</div>
 			)}
-        </div>
-    );
+			</div>
+		</div>
+	);
 }

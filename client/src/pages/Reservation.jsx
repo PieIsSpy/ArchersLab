@@ -181,17 +181,17 @@ export function Reservations(){
 	}
 
 	function toggleSeatSelection(seatID) {
-		setSelectedSeats(prev => {
-			if (prev.includes(seatID)) {
-				return prev.filter(id => id !== seatID);
-			} else {
-				if (prev.length + bookedSeats.length >= 5) {
-					alert("You can only reserve up to 5 seats.");
-					return prev;
-				}
-				return [...prev, seatID];
-			}
-		});
+		if (selectedSeats.includes(seatID)) {
+			setSelectedSeats(prev => prev.filter(id => id !== seatID));
+			return;
+		}
+
+		if (selectedSeats.length + bookedSeats.length >= 5) {
+			alert("You can only reserve up to 5 seats.");
+			return;
+		}
+
+		setSelectedSeats(prev => [...prev, seatID]);
 	}
 
 	function displayState(){
@@ -223,8 +223,8 @@ export function Reservations(){
 	}
 	
 	return(
-		<div className="flex flex-col justify-center items-center rounded-2xl gap-3">
-			<div className="text-5xl google mt-10 font-bold mr-220">
+		<div className="flex flex-col justify-center items-center rounded-2xl mt-5 gap-3">
+			<div className="text-5xl google font-bold mr-220">
 				Reserve a seat		
 			</div>
 			<div className="flex flex-row gap-4">
@@ -237,7 +237,9 @@ export function Reservations(){
 								</div>
 								<div className="text-xl w-[150px] h-[100px] flex items-center justify-center">
 									<DatePicker
-										className="gray-89 text-xl w-full p-3 rounded-lg text-center"
+										className="gray-89 text-xl w-full p-3 rounded-lg text-center
+										focus:outline-none focus:ring-2 focus:ring-[#145b92]
+										focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
 										selected={selectedDate}
 										onChange={(date) => setSelectedDate(date)}
 										minDate={minDate()}
@@ -305,7 +307,7 @@ export function Reservations(){
 						Chosen Seats
 					</div>
 
-					<div className="flex justify-center items-center py-3 text-xl font-bold google border-b border-gray-600 gap-4  mx-auto w-90">
+					<div className="flex justify-center items-center py-3 text-xl font-bold google border-b-2 border-gray-600 gap-4  mx-auto w-90">
 						<span>
 							Room<br></br>
 							<div className="font-normal">
@@ -313,7 +315,7 @@ export function Reservations(){
 							</div>
 						</span>
 
-						<div className="h-12 w-px bg-gray-500"></div>
+						<div className="h-12 w-px bg-gray-600"></div>
 						
 						<span>
 							Timeslot<br></br>
@@ -322,7 +324,7 @@ export function Reservations(){
 							</div>
 						</span>
 
-						<div className="h-12 w-px bg-gray-500"></div>
+						<div className="h-12 w-px bg-gray-600"></div>
 
 						<span>
 							Date<br></br>
@@ -336,7 +338,7 @@ export function Reservations(){
 						<table className="w-[90%] mx-auto">
 							<tbody>
 							{selectedSeats.map(seatID => (
-								<tr key={seatID} className="border-b border-gray-600">
+								<tr key={seatID} className="border-b-2 border-gray-600">
 								<td className="text-left google m-10">Seat #{seatID}</td>
 								<td className="w-1/3 py-1 google">
 									<button
@@ -365,7 +367,7 @@ export function Reservations(){
 					</div>
 
 
-					<div className="flex justify-center items-center py-3 text-xl font-bold google border-t border-gray-600 gap-4  mx-auto w-90">
+					<div className="flex justify-center items-center py-3 text-xl font-bold google border-t-2 border-gray-600 gap-4  mx-auto w-90">
 						<button 
 							className="w-full font-bold
 							bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:bg-[#02497F] active:shadow-inner select-none"
