@@ -122,20 +122,31 @@ export function Reservations(){
 
 				const isBooked = bookedSeats.includes(seatID);
 				const isSelected = selectedSeats.includes(seatID);
-				cols.push(
-					<button
-						id={seatID} 
-						onClick={() => isBooked ? null : toggleSeatSelection(seatID)}
-						className={`
-							w-16 h-12 flex flex-col items-center justify-center my-9 
-							${j % roomValue.col === 0? "mr-0" : j % 3 === 0 ? "mr-10" : "mr-0"}
-							${isBooked ? "booked cursor-not-allowed" : "hover:bg-gray-500"}
-							${isSelected ? "blue" : "hover:bg-gray-500"}
-						`}>
-						<h1 className="m-0 text-xs">{(roomValue.col)*(i-1)+j}</h1>
-						<img src="./src/resources/computers.png" alt="computer" className="w-50 h-25 object-contain"/>
-					</button>
-				)
+					cols.push(
+						<button
+							id={seatID} 
+							onClick={() => isBooked ? null : toggleSeatSelection(seatID)}
+							className={`
+								w-16 h-12 flex flex-col items-center justify-center my-9 
+								${["GK201","GK202","GK203","GK204","GK205","GK206"].includes(roomValue.name)
+                                ? j % roomValue.col === 0
+                                    ?"mr-0" 
+                                    : j % 3 === 0 
+                                        ? "mr-10" 
+                                        : "mr-0"
+                                : j % 3 === 0
+									? "mr-10"
+									: "mr-0"
+                        		}
+								${i % 2 ? "my-0" : "my-9"}
+								${isBooked ? "booked cursor-not-allowed" : "hover:bg-gray-500"}
+								${isSelected ? "blue" : "hover:bg-gray-500"}
+							`}>
+							<h1 className="m-0 text-xs">{(roomValue.col)*(i-1)+j}</h1>
+							<img src="./src/resources/computers.png" alt="computer" className="w-50 h-25 object-contain"/>
+						</button>
+					)
+
 			}
 			rows.push(
 				<div className={`flex justify-center`}>
@@ -166,8 +177,7 @@ export function Reservations(){
 			Seats: ${seatList}
 		`);
 
-		const table = document.getElementById("chosenSeatsTable");
-		table.innerHTML = ""
+		document.getElementById("chosenSeatsTable").innerHTML = "";
 	}
 
 	function toggleSeatSelection(seatID) {
