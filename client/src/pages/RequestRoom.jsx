@@ -81,87 +81,96 @@ export function RequestRoom(){
 
 	return(
 		<div className="flex flex-col justify-center items-center rounded-2xl gap-3">
-			<div className="text-4xl google mt-10 font-bold mr-135">
-				Reserve a seat:		
-			</div>
-			<div className="flex flex-row gap-4">
-				<div className="flex flex-row justify-center items-center rounded-2xl gap-8">
-					<div className="flex items-center justify-center  flex flex-col gap-4">
-						<div className="gray-67 justify-center items-center rounded-2xl text-2xl google flex items-center justify-center gap-8 w-[800px]">
-							<div className="gap-2 flex flex-row justify-center items-center">
-								<div className="text-xl google flex items-center justify-center">
-									Date:
-								</div>
-								<div className="text-xl w-[150px] h-[100px] flex items-center justify-center">
-									<DatePicker
-										className="gray-89 text-xl w-full p-3 rounded-lg text-center"
-										selected={selectedDate}
-										onChange={(date) => setSelectedDate(date)}
-										minDate={minDate()}
-										maxDate={maxdate()}
-										dateFormat="MM/dd/yyyy"
-									/>
-								</div>
-							</div>
-
-							<label className="text-xl gap-3 flex flex-row justify-center items-center">
-								<div>
-									Room:  
-								</div>
-								
-								<select
-								className = "text-xl gray-89 text-center"
-								style={{
-									width: "120px",
-									height: "50px",
-									borderRadius: "8px",
-									padding: "6px 10px",
-								}}
-								value={roomValue}
-								onChange={(e) => {
-									
-									const newRoom = e.target.value;
-									setRoomValue(newRoom);
-									const newRoomIndex = room.indexOf(newRoom);
-									const newTimeIndex = timeSlots.indexOf(timeValue);
-								}}
-								>
-								{optionRoom}
-								</select>
-							</label>
-
-							<label className="text-xl gap-3 flex flex-row justify-center items-center">
-								<div>
-									Timeslot:  
-								</div>
-								<select
-								className = "text-xl gray-89"
-								style={{
-									width: "150px",
-									height: "50px",
-									borderRadius: "8px",
-									padding: "6px 10px",
-								}}
-								value={timeValue}
-								onChange={(e) => {
-									
-									const newTime = e.target.value;
-									setTimeValue(e.target.value);
-									const newRoomIndex = room.indexOf(roomValue);
-									const newTimeIndex = timeSlots.indexOf(newTime);
-								}}
-								>
-									{timeSlotOptions}
-								</select>
-							</label>
-						</div>
-						<div className="bg-[#145b92] p-3 rounded-xl transition-all hover:scale-110 active:scale-105 active:bg-[#02497F] active:shadow-inner select-none">
-							Request Room Reservation
-						</div>
-					</div>
+			<div className="mt-50 mr-75">
+				<div className="google text-5xl font-bold text-gray-400">
+					Request for a room
+				</div>
+				<div className="google mt-2 text-gray">
+					Do note that each reservation must be made 14-31 days in advance.<br/>
+					All requests are subject for approval.
 				</div>
 			</div>
 
+			{/* Outer Div that holds DATE ROOM TIMESLOT + REQ btn */}
+			<div className="flex flex-col justify-center items-center rounded-2xl gap-8">
+					{/* Inner Div that holds DATE ROOM TIMESLOT */}
+					<div className="gray-67 justify-center items-center rounded-2xl text-2xl google flex gap-12 w-[800px]">
+						
+						{/* Inner Div that holds DATE */}
+						<div className="gap-2 flex flex-row">
+							<div className="text-xl google flex items-center justify-center">
+								Date:
+							</div>
+							<div className="text-xl w-[150px] h-[100px] flex items-center justify-center">
+								<DatePicker
+									className="gray-89 text-xl w-full p-3 rounded-lg text-center"
+									selected={selectedDate}
+									onChange={(date) => setSelectedDate(date)}
+									minDate={minDate()}
+									maxDate={maxdate()}
+									dateFormat="MM/dd/yyyy"
+								/>
+							</div>
+						</div>
+
+						{/* Inner Div that holds ROOM */}
+						<div className="gap-2 flex flex-row">
+							<div className="text-xl google flex items-center justify-center">
+								Room:
+							</div>
+							
+							<select
+							className = "text-xl gray-89 text-center"
+							style={{
+								width: "120px",
+								height: "50px",
+								borderRadius: "8px",
+								padding: "6px 10px",
+							}}
+							value={roomValue}
+							onChange={(e) => {
+								
+								const newRoom = e.target.value;
+								setRoomValue(newRoom);
+								const newRoomIndex = room.indexOf(newRoom);
+								const newTimeIndex = timeSlots.indexOf(timeValue);
+							}}
+							>
+							{optionRoom}
+							</select>
+						</div>
+
+						{/* Inner Div that holds TIMESLOT */}
+						<div className="gap-2 flex flex-row">
+							<div className="text-xl google flex items-center justify-center">
+								Timeslot:
+							</div>
+							<select
+							className = "text-xl gray-89"
+							style={{
+								width: "150px",
+								height: "50px",
+								borderRadius: "8px",
+								padding: "6px 10px",
+							}}
+							value={timeValue}
+							onChange={(e) => {
+								const newTime = e.target.value;
+								setTimeValue(e.target.value);
+								const newRoomIndex = room.indexOf(roomValue);
+								const newTimeIndex = timeSlots.indexOf(newTime);
+							}}
+							>
+								{timeSlotOptions}
+							</select>
+						</div>
+					</div>
+					
+					{/* Reserve btn */}
+					<div className="bg-[#145b92] p-3 rounded-xl transition-all hover:scale-110 active:scale-105 active:bg-[#02497F] active:shadow-inner select-none">
+						Request Room Reservation
+					</div>
+			</div>
 		</div>
 	);
 }

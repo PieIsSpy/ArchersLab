@@ -27,14 +27,16 @@ export function AdminRegistration() {
 		"focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]";
 
 	return (
-		<div className="w-1/3 mx-auto p-4 gray-67 rounded-2xl shadow-md my-10">
-			<div className="my-7">
-				<p className="text-5xl google font-bold">Create Admin Account</p>
-				Create account with administrator privileges
+		<div className="w-1/3 mx-auto my-45">
+			<div className="mb-4">
+				<div className="text-5xl google font-bold">Admin Registration</div>
+				<div className="google mt-2 text-gray-400">
+					Create an account with administrator privileges.
+				</div>
 			</div>
 			<form
 			onSubmit={handleSubmit}
-			className="w-full flex flex-col items-center space-y-4 mb-6"
+			className="w-full flex flex-col items-center space-y-4 gray-67 rounded-2xl shadow-md p-4"
 			>
 				<div className="flex flex-col w-full">
 					<label className="font-bold text-xs mb-1">Name</label>
@@ -87,7 +89,7 @@ export function AdminRegistration() {
 				<div className="flex justify-center mt-4">
 					<button
 					type="submit"
-					className="px-[15px] py-[5px] mb-2 bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none text-white"
+					className="px-[15px] py-[5px] bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none text-white"
 					>
 					Create Admin Account
 					</button>

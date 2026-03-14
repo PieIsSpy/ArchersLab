@@ -214,8 +214,8 @@ export function Reservations(){
 	
 	return(
 		<div className="flex flex-col justify-center items-center rounded-2xl gap-3">
-			<div className="text-4xl google mt-10 font-bold mr-239">
-				Reserve a seat:		
+			<div className="text-5xl google mt-10 font-bold mr-220">
+				Reserve a seat		
 			</div>
 			<div className="flex flex-row gap-4">
 				<div className="flex flex-row justify-center items-center rounded-2xl gap-8">
@@ -290,7 +290,7 @@ export function Reservations(){
 					</div>
 				</div>
 
-				<div className="w-[400px] h-[715px] gray-67 justify-center items-center rounded-2xl">
+				<div className="w-[400px] h-[780px] gray-67 justify-center items-center rounded-2xl">
 					<div className="flex justify-center py-3 text-xl font-bold google border-b-2 border-gray-600 mx-auto w-90">
 						Chosen Seats
 					</div>
