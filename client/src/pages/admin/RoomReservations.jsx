@@ -105,66 +105,65 @@ export function ReservationTable() {
 }
 
 export function RoomReservations () {
-		return (
-		<div className="m-5 w-1/2 mx-auto my-40">
-			<h2 className="mt-12 font-black google text-5xl mb-5">Room Reservation Requests</h2>
+	const formcontrol =
+		"gray-89 text-xl text-center px-3 h-10 w-43 rounded-xl bg-transparent " +
+		"focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92] " +
+		"selection:bg-blue-300 selection:text-black";
 
-			
+		return (
+		<div className="m-5 w-2/3 mx-auto my-40">
+			<h2 className="font-black google text-5xl mb-5">Room Reservation Requests</h2>
 			{/* Outer Div that holds DATE ROOM TIMESLOT + REQ btn */}
-						<div className="p-4 gray-67 flex flex-col rounded-2xl">
-							<h2 className="google text-3xl text-gray-400 mb-3">Filter by</h2>
-								{/* Inner Div that holds DATE ROOM TIMESLOT */}
-								<div className="justify-center items-center rounded-2xl text-2xl google flex gap-12 w-full">
-									
-									{/* Inner Div that holds DATE */}
-									<div className="gap-2 flex flex-row">
-										<div className="text-xl google flex items-center justify-center">
-											Date:
-										</div>
-										<div className="text-xl flex items-center justify-center">
-											<DatePicker
-												className="gray-89 text-xl w-full rounded-xl text-center px-2
-												focus:outline-none focus:ring-2 focus:ring-[#145b92]
-												focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
-												selected={null}
-												onChange={null}
-												minDate={null}
-												maxDate={null}
-												dateFormat="MM/dd/yyyy"
-											/>
-										</div>
-									</div>
-			
-									{/* Inner Div that holds ROOM */}
-									<div className="gap-2 flex flex-row">
-										<div className="text-xl google flex items-center justify-center">
-											Room:
-										</div>
-										
-										<select
-										className = "text-xl gray-89 text-center px-2 rounded-xl"
-										value={null}
-										onChange={(e) => {
-										}}
-										>
-										{optionRoom}
-										</select>
-									</div>
-			
-									{/* Inner Div that holds NAME */}
-									<div className="gap-2 flex flex-row">
-										<div className="text-xl google flex items-center justify-center">
-											Name:
-										</div>
-										<input
-											className="rounded-xl px-2 gray-89 rounded-lg text-center justify-center bg-transparent
-											focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]
-											selection:bg-blue-300 selection:text-black"
-										/>
-									</div>
-								</div>
+			<div className="p-4 gray-67 flex flex-col rounded-2xl">
+				<h2 className="google text-3xl text-gray-400 mb-3">Filter by</h2>
+					{/* Inner Div that holds DATE ROOM TIMESLOT */}
+					<div className="justify-center items-center rounded-2xl text-2xl google flex gap-12 w-full">
+						
+						{/* Inner Div that holds DATE */}
+						<div className="gap-2 flex flex-row">
+							<div className="text-xl google flex items-center justify-center">
+								Date:
+							</div>
+							<div className="text-xl flex items-center justify-center">
+								<DatePicker
+									className={formcontrol}
+									selected={null}
+									onChange={null}
+									minDate={null}
+									maxDate={null}
+									dateFormat="MM/dd/yyyy"
+								/>
+							</div>
 						</div>
-				<div className="px-4 mt-4 rounded-2xl gray-67 shadow-lg">
+
+						{/* Inner Div that holds ROOM */}
+						<div className="gap-2 flex flex-row">
+							<div className="text-xl google flex items-center justify-center">
+								Room:
+							</div>
+							
+							<select
+									className={formcontrol}
+							value={null}
+							onChange={(e) => {
+							}}
+							>
+							{optionRoom}
+							</select>
+						</div>
+
+						{/* Inner Div that holds NAME */}
+						<div className="gap-2 flex flex-row">
+							<div className="text-xl google flex items-center justify-center">
+								Name:
+							</div>
+							<input
+								className={formcontrol}
+							/>
+						</div>
+					</div>
+			</div>
+			<div className="px-4 mt-4 rounded-2xl gray-67 shadow-lg">
 				<ReservationTable/>
 			</div>
 		</div>);
