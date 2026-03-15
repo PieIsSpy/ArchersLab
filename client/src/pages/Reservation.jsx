@@ -238,16 +238,13 @@ export function Reservations(){
 	}
 
 	const renderSeats = () => {
-		if (["GK201", "GK202", "GK203", "GK204"].includes(roomValue.name)) {
-			return deploySeats(layout1);
-		}
-
-		if (["GK205", "GK206", "GK207"].includes(roomValue.name)) {
-			return deploySeats(layout2);
-		}
-
-		if (["GK208", "GK209", "GK210"].includes(roomValue.name)) {
-			return deploySeats(layout3);
+		switch (roomValue.layoutID) {
+			case 1:
+				return deploySeats(layout1);
+			case 2:
+				return deploySeats(layout2);
+			case 3:
+				return deploySeats(layout3);
 		}
 	}
 
