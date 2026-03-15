@@ -20,7 +20,7 @@ const reservationSchema = mongoose.Schema({
         required: true
     },
     seats: {
-        type: [Numbers]
+        type: [Number]
     },
     isAnnonymous: {
         type: Boolean,
@@ -28,4 +28,4 @@ const reservationSchema = mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('Room', reservationSchema);
+module.exports = mongoose.model('Reservation', reservationSchema);
