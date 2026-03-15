@@ -4,7 +4,7 @@ import { ReservationTable } from "../components/ReservationTable";
 
 export function Home () {
     return (
-    <div className="m-5 w-1/2 mx-auto">
+    <div className="m-5 w-3/4 mx-auto">
         <div className="google p-4 mt-4 rounded-2xl gray-67 shadow-lg flex items-center">
 			
 			<img
