@@ -18,3 +18,5 @@ const roomSchema = mongoose.Schema({
         required: true
     },
 })
+
+module.exports = mongoose.model('User', roomSchema);
