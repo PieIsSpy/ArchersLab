@@ -27,7 +27,7 @@ for (let i = 0; i < days; i++) {
 	}
 }
 
-export function Reservations(){
+export function ReserveSeat(){
 	/* TODO:
 	- maximum 5 reservations only per room (make an error message) (partial)
 	- reserve button will turn it (idk what color) (done)
@@ -154,62 +154,43 @@ export function Reservations(){
 		for (let i = 0; i < layoutArr.length; i++) {
 			const cols = [];
 			for (let j = 0; j < layoutArr[i].length; j++) {
-				if(layoutArr[i][j] != 0){
+				if(layoutArr[i][j] != 0)
+				{
 					const seatID = seatidx;
 					const isBooked = bookedSeats.includes(seatID);
 					const isSelected = selectedSeats.includes(seatID);
-					if(layoutArr[i][j] === 1)
-					{
 						cols.push(
 							<div className="flex flex-col items-center">
-								{!hasReversed ? (
-									<h1 className="m-0 text-xs">{seatID}</h1>
-								) : null}
+								{!hasReversed || layoutArr[i][j] === 2 ? 
+									<h1 className="m-0 text-xs">{seatID}</h1> : 
+								null}
+
 								<button
 									id={seatID}
 									onClick={() => isBooked ? null : toggleSeatSelection(seatID)}
 									className={`
 										w-16 h-16 flex flex-col items-center justify-center 
-										${isBooked ? "booked cursor-not-allowed" : "hover:bg-gray-500"}
-										${isSelected ? "blue" : ""}
-									`}
+										${isBooked ? "booked cursor-not-allowed" : 
+											isSelected ? "bg-[#145b92] hover:bg-[#477da6] transition-all duration-75 ease-in" : 
+											"hover:bg-gray-500 transition-all duration-75 ease-in"}`}
 								>
-									<img
-										src="./src/resources/computer.png"
-										alt="computer"
-										className="w-16 h-16 object-contain"
-									/>
+									{layoutArr[i][j] === 1 ? 
+										<img
+											src="./src/resources/computer.png"
+											alt="computer"
+											className="w-16 h-16 object-contain"
+										/> : 
+										<img
+											src="./src/resources/computer_flipped.png"
+											alt="computer"
+											className="w-16 h-16 object-contain"
+									/>}
 								</button>
-								{hasReversed ? (
+								{hasReversed && layoutArr[i][j] !== 2 ?
 									<h1 className="m-0 text-xs">{seatID}</h1>
-								) : null}
+								: null}
 							</div>
 						);
-					}
-					if(layoutArr[i][j] === 2)
-					{
-						cols.push(
-							<div className="flex flex-col items-center">
-								
-								<h1 className="m-0 text-xs">{seatID}</h1>
-								<button
-									id={seatID}
-									onClick={() => isBooked ? null : toggleSeatSelection(seatID)}
-									className={`
-										w-16 h-16 flex flex-col items-center justify-center 
-										${isBooked ? "booked cursor-not-allowed" : "hover:bg-gray-500"}
-										${isSelected ? "blue" : ""}
-									`}
-								>
-									<img
-										src="./src/resources/computer_flipped.png"
-										alt="computer"
-										className="w-16 h-16 object-contain"
-									/>
-								</button>
-							</div>
-						);
-					}
 					seatidx++;
 				}
 				else
@@ -249,7 +230,11 @@ export function Reservations(){
 	}
 
 	function reserveSeat(timeValue, roomValue, selectedSeats) {
-		if (!selectedSeats.length) return;
+		if (!selectedSeats.length) 
+		{
+			alert("Please select seats to reserve");
+			return;
+		}
 
 		setBookedSeats(prev => [...prev, ...selectedSeats]);
 
@@ -424,7 +409,7 @@ export function Reservations(){
 						</span>
 					</div>
 					
-					<div className="[400px] h-[500px] overflow-auto justify-center">
+					<div className="[400px] h-[560px] overflow-auto justify-center">
 						<table className="w-[90%] mx-auto">
 							<tbody>
 							{selectedSeats.map(seatID => (

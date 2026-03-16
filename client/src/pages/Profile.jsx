@@ -194,7 +194,7 @@ export function Profile() {
 				<StudentProfile />
 				</div>
 
-				{!currentUser.isAdmin && (
+				{!currentUser.isAdmin ? (
 				<button
 					className="border p-2 rounded-xl flex items-center transition-transform transform hover:scale-103 active:scale-95 mt-4"
 					onClick={handleToggle}
@@ -209,7 +209,7 @@ export function Profile() {
 					</>
 					)}
 				</button>
-				)}
+				): null}
 			</div>
 			</div>
 
