@@ -18,14 +18,17 @@ export class User {
     this.college = college;
     this.program = program;
     this.about = about;
-    this.password = "password"; // will be depreciated in favor of user schema
-    this.isAdmin = isAdmin;
+    this.isAdmin = isAdmin; // will be removed in favor of schema
   }
 
   equals(otherUser) {
     if (!otherUser) return false;
     return this.id === otherUser.id;
   }
+}
+
+export function userJSON_to_Object(json) {
+  return new User(json.name, json._id, json.bio, json.email, json.college, json.program, json.about, json.isAdmin)
 }
 
 export let users = [
