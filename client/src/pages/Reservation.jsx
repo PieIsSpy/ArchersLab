@@ -10,12 +10,9 @@ export function Reservations(){
 	/* TODO:
 	- maximum 5 reservations only per room (make an error message) (partial)
 	- reserve button will turn it (idk what color) (done)
-	- make hard coded data 
 	- ensure that an error pops up if you clicked on a booked seat (partial)
-	- fix ui, everything must be centered add combobox for rooms (partial)
 	- 2d array of seats
 	- make sure that going back from profile to idk it doesnt reset the array
-	- make sure for each date it has a 2d array of seats so its now [day][room][seat]
 	- bawal sundays to book kasi walang pasok
 	*/ 
 
@@ -48,7 +45,7 @@ export function Reservations(){
 		const reservationsUrl = 'http://localhost:5000/api/reservations'
 		const fetchRooms = async () => {
 			try {
-				// fetch rooms
+				// fetch data
 				const [roomsFetch, reservationsFetch] = await Promise.all([
 					fetch(roomsUrl),
 					fetch(reservationsUrl)
@@ -67,8 +64,10 @@ export function Reservations(){
 				}
 
 				const reservationInstances = reservationsData.map(res => {
+					const userData = res.user ? res.user : res.inpersonInfo;
+					
 					return new Reservation(
-						userJSON_to_Object(res.user),
+						userJSON_to_Object(userData),
 						new Date(res.date),
 						res.time,
 						roomInstances.find(r => r.id === (res.room._id)),
@@ -89,12 +88,26 @@ export function Reservations(){
 
 		fetchRooms();
 	}, []);
+	
+	const timeIndex = timeSlots.indexOf(timeValue);
 
 	useEffect(() => {
-		displayState();
-		renderSeats();
+		if (!roomValue) {
+			setBookedSeats([]);
+			return;
+		}
+
+		const takenSlots = reservations.filter(res => {
+			const isSameDate = res.date.toDateString() === selectedDate.toDateString();
+			const isSameRoom = res.room.id === roomValue.id;
+			const isSameTime = res.time === timeValue;
+
+			return isSameDate && isSameRoom && isSameTime;
+		}).flatMap(res => res.seats);
+
+		setBookedSeats(takenSlots);
 		setSelectedSeats([]);
-	}, [selectedDate, roomValue, timeValue]);
+	}, [selectedDate, roomValue, timeValue, reservations]);
 
 	const today = new Date();
 	const selected = new Date(selectedDate);
@@ -274,23 +287,21 @@ export function Reservations(){
 	function reserveSeat(timeValue, roomValue, selectedSeats) {
 		if (!selectedSeats.length) return;
 
+		const newReservation = {
+			date: selectedDate,
+			time: timeValue,
+			room: roomValue.id,
+			seats: selectedSeats
+		};
+
+		try {
+
+		} catch (err) {
+
+		}
+
 		setBookedSeats(prev => [...prev, ...selectedSeats]);
-
-		const seatStatus = reservations[dayIndex][roomIndex][timeIndex];
-		selectedSeats.forEach(id => seatStatus[id] = true);
-
-		setSelectedSeats([]);
-
-		const seatList = selectedSeats.join(", ");
-		console.log(`
-			User has reserved Seats for
-			Date: ${selectedDate.toLocaleDateString()}
-			Time: ${timeValue}
-			Room: ${roomValue.name}
-			Seats: ${seatList}
-		`);
-
-		document.getElementById("chosenSeatsTable").innerHTML = "";
+		console.log(selectedSeats)
 	}
 
 	function toggleSeatSelection(seatID) {
@@ -305,34 +316,6 @@ export function Reservations(){
 		}
 
 		setSelectedSeats(prev => [...prev, seatID]);
-	}
-
-	function displayState(){
-
-		let seatMatrixConsole = "";
-		const reservedSeatList = reservations[dayIndex][roomIndex][timeIndex]
-		for(let i = 0; i<5; i++){
-			for(let j = 0; j<9; j++){
-				if(reservedSeatList[9*(i)+ j] === false){
-					seatMatrixConsole += " - ";
-				}
-				else{
-					seatMatrixConsole += " X ";
-				}
-				
-			}
-			seatMatrixConsole += "\n";
-
-		}
-		console.log(
-			`currently looking at:
-			Date: ${selectedDate.toLocaleDateString()}
-			Time: ${timeValue},
-			Room: ${roomValue.name}, 
-
-			Reserved seats: \n${seatMatrixConsole}
-			`
-		);
 	}
 	
 	if (loading || !roomValue) return <div>Loading...</div>
