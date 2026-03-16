@@ -59,7 +59,7 @@ export default function App() {
 							<div className="flex flex-col w-full gap-10">
 								<li>
 									<Link
-									to="/Reservations"
+									to="/ReserveSeat"
 									className={choice}
 									>
 									<svg
@@ -95,7 +95,7 @@ export default function App() {
 							<div className="flex flex-col w-full gap-10">
 								<li>
 									<Link
-									to="/Reservations"
+									to="/ReserveSeat"
 									className={choice}
 									>
 									<svg
@@ -112,7 +112,7 @@ export default function App() {
 
 								<li>
 									<Link
-									to="/Reservations"
+									to="/ReserveRoom"
 									className={choice}
 									>
 									<svg

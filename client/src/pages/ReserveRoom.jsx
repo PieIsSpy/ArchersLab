@@ -142,6 +142,12 @@ export function ReserveRoom(){
 					{/* Reserve btn */}
 					<div className="bg-[#145b92] p-3 rounded-xl transition-all hover:scale-110 active:scale-105 active:bg-[#02497F] active:shadow-inner select-none">
 						Request Room Reservation
+						onClick={() => {
+							if (currentUser.isAdmin)
+								setOpen(true)
+							else
+								reserveRoom(timeValue, roomValue)
+						}}
 					</div>
 			</div>
 		</div>

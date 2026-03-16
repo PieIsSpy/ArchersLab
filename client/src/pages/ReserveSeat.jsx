@@ -3,6 +3,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../dark-datepicker.css";
 import { rooms } from "../models/Room";
+import { currentUser } from "../models/User";
+import { Modal } from "../components/Modals";
+
 
 const days = 14; // you can only book 14 days after
 const tslots = 7;
@@ -28,66 +31,47 @@ for (let i = 0; i < days; i++) {
 }
 
 export function ReserveSeat(){
-	/* TODO:
-	- maximum 5 reservations only per room (make an error message) (partial)
-	- reserve button will turn it (idk what color) (done)
-	- make hard coded data 
-	- ensure that an error pops up if you clicked on a booked seat (partial)
-	- fix ui, everything must be centered add combobox for rooms (partial)
-	- 2d array of seats
-	- make sure that going back from profile to idk it doesnt reset the array
-	- make sure for each date it has a 2d array of seats so its now [day][room][seat]
-	- bawal sundays to book kasi walang pasok
-	- dont forget the time ig... [day][room][seat][timeslot]
-	- <reservation done>
-	*/ 
+	const [open, setOpen] = useState(false);
+	const [selectedDate, setSelectedDate] = useState(new Date());
+	const [selectedTime, setSelectedTime] = useState("07:30-09:00");
+	const [selectedRoom, setSelectedRoom] = useState(rooms[0]);
+	const [selectedSeats, setSelectedSeats] = useState([]);
+	const [bookedSeats, setBookedSeats] = useState([]);
 
-	// Initialize options for select menu later
 	const timeSlots = [
 		"07:30-09:00", "09:15-10:45", "11:00-12:30", "12:45-14:15", 
 		"14:30-16:00", "16:15-17:45", "18:00-19:30",
 	];
 
-	// Set states for React
-	const [selectedDate, setSelectedDate] = useState(()=>{
-		const today = new Date();
-		return today;
-	});
-	const [timeValue, setTimeValue] = useState(timeSlots[0]);
-	const [roomValue, setRoomValue] = useState(rooms[0])
-	const [selectedSeats, setSelectedSeats] = useState([]);
-	const [bookedSeats, setBookedSeats] = useState([]);
-
-	const DateChange = (date) => {
-		setSelectedDate(date)
-	};
-
 	useEffect(() => {
 		displayState();
-		renderSeats();
+		deploySeats();
 		setSelectedSeats([]);
-	}, [selectedDate, roomValue, timeValue]);
+	}, [selectedDate, selectedRoom, selectedTime]);
 
 	const today = new Date();
-	const selected = new Date(selectedDate);
-
 	today.setHours(0, 0, 0, 0);
+
+	const selected = new Date(selectedDate);
 	selected.setHours(0, 0, 0, 0);
 
 	// Set indexes
 	const dayIndex = Math.floor((selected - today) / (1000 * 60 * 60 * 24)); //subtracts current - reservation date
-	const roomIndex = rooms.indexOf(roomValue);
-	const timeIndex = timeSlots.indexOf(timeValue);
+	const roomIndex = rooms.indexOf(selectedRoom);
+	const timeIndex = timeSlots.indexOf(selectedTime);
 
 	// Set minimum and maximum date (earliest and latest)
-	const minDate = () => new Date();
-	const maxdate = () => {
-		return today.setDate(today.getDate() + 13);
-	}
+	const minDate = new Date();
+	const maxDate = new Date();
+	maxDate.setDate(today.getDate() + 13);
+
+	const handleDateChange = (newDate) => {
+		setSelectedDate(newDate)
+	};
 
 	const handleRoomChange = (e) => {
 		const newRoom = rooms.find(r => r.name === e.target.value);
-		setRoomValue(newRoom);
+		setSelectedRoom(newRoom);
 	}
 	
 	const optionRoom = [];
@@ -147,13 +131,29 @@ export function ReserveSeat(){
 		[1,1,1,0,1,1,1]
 	];
 
-	const deploySeats = (layoutArr) => {
+	function deploySeats 
+	{
+		switch (selectedRoom.layoutID) 
+		{
+			case 1:
+				return renderSeats(layout1);
+			case 2:
+				return renderSeats(layout2);
+			case 3:
+				return renderSeats(layout3);
+		}
+	}
+
+	function renderSeats (layoutArr)
+	{
 		const rows = [];
 		let seatidx = 1;
 		let hasReversed = layoutArr.some(row => row.includes(2));
-		for (let i = 0; i < layoutArr.length; i++) {
+		for (let i = 0; i < layoutArr.length; i++) 
+		{
 			const cols = [];
-			for (let j = 0; j < layoutArr[i].length; j++) {
+			for (let j = 0; j < layoutArr[i].length; j++) 
+			{
 				if(layoutArr[i][j] != 0)
 				{
 					const seatID = seatidx;
@@ -218,24 +218,7 @@ export function ReserveSeat(){
 		return rows;
 	}
 
-	const renderSeats = () => {
-		switch (roomValue.layoutID) {
-			case 1:
-				return deploySeats(layout1);
-			case 2:
-				return deploySeats(layout2);
-			case 3:
-				return deploySeats(layout3);
-		}
-	}
-
-	function reserveSeat(timeValue, roomValue, selectedSeats) {
-		if (!selectedSeats.length) 
-		{
-			alert("Please select seats to reserve");
-			return;
-		}
-
+	function reserveSeat(selectedTime, selectedRoom, selectedSeats) {
 		setBookedSeats(prev => [...prev, ...selectedSeats]);
 
 		const seatStatus = reservations[dayIndex][roomIndex][timeIndex];
@@ -247,8 +230,8 @@ export function ReserveSeat(){
 		console.log(`
 			User has reserved Seats for
 			Date: ${selectedDate.toLocaleDateString()}
-			Time: ${timeValue}
-			Room: ${roomValue.name}
+			Time: ${selectedTime}
+			Room: ${selectedRoom.name}
 			Seats: ${seatList}
 		`);
 
@@ -289,8 +272,8 @@ export function ReserveSeat(){
 		console.log(
 			`currently looking at:
 			Date: ${selectedDate.toLocaleDateString()}
-			Time: ${timeValue},
-			Room: ${roomValue.name}, 
+			Time: ${selectedTime},
+			Room: ${selectedRoom.name}, 
 
 			Reserved seats: \n${seatMatrixConsole}
 			`
@@ -305,66 +288,59 @@ export function ReserveSeat(){
 			<div className="flex flex-row gap-4">
 				<div className="flex flex-row justify-center items-center rounded-2xl">
 					<div className="flex items-center justify-center flex-col gap-4">
-						<div className="gray-67 justify-center items-center rounded-2xl text-2xl google flex items-center justify-center gap-8 w-[800px]">
+						<div className="gray-67 justify-center items-center rounded-2xl text-2xl google flex gap-8 w-[800px]">
 							<div className="gap-2 flex flex-row justify-center items-center">
-								<div className="text-xl google flex items-center justify-center">
-									Date:
-								</div>
+								<div className="text-xl google flex items-center justify-center">Date:</div>
 								<div className="text-xl w-[150px] h-[100px] flex items-center justify-center">
 									<DatePicker
 										className="gray-89 text-xl w-full p-3 rounded-lg text-center
 										focus:outline-none focus:ring-2 focus:ring-[#145b92]
 										focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
 										selected={selectedDate}
-										onChange={(date) => setSelectedDate(date)}
-										minDate={minDate()}
-										maxDate={maxdate()}
+										onChange={handleDateChange}
+										minDate={minDate}
+										maxDate={maxDate}
 										dateFormat="MM/dd/yyyy"
 									/>
 								</div>
 							</div>
 
 							<label className="text-xl gap-3 flex flex-row justify-center items-center">
-								<div>
-									Room:  
-								</div>
+								<div>Room:</div>
 								
 								<select
-								className = "text-xl gray-89 text-center"
-								style={{
-									width: "120px",
-									height: "50px",
-									borderRadius: "8px",
-									padding: "6px 10px",
-								}}
-								value={roomValue.name}
-								onChange={handleRoomChange}
-								>
-								{optionRoom}
+									className = "text-xl gray-89 text-center"
+									style={{
+										width: "120px",
+										height: "50px",
+										borderRadius: "8px",
+										padding: "6px 10px",
+									}}
+									value={selectedRoom.name}
+									onChange={handleRoomChange}
+									>
+									{optionRoom}
 								</select>
 							</label>
 
 							<label className="text-xl gap-3 flex flex-row justify-center items-center">
-								<div>
-									Timeslot:  
-								</div>
+								<div>Timeslot:</div>
 								<select
-								className = "text-xl gray-89"
-								style={{
-									width: "155px",
-									height: "50px",
-									borderRadius: "8px",
-									padding: "6px 10px",
-								}}
-								value={timeValue}
-								onChange={(e) => {
-									
-									const newTime = e.target.value;
-									setTimeValue(e.target.value);
-									const newRoomIndex = room.indexOf(roomValue);
-									const newTimeIndex = timeSlots.indexOf(newTime);
-								}}
-								>
+									className = "text-xl gray-89"
+									style={{
+										width: "155px",
+										height: "50px",
+										borderRadius: "8px",
+										padding: "6px 10px",
+									}}
+									value={selectedTime}
+									onChange={(e) => {
+										const newTime = e.target.value;
+										setSelectedTime(e.target.value);
+										const newRoomIndex = room.indexOf(selectedRoom);
+										const newTimeIndex = timeSlots.indexOf(newTime);
+									}}
+									>
 									{timeSlotOptions}
 								</select>
 							</label>
@@ -372,7 +348,7 @@ export function ReserveSeat(){
 
 			
 						<div className="min-w-[800px] min-h-[665px] w-fit h-fit p-8 gray-67 rounded-2xl">
-							{renderSeats()}
+							{deploySeats()}
 						</div>
 					</div>
 				</div>
@@ -386,7 +362,7 @@ export function ReserveSeat(){
 						<span>
 							Room<br></br>
 							<div className="font-normal">
-								{roomValue.name}
+								{selectedRoom.name}
 							</div>
 						</span>
 
@@ -404,7 +380,7 @@ export function ReserveSeat(){
 						<span>
 							Date<br></br>
 							<div className="font-normal w-24">
-								{selectedDate.toLocaleDateString()}
+								{/* {selectedDate.toLocaleDateString()} */}
 							</div>
 						</span>
 					</div>
@@ -446,14 +422,24 @@ export function ReserveSeat(){
 						<button 
 							className="w-full font-bold
 							bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:bg-[#02497F] active:shadow-inner select-none"
-							onClick={()=> reserveSeat(timeValue, roomValue, selectedSeats)}
+							onClick={()=> {
+								if (!selectedSeats.length)
+									alert("Please select at least one seat to reserve.")
+								else if (currentUser.isAdmin)
+									setOpen(true)
+								else
+									reserveSeat(selectedTime, selectedRoom, selectedSeats)
+							}}
 							>
 							Reserve
 						</button>
 					</div>
 				</div>
 			</div>
-
+			<Modal
+				open={open}
+				onClose={() => setOpen(false)}
+			/>
 		</div>
 	);
 }
