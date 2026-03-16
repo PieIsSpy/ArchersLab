@@ -4,7 +4,6 @@ const reservationSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
     },
     date: {
         type: Date,
@@ -29,6 +28,11 @@ const reservationSchema = mongoose.Schema({
     isAnnonymous: {
         type: Boolean,
         default: false
+    },
+    inpersonInfo: {
+        name: {type: String},
+        email: {type: String},
+        _id: {type: Number}
     }
 })
 
