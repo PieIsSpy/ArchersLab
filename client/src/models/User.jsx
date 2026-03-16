@@ -33,7 +33,7 @@ export function userJSON_to_Object(json) {
     json.email, 
     json.bio || "", 
     json.college || "", 
-    json.program || "Wa;l-in", 
+    json.program || "Walk-in", 
     json.about || ""
   )
 }
