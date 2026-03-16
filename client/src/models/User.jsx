@@ -42,8 +42,8 @@ export let users = [
   new User(
     "Karl Omandac",
     "06706789",
-    "Backend Rat",
     "karl_omandac@dlsu.edu.ph",
+    "Backend Rat",
     "College of Computer Studies",
     "Bachelor of Science in Computer Science",
     "Man I dont even know what i want, excuse me do you sell crab legs?",
@@ -52,8 +52,8 @@ export let users = [
   new User(
     "Byron Ang",
     "124676767",
-    "Frontend God",
     "byron_ang@dlsu.edu.ph",
+    "Frontend God",
     "College of Computer Studies",
     "Bachelor of Science in Computer Science",
     "Burger? Your last name is burger?",
