@@ -18,7 +18,6 @@ export class User {
     this.college = college;
     this.program = program;
     this.about = about;
-    this.isAdmin = isAdmin; // will be removed in favor of schema
   }
 
   equals(otherUser) {
@@ -28,7 +27,7 @@ export class User {
 }
 
 export function userJSON_to_Object(json) {
-  return new User(json.name, json._id, json.bio, json.email, json.college, json.program, json.about, json.isAdmin)
+  return new User(json.name, json._id, json.bio, json.email, json.college, json.program, json.about)
 }
 
 export let users = [
