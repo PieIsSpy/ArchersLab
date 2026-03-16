@@ -2,30 +2,9 @@ import { useState, useEffect} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../dark-datepicker.css";
-import { rooms } from "../models/Room";
-
-const days = 14; // you can only book 14 days after
-const tslots = 7;
-const seats = 45;
-
-const reservations = [];
-let computerArray = [];
-
-for (let i = 0; i < days; i++) {
-	reservations[i] = [];
-
-	for (let j = 0; j < rooms.length; j++) {
-		reservations[i][j] = [];
-
-		for (let k = 0; k < tslots; k++) {
-			reservations[i][j][k] = [];
-
-			for (let l = 0; l < seats; l++) {
-				reservations[i][j][k][l] = false; // if false seat is gray
-			}
-		}
-	}
-}
+import { Room } from "../models/Room";
+import { userJSON_to_Object } from "../models/User";
+import { Reservation } from "../models/Reservation";
 
 export function Reservations(){
 	/* TODO:
@@ -38,8 +17,6 @@ export function Reservations(){
 	- make sure that going back from profile to idk it doesnt reset the array
 	- make sure for each date it has a 2d array of seats so its now [day][room][seat]
 	- bawal sundays to book kasi walang pasok
-	- dont forget the time ig... [day][room][seat][timeslot]
-	- <reservation done>
 	*/ 
 
 	// Initialize options for select menu later
@@ -54,13 +31,64 @@ export function Reservations(){
 		return today;
 	});
 	const [timeValue, setTimeValue] = useState(timeSlots[0]);
-	const [roomValue, setRoomValue] = useState(rooms[0])
 	const [selectedSeats, setSelectedSeats] = useState([]);
 	const [bookedSeats, setBookedSeats] = useState([]);
+
+	const [rooms, setRooms] = useState([]);
+	const [roomValue, setRoomValue] = useState(null);
+	const [reservations, setReservations] = useState([])
+	const [loading, setLoading] = useState(true);
 
 	const DateChange = (date) => {
 		setSelectedDate(date)
 	};
+
+	useEffect(() => {
+		const roomsUrl = 'http://localhost:5000/api/rooms'
+		const reservationsUrl = 'http://localhost:5000/api/reservations'
+		const fetchRooms = async () => {
+			try {
+				// fetch rooms
+				const [roomsFetch, reservationsFetch] = await Promise.all([
+					fetch(roomsUrl),
+					fetch(reservationsUrl)
+				])
+
+				const roomsData = await roomsFetch.json();
+				const reservationsData = await reservationsFetch.json();
+
+				const roomInstances = roomsData.map(item =>
+					new Room(item._id, item.row, item.col, item.layout)
+				);
+				setRooms(roomInstances);
+
+				if (roomInstances.length > 0) {
+					setRoomValue(roomInstances[0]);
+				}
+
+				const reservationInstances = reservationsData.map(res => {
+					return new Reservation(
+						userJSON_to_Object(res.user),
+						new Date(res.date),
+						res.time,
+						roomInstances.find(r => r.id === (res.room._id)),
+						res.seats,
+						res.resStatus,
+						res.isAnnonymous,
+						res._id
+					)
+				});
+
+				setReservations(reservationInstances)
+				setLoading(false);
+			} catch (error) {
+				console.error("Failed to fetch data:", error);
+				setLoading(false);
+			}
+		};
+
+		fetchRooms();
+	}, []);
 
 	useEffect(() => {
 		displayState();
@@ -73,11 +101,6 @@ export function Reservations(){
 
 	today.setHours(0, 0, 0, 0);
 	selected.setHours(0, 0, 0, 0);
-
-	// Set indexes
-	const dayIndex = Math.floor((selected - today) / (1000 * 60 * 60 * 24)); //subtracts current - reservation date
-	const roomIndex = rooms.indexOf(roomValue);
-	const timeIndex = timeSlots.indexOf(timeValue);
 
 	// Set minimum and maximum date (earliest and latest)
 	const minDate = () => new Date();
@@ -312,6 +335,7 @@ export function Reservations(){
 		);
 	}
 	
+	if (loading || !roomValue) return <div>Loading...</div>
 	return(
 		<div className="flex flex-col justify-center items-center rounded-2xl mt-10 gap-3">
 			<div className="text-5xl google font-bold mr-220">
