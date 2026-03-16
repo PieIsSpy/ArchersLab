@@ -29,7 +29,8 @@ const createReservation = asyncHandler(async (req, res) => {
         room,
         seats,
         resStatus,
-        isAnnonymous
+        isAnnonymous,
+        inpersonInfo
     })
 
     res.status(200).json(reservation)

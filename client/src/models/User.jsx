@@ -9,7 +9,7 @@ export class User {
     course: string
     about: string
   */
-  constructor(name, id, bio, email, college, program, about, isAdmin) {
+  constructor(name, id, email, bio, college, program, about, isAdmin) {
     this.name = name;
     this.nickname = "Karl";
     this.id = id;
@@ -27,7 +27,15 @@ export class User {
 }
 
 export function userJSON_to_Object(json) {
-  return new User(json.name, json._id, json.bio, json.email, json.college, json.program, json.about)
+  return new User(
+    json.name, 
+    json._id, 
+    json.email, 
+    json.bio || "", 
+    json.college || "", 
+    json.program || "Wa;l-in", 
+    json.about || ""
+  )
 }
 
 export let users = [
