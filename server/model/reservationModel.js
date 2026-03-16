@@ -22,6 +22,10 @@ const reservationSchema = mongoose.Schema({
     seats: {
         type: [Number]
     },
+    resStatus: {
+        type: String,
+        default: "Upcoming"
+    },
     isAnnonymous: {
         type: Boolean,
         default: false

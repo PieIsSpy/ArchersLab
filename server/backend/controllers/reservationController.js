@@ -6,7 +6,7 @@ const Reservation = require('../../model/reservationModel')
 // @route   GET /api/reservations
 // @access  Private
 const getReservations = asyncHandler(async (req, res) => {
-    const reservations = await Reservation.find()
+    const reservations = await Reservation.find().populate('user').populate('room')
 
     res.status(200).json(reservations)
 })
@@ -15,18 +15,21 @@ const getReservations = asyncHandler(async (req, res) => {
 // @route   POST /api/reservations
 // @access  Private
 const createReservation = asyncHandler(async (req, res) => {
-    const {name, row, col, layout} = req.body;
+    const {user, date, time, room} = req.body;
 
-    if (!name || !row || !col || !layout) {
+    if (!user || !date || !time || !room) {
         res.status(400)
         throw new Error('Invalid Creation')
     }
 
     const reservation = await Reservation.create({
-        _id: name,
-        row: row,
-        col: col,
-        layout: layout
+        user,
+        date,
+        time,
+        room,
+        seats,
+        resStatus,
+        isAnnonymous
     })
 
     res.status(200).json(reservation)
