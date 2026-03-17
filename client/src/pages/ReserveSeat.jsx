@@ -327,13 +327,6 @@ export function ReserveSeat(){
 			console.error("Error:", err);
 		}
 
-		setBookedSeats(prev => [...prev, ...selectedSeats]);
-
-		const seatStatus = reservations[dayIndex][roomIndex][timeIndex];
-		selectedSeats.forEach(id => seatStatus[id] = true);
-
-		setSelectedSeats([]);
-
 		const seatList = selectedSeats.join(", ");
 		console.log(`
 			User has reserved Seats for
@@ -342,8 +335,6 @@ export function ReserveSeat(){
 			Room: ${selectedRoom.name}
 			Seats: ${seatList}
 		`);
-
-		document.getElementById("chosenSeatsTable").innerHTML = "";
 	}
 
 	function toggleSeatSelection(seatID) {
@@ -360,7 +351,7 @@ export function ReserveSeat(){
 		setSelectedSeats(prev => [...prev, seatID]);
 	}
 	
-	if (loading || !roomValue) return <div>Loading...</div>
+	if (loading || !selectedRoom) return <div>Loading...</div>
 	return(
 		<div className="flex flex-col justify-center items-center rounded-2xl mt-10 gap-3">
 			<div className="text-5xl google font-bold mr-220">
@@ -429,7 +420,7 @@ export function ReserveSeat(){
 
 			
 						<div className="min-w-[800px] min-h-[665px] w-fit h-fit p-8 gray-67 rounded-2xl">
-							{deploySeats()}
+							{renderSeats()}
 						</div>
 					</div>
 				</div>
