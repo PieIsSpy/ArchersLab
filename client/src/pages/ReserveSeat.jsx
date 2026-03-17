@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../dark-datepicker.css";
 import { Room } from "../models/Room";
-import { Modal } from "../components/Modals";
+import { InpersonModal } from "../components/Modals";
 import { userJSON_to_Object, currentUser } from "../models/User";
 import { Reservation } from "../models/Reservation";
 
@@ -274,19 +274,18 @@ export function ReserveSeat(){
 		}
 	}
 
-	async function reserveSeat(selectedTime, selectedRoom, selectedSeats) {
+	async function reserveSeat(selectedTime, selectedRoom, selectedSeats, inpersonInfo = null) {
 		if (!selectedSeats.length) return;
 
 		const newReservation = {
-			user: currentUser.id,
+			user: !inpersonInfo ? currentUser.id : null,
 			date: selectedDate.toISOString(),
 			time: selectedTime,
-			room: selectedRoom?.name || null,
+			room: selectedRoom.name,
 			seats: selectedSeats,
 			resStatus: "Upcoming",
 			isAnnonymous: false,
-			// inpersonInfo: {name: "Karl Omandac", email: "karl_omandac@dlsu.edu.ph", _id: "05062020"}
-			inpersonInfo: null
+			inpersonInfo: inpersonInfo
 		};
 
 		try {
@@ -480,7 +479,7 @@ export function ReserveSeat(){
 							onClick={()=> {
 								if (!selectedSeats.length)
 									alert("Please select at least one seat to reserve.")
-								else if (currentUser.isAdmin)
+								else if (!currentUser.isAdmin)
 									setOpen(true)
 								else
 									reserveSeat(selectedTime, selectedRoom, selectedSeats)
@@ -491,9 +490,10 @@ export function ReserveSeat(){
 					</div>
 				</div>
 			</div>
-			<Modal
+			<InpersonModal
 				open={open}
 				onClose={() => setOpen(false)}
+				onConfirm={(info) => reserveSeat(selectedTime, selectedRoom, selectedSeats, info)}
 			/>
 		</div>
 	);

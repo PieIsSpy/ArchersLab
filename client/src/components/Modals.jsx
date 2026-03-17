@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export function Modal({open, onClose}) {
+export function InpersonModal({open, onClose, onConfirm}) {
 	
 	const [form, setForm] = useState({
 		first_name: "",
@@ -28,9 +28,16 @@ export function Modal({open, onClose}) {
 		setForm({ ...form, [e.target.name]: e.target.value });
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		console.log(form);
+		const inpersonInfo = {
+			name: form.first_name + " " + form.last_name,
+			email: form.email,
+			_id: form.id_number
+		}
+
+		onConfirm(inpersonInfo);
+		onClose();
 	};
 
 	return (
