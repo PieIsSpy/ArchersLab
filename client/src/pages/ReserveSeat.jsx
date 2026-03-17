@@ -26,53 +26,53 @@ export function ReserveSeat(){
 		"14:30-16:00", "16:15-17:45", "18:00-19:30",
 	];
 
-	useEffect(() => {
-		const roomsUrl = 'http://localhost:5000/api/rooms'
-		const reservationsUrl = 'http://localhost:5000/api/reservations'
-		const fetchRooms = async () => {
-			try {
-				// fetch data
-				const [roomsFetch, reservationsFetch] = await Promise.all([
-					fetch(roomsUrl),
-					fetch(reservationsUrl)
-				])
+	const fetchReservations = async () => {
+		const roomsUrl = 'http://localhost:5000/api/rooms';
+		const reservationsUrl = 'http://localhost:5000/api/reservations';
+		try {
+			// fetch data
+			const [roomsFetch, reservationsFetch] = await Promise.all([
+				fetch(roomsUrl),
+				fetch(reservationsUrl)
+			])
 
-				const roomsData = await roomsFetch.json();
-				const reservationsData = await reservationsFetch.json();
+			const roomsData = await roomsFetch.json();
+			const reservationsData = await reservationsFetch.json();
 
-				const roomInstances = roomsData.map(item =>
-					new Room(item._id, item.row, item.col, item.layout)
-				);
-				setRooms(roomInstances);
+			const roomInstances = roomsData.map(item =>
+				new Room(item._id, item.row, item.col, item.layout)
+			);
+			setRooms(roomInstances);
 
-				if (roomInstances.length > 0) {
-					setSelectedRoom(roomInstances[0]);
-				}
-
-				const reservationInstances = reservationsData.map(res => {
-					const userData = res.user ? res.user : res.inpersonInfo;
-					
-					return new Reservation(
-						userJSON_to_Object(userData),
-						new Date(res.date),
-						res.time,
-						roomInstances.find(r => r.name === (res.room._id)),
-						res.seats,
-						res.resStatus,
-						res.isAnnonymous,
-						res._id
-					)
-				});
-
-				setReservations(reservationInstances)
-				setLoading(false);
-			} catch (error) {
-				console.error("Failed to fetch data:", error);
-				setLoading(false);
+			if (roomInstances.length > 0) {
+				setSelectedRoom(roomInstances[0]);
 			}
-		};
 
-		fetchRooms();
+			const reservationInstances = reservationsData.map(res => {
+				const userData = res.user ? res.user : res.inpersonInfo;
+				
+				return new Reservation(
+					userJSON_to_Object(userData),
+					new Date(res.date),
+					res.time,
+					roomInstances.find(r => r.name === (res.room._id)),
+					res.seats,
+					res.resStatus,
+					res.isAnnonymous,
+					res._id
+				)
+			});
+
+			setReservations(reservationInstances)
+			setLoading(false);
+		} catch (error) {
+			console.error("Failed to fetch data:", error);
+			setLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		fetchReservations();
 	}, []);
 	
 	const timeIndex = timeSlots.indexOf(selectedTime);
@@ -303,20 +303,7 @@ export function ReserveSeat(){
 				throw new Error(error.message || 'Reservation Failed')
 			}
 
-			const saved = await response.json();
-
-			const formattedReservation = new Reservation(
-				userJSON_to_Object(saved.user || saved.inpersonInfo),
-				new Date(saved.date),
-				saved.time,
-				rooms.find(r => r.id === saved.room._id || r.name === saved.room),
-				saved.seats,
-				saved.resStatus,
-				saved.isAnnonymous,
-				saved._id
-			);
-
-			setReservations(prev => [...prev, formattedReservation]);
+			await fetchReservations();
 			setSelectedSeats([])
 			alert("Reservation Successful!")
 		} catch (err) {
