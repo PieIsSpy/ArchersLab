@@ -46,8 +46,7 @@ export let users = [
     "Backend Rat",
     "College of Computer Studies",
     "Bachelor of Science in Computer Science",
-    "Man I dont even know what i want, excuse me do you sell crab legs?",
-    1
+    "Man I dont even know what i want, excuse me do you sell crab legs?"
   ),
   new User(
     "Byron Ang",
@@ -57,7 +56,6 @@ export let users = [
     "College of Computer Studies",
     "Bachelor of Science in Computer Science",
     "Burger? Your last name is burger?",
-    1
   )
 ]
 
