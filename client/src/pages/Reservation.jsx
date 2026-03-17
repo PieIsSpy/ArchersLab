@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../dark-datepicker.css";
 import { Room } from "../models/Room";
-import { userJSON_to_Object } from "../models/User";
+import { userJSON_to_Object, currentUser } from "../models/User";
 import { Reservation } from "../models/Reservation";
 
 export function Reservations(){
@@ -70,7 +70,7 @@ export function Reservations(){
 						userJSON_to_Object(userData),
 						new Date(res.date),
 						res.time,
-						roomInstances.find(r => r.id === (res.room._id)),
+						roomInstances.find(r => r.name === (res.room)),
 						res.seats,
 						res.resStatus,
 						res.isAnnonymous,
@@ -99,7 +99,7 @@ export function Reservations(){
 
 		const takenSlots = reservations.filter(res => {
 			const isSameDate = res.date.toDateString() === selectedDate.toDateString();
-			const isSameRoom = res.room.id === roomValue.id;
+			const isSameRoom = res.room === roomValue;
 			const isSameTime = res.time === timeValue;
 
 			return isSameDate && isSameRoom && isSameTime;
@@ -124,6 +124,7 @@ export function Reservations(){
 	const handleRoomChange = (e) => {
 		const newRoom = rooms.find(r => r.name === e.target.value);
 		setRoomValue(newRoom);
+		setSelectedSeats([])
 	}
 	
 	const optionRoom = [];
@@ -284,20 +285,53 @@ export function Reservations(){
 		}
 	}
 
-	function reserveSeat(timeValue, roomValue, selectedSeats) {
+	async function reserveSeat(timeValue, roomValue, selectedSeats) {
 		if (!selectedSeats.length) return;
 
 		const newReservation = {
-			date: selectedDate,
+			user: currentUser.id,
+			date: selectedDate.toISOString(),
 			time: timeValue,
-			room: roomValue.id,
-			seats: selectedSeats
+			room: roomValue?.name || null,
+			seats: selectedSeats,
+			resStatus: "Upcoming",
+			isAnnonymous: false,
+			// inpersonInfo: {name: "Karl Omandac", email: "karl_omandac@dlsu.edu.ph", _id: "05062020"}
+			inpersonInfo: null
 		};
 
 		try {
+			const response = await fetch('http://localhost:5000/api/reservations', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(newReservation)
+			})
 
+			if (!response.ok) {
+				const error = await response.json();
+				throw new Error(error.message || 'Reservation Failed')
+			}
+
+			const saved = await response.json();
+
+			const formattedReservation = new Reservation(
+				userJSON_to_Object(saved.user || saved.inpersonInfo),
+				new Date(saved.date),
+				saved.time,
+				rooms.find(r => r.id === saved.room._id || r.name === saved.room),
+				saved.seats,
+				saved.resStatus,
+				saved.isAnnonymous,
+				saved._id
+			);
+
+			setReservations(prev => [...prev, formattedReservation]);
+			setSelectedSeats([])
+			alert("Reservation Successful!")
 		} catch (err) {
-
+			console.error("Error:", err);
 		}
 
 		setBookedSeats(prev => [...prev, ...selectedSeats]);
