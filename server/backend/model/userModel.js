@@ -36,6 +36,10 @@ const userSchema = mongoose.Schema({
         required: [false],
         default: ''
     },
+    pfp_url: {
+        type: String,
+        default: ''
+    },
     password: {
         type: String,
         required: [true, 'Please add your Password'],

@@ -15,7 +15,7 @@ const getUsers = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Private
 const createUser = asyncHandler(async (req, res) => {
-    const {name, nickname, id, bio, email, college, program, about, password} = req.body;
+    const {name, nickname, id, bio, email, college, program, about, pfp_url, password, isAdmin} = req.body;
 
     if (!name || !id || !email || !password) {
         res.status(400)
@@ -31,7 +31,9 @@ const createUser = asyncHandler(async (req, res) => {
         college: college,
         program: program,
         about: about,
-        password: password
+        pfp_url: pfp_url,
+        password: password,
+        isAdmin: isAdmin
     })
 
     res.status(200).json(user)

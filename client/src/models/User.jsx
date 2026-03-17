@@ -9,15 +9,16 @@ export class User {
     course: string
     about: string
   */
-  constructor(name, id, email, bio, college, program, about, isAdmin) {
+  constructor(name, id, email, nickname, bio, college, program, about, pfp_url) {
     this.name = name;
-    this.nickname = "Karl";
     this.id = id;
-    this.bio = bio;
     this.email = email;
+    this.nickname = nickname;
+    this.bio = bio;
     this.college = college;
     this.program = program;
     this.about = about;
+    this.pfp_url = pfp_url;
   }
 
   equals(otherUser) {
@@ -31,10 +32,12 @@ export function userJSON_to_Object(json) {
     json.name, 
     json._id, 
     json.email, 
+    json?.nickname || "",
     json?.bio || "", 
     json?.college || "", 
     json?.program || "Walk-in", 
-    json?.about || ""
+    json?.about || "",
+    json?.pfp_url || ""
   )
 }
 
