@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler')
 
-const Room = require('../../model/roomModel')
+const Room = require('../model/roomModel')
 
 // @desc    Get Room
 // @route   GET /api/rooms
