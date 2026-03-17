@@ -31,10 +31,10 @@ export function userJSON_to_Object(json) {
     json.name, 
     json._id, 
     json.email, 
-    json.bio || "", 
-    json.college || "", 
-    json.program || "Walk-in", 
-    json.about || ""
+    json?.bio || "", 
+    json?.college || "", 
+    json?.program || "Walk-in", 
+    json?.about || ""
   )
 }
 
