@@ -2,9 +2,8 @@ const mongoose = require('mongoose')
 
 const reservationSchema = mongoose.Schema({
     user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Number,
         ref: 'User',
-        required: true
     },
     date: {
         type: Date,
@@ -15,7 +14,7 @@ const reservationSchema = mongoose.Schema({
         required: true
     },
     room: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'Room',
         required: true
     },
@@ -29,6 +28,11 @@ const reservationSchema = mongoose.Schema({
     isAnnonymous: {
         type: Boolean,
         default: false
+    },
+    inpersonInfo: {
+        name: {type: String},
+        email: {type: String},
+        _id: {type: Number}
     }
 })
 

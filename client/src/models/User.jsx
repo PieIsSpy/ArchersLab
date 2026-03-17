@@ -9,7 +9,7 @@ export class User {
     course: string
     about: string
   */
-  constructor(name, id, bio, email, college, program, about, isAdmin) {
+  constructor(name, id, email, bio, college, program, about, isAdmin) {
     this.name = name;
     this.nickname = "Karl";
     this.id = id;
@@ -18,7 +18,6 @@ export class User {
     this.college = college;
     this.program = program;
     this.about = about;
-    this.isAdmin = isAdmin; // will be removed in favor of schema
   }
 
   equals(otherUser) {
@@ -28,29 +27,35 @@ export class User {
 }
 
 export function userJSON_to_Object(json) {
-  return new User(json.name, json._id, json.bio, json.email, json.college, json.program, json.about, json.isAdmin)
+  return new User(
+    json.name, 
+    json._id, 
+    json.email, 
+    json?.bio || "", 
+    json?.college || "", 
+    json?.program || "Walk-in", 
+    json?.about || ""
+  )
 }
 
 export let users = [
   new User(
     "Karl Omandac",
     "06706789",
-    "Backend Rat",
     "karl_omandac@dlsu.edu.ph",
+    "Backend Rat",
     "College of Computer Studies",
     "Bachelor of Science in Computer Science",
-    "Man I dont even know what i want, excuse me do you sell crab legs?",
-    1
+    "Man I dont even know what i want, excuse me do you sell crab legs?"
   ),
   new User(
     "Byron Ang",
     "124676767",
-    "Frontend God",
     "byron_ang@dlsu.edu.ph",
+    "Frontend God",
     "College of Computer Studies",
     "Bachelor of Science in Computer Science",
     "Burger? Your last name is burger?",
-    1
   )
 ]
 

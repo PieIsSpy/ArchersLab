@@ -15,24 +15,27 @@ const getReservations = asyncHandler(async (req, res) => {
 // @route   POST /api/reservations
 // @access  Private
 const createReservation = asyncHandler(async (req, res) => {
-    const {user, date, time, room} = req.body;
+    const { user, date, time, room, seats, resStatus, isAnnonymous, inpersonInfo } = req.body;
 
-    if (!user || !date || !time || !room) {
+    if (!(user || inpersonInfo) || !date || !time || !room) {
         res.status(400)
         throw new Error('Invalid Creation')
     }
 
     const reservation = await Reservation.create({
-        user,
-        date,
-        time,
-        room,
-        seats,
-        resStatus,
-        isAnnonymous
+        user: user || null,
+        date: date,
+        time: time,
+        room: room,
+        seats: seats,
+        resStatus: resStatus,
+        isAnnonymous: isAnnonymous,
+        inpersonInfo: inpersonInfo || null
     })
 
-    res.status(200).json(reservation)
+    const populatedRes = await Reservation.findById(reservation._id).populate('room').populate('user');
+
+    res.status(200).json(populatedRes)
 })
 
 // @desc    Update Reservation

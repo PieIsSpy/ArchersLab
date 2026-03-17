@@ -2,63 +2,108 @@ import { useState, useEffect} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../dark-datepicker.css";
-import { rooms } from "../models/Room";
-import { currentUser } from "../models/User";
+import { Room } from "../models/Room";
 import { Modal } from "../components/Modals";
-
-
-const days = 14; // you can only book 14 days after
-const tslots = 7;
-const seats = 45;
-
-const reservations = [];
-let computerArray = [];
-
-for (let i = 0; i < days; i++) {
-	reservations[i] = [];
-
-	for (let j = 0; j < rooms.length; j++) {
-		reservations[i][j] = [];
-
-		for (let k = 0; k < tslots; k++) {
-			reservations[i][j][k] = [];
-
-			for (let l = 0; l < seats; l++) {
-				reservations[i][j][k][l] = false; // if false seat is gray
-			}
-		}
-	}
-}
+import { userJSON_to_Object, currentUser } from "../models/User";
+import { Reservation } from "../models/Reservation";
 
 export function ReserveSeat(){
 	const [open, setOpen] = useState(false);
+	const [rooms, setRooms] = useState([]);
+
 	const [selectedDate, setSelectedDate] = useState(new Date());
 	const [selectedTime, setSelectedTime] = useState("07:30-09:00");
 	const [selectedRoom, setSelectedRoom] = useState(rooms[0]);
 	const [selectedSeats, setSelectedSeats] = useState([]);
+	
+	const [reservations, setReservations] = useState([])
 	const [bookedSeats, setBookedSeats] = useState([]);
+
+	const [loading, setLoading] = useState(true);
 
 	const timeSlots = [
 		"07:30-09:00", "09:15-10:45", "11:00-12:30", "12:45-14:15", 
 		"14:30-16:00", "16:15-17:45", "18:00-19:30",
 	];
 
+	const DateChange = (date) => {
+		setSelectedDate(date)
+	};
+
 	useEffect(() => {
-		displayState();
-		deploySeats();
+		const roomsUrl = 'http://localhost:5000/api/rooms'
+		const reservationsUrl = 'http://localhost:5000/api/reservations'
+		const fetchRooms = async () => {
+			try {
+				// fetch data
+				const [roomsFetch, reservationsFetch] = await Promise.all([
+					fetch(roomsUrl),
+					fetch(reservationsUrl)
+				])
+
+				const roomsData = await roomsFetch.json();
+				const reservationsData = await reservationsFetch.json();
+
+				const roomInstances = roomsData.map(item =>
+					new Room(item._id, item.row, item.col, item.layout)
+				);
+				setRooms(roomInstances);
+
+				if (roomInstances.length > 0) {
+					setSelectedRoom(roomInstances[0]);
+				}
+
+				const reservationInstances = reservationsData.map(res => {
+					const userData = res.user ? res.user : res.inpersonInfo;
+					
+					return new Reservation(
+						userJSON_to_Object(userData),
+						new Date(res.date),
+						res.time,
+						roomInstances.find(r => r.name === (res.room)),
+						res.seats,
+						res.resStatus,
+						res.isAnnonymous,
+						res._id
+					)
+				});
+
+				setReservations(reservationInstances)
+				setLoading(false);
+			} catch (error) {
+				console.error("Failed to fetch data:", error);
+				setLoading(false);
+			}
+		};
+
+		fetchRooms();
+	}, []);
+	
+	const timeIndex = timeSlots.indexOf(selectedTime);
+
+	useEffect(() => {
+		if (!selectedRoom) {
+			setBookedSeats([]);
+			return;
+		}
+
+		const takenSlots = reservations.filter(res => {
+			const isSameDate = res.date.toDateString() === selectedDate.toDateString();
+			const isSameRoom = res.room === selectedRoom;
+			const isSameTime = res.time === selectedTime;
+
+			return isSameDate && isSameRoom && isSameTime;
+		}).flatMap(res => res.seats);
+
+		setBookedSeats(takenSlots);
 		setSelectedSeats([]);
-	}, [selectedDate, selectedRoom, selectedTime]);
+	}, [selectedDate, selectedRoom, selectedTime, reservations]);
 
 	const today = new Date();
 	today.setHours(0, 0, 0, 0);
 
 	const selected = new Date(selectedDate);
 	selected.setHours(0, 0, 0, 0);
-
-	// Set indexes
-	const dayIndex = Math.floor((selected - today) / (1000 * 60 * 60 * 24)); //subtracts current - reservation date
-	const roomIndex = rooms.indexOf(selectedRoom);
-	const timeIndex = timeSlots.indexOf(selectedTime);
 
 	// Set minimum and maximum date (earliest and latest)
 	const minDate = new Date();
@@ -72,6 +117,7 @@ export function ReserveSeat(){
 	const handleRoomChange = (e) => {
 		const newRoom = rooms.find(r => r.name === e.target.value);
 		setSelectedRoom(newRoom);
+		setSelectedSeats([])
 	}
 	
 	const optionRoom = [];
@@ -131,66 +177,69 @@ export function ReserveSeat(){
 		[1,1,1,0,1,1,1]
 	];
 
-	function deploySeats 
-	{
-		switch (selectedRoom.layoutID) 
-		{
-			case 1:
-				return renderSeats(layout1);
-			case 2:
-				return renderSeats(layout2);
-			case 3:
-				return renderSeats(layout3);
-		}
-	}
-
-	function renderSeats (layoutArr)
-	{
+	const deploySeats = (layoutArr) => {
 		const rows = [];
 		let seatidx = 1;
 		let hasReversed = layoutArr.some(row => row.includes(2));
-		for (let i = 0; i < layoutArr.length; i++) 
-		{
+		for (let i = 0; i < layoutArr.length; i++) {
 			const cols = [];
-			for (let j = 0; j < layoutArr[i].length; j++) 
-			{
-				if(layoutArr[i][j] != 0)
-				{
+			for (let j = 0; j < layoutArr[i].length; j++) {
+				if(layoutArr[i][j] != 0){
 					const seatID = seatidx;
 					const isBooked = bookedSeats.includes(seatID);
 					const isSelected = selectedSeats.includes(seatID);
+					if(layoutArr[i][j] === 1)
+					{
 						cols.push(
 							<div className="flex flex-col items-center">
-								{!hasReversed || layoutArr[i][j] === 2 ? 
-									<h1 className="m-0 text-xs">{seatID}</h1> : 
-								null}
-
+								{!hasReversed ? (
+									<h1 className="m-0 text-xs">{seatID}</h1>
+								) : null}
 								<button
 									id={seatID}
 									onClick={() => isBooked ? null : toggleSeatSelection(seatID)}
 									className={`
 										w-16 h-16 flex flex-col items-center justify-center 
-										${isBooked ? "booked cursor-not-allowed" : 
-											isSelected ? "bg-[#145b92] hover:bg-[#477da6] transition-all duration-75 ease-in" : 
-											"hover:bg-gray-500 transition-all duration-75 ease-in"}`}
+										${isBooked ? "booked cursor-not-allowed" : "hover:bg-gray-500"}
+										${isSelected ? "blue" : ""}
+									`}
 								>
-									{layoutArr[i][j] === 1 ? 
-										<img
-											src="./src/resources/computer.png"
-											alt="computer"
-											className="w-16 h-16 object-contain"
-										/> : 
-										<img
-											src="./src/resources/computer_flipped.png"
-											alt="computer"
-											className="w-16 h-16 object-contain"
-									/>}
+									<img
+										src="./src/resources/computer.png"
+										alt="computer"
+										className="w-16 h-16 object-contain"
+									/>
 								</button>
-								{hasReversed && layoutArr[i][j] !== 2 ?
+								{hasReversed ? (
 									<h1 className="m-0 text-xs">{seatID}</h1>
-								: null}
+								) : null}
 							</div>
 						);
+					}
+					if(layoutArr[i][j] === 2)
+					{
+						cols.push(
+							<div className="flex flex-col items-center">
+								
+								<h1 className="m-0 text-xs">{seatID}</h1>
+								<button
+									id={seatID}
+									onClick={() => isBooked ? null : toggleSeatSelection(seatID)}
+									className={`
+										w-16 h-16 flex flex-col items-center justify-center 
+										${isBooked ? "booked cursor-not-allowed" : "hover:bg-gray-500"}
+										${isSelected ? "blue" : ""}
+									`}
+								>
+									<img
+										src="./src/resources/computer_flipped.png"
+										alt="computer"
+										className="w-16 h-16 object-contain"
+									/>
+								</button>
+							</div>
+						);
+					}
 					seatidx++;
 				}
 				else
@@ -218,7 +267,66 @@ export function ReserveSeat(){
 		return rows;
 	}
 
-	function reserveSeat(selectedTime, selectedRoom, selectedSeats) {
+	const renderSeats = () => {
+		switch (selectedRoom.layoutID) {
+			case 1:
+				return deploySeats(layout1);
+			case 2:
+				return deploySeats(layout2);
+			case 3:
+				return deploySeats(layout3);
+		}
+	}
+
+	async function reserveSeat(selectedTime, selectedRoom, selectedSeats) {
+		if (!selectedSeats.length) return;
+
+		const newReservation = {
+			user: currentUser.id,
+			date: selectedDate.toISOString(),
+			time: selectedTime,
+			room: selectedRoom?.name || null,
+			seats: selectedSeats,
+			resStatus: "Upcoming",
+			isAnnonymous: false,
+			// inpersonInfo: {name: "Karl Omandac", email: "karl_omandac@dlsu.edu.ph", _id: "05062020"}
+			inpersonInfo: null
+		};
+
+		try {
+			const response = await fetch('http://localhost:5000/api/reservations', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(newReservation)
+			})
+
+			if (!response.ok) {
+				const error = await response.json();
+				throw new Error(error.message || 'Reservation Failed')
+			}
+
+			const saved = await response.json();
+
+			const formattedReservation = new Reservation(
+				userJSON_to_Object(saved.user || saved.inpersonInfo),
+				new Date(saved.date),
+				saved.time,
+				rooms.find(r => r.id === saved.room._id || r.name === saved.room),
+				saved.seats,
+				saved.resStatus,
+				saved.isAnnonymous,
+				saved._id
+			);
+
+			setReservations(prev => [...prev, formattedReservation]);
+			setSelectedSeats([])
+			alert("Reservation Successful!")
+		} catch (err) {
+			console.error("Error:", err);
+		}
+
 		setBookedSeats(prev => [...prev, ...selectedSeats]);
 
 		const seatStatus = reservations[dayIndex][roomIndex][timeIndex];
@@ -251,35 +359,8 @@ export function ReserveSeat(){
 
 		setSelectedSeats(prev => [...prev, seatID]);
 	}
-
-	function displayState(){
-
-		let seatMatrixConsole = "";
-		const reservedSeatList = reservations[dayIndex][roomIndex][timeIndex]
-		for(let i = 0; i<5; i++){
-			for(let j = 0; j<9; j++){
-				if(reservedSeatList[9*(i)+ j] === false){
-					seatMatrixConsole += " - ";
-				}
-				else{
-					seatMatrixConsole += " X ";
-				}
-				
-			}
-			seatMatrixConsole += "\n";
-
-		}
-		console.log(
-			`currently looking at:
-			Date: ${selectedDate.toLocaleDateString()}
-			Time: ${selectedTime},
-			Room: ${selectedRoom.name}, 
-
-			Reserved seats: \n${seatMatrixConsole}
-			`
-		);
-	}
 	
+	if (loading || !roomValue) return <div>Loading...</div>
 	return(
 		<div className="flex flex-col justify-center items-center rounded-2xl mt-10 gap-3">
 			<div className="text-5xl google font-bold mr-220">
