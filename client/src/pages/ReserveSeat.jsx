@@ -26,10 +26,6 @@ export function ReserveSeat(){
 		"14:30-16:00", "16:15-17:45", "18:00-19:30",
 	];
 
-	const DateChange = (date) => {
-		setSelectedDate(date)
-	};
-
 	useEffect(() => {
 		const roomsUrl = 'http://localhost:5000/api/rooms'
 		const reservationsUrl = 'http://localhost:5000/api/reservations'
