@@ -343,7 +343,7 @@ export function ReserveSeat(){
 			return;
 		}
 
-		if (selectedSeats.length + bookedSeats.length >= 5) {
+		if (selectedSeats.length >= 5) {
 			alert("You can only reserve up to 5 seats.");
 			return;
 		}
