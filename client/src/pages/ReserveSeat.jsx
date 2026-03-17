@@ -60,7 +60,7 @@ export function ReserveSeat(){
 						userJSON_to_Object(userData),
 						new Date(res.date),
 						res.time,
-						roomInstances.find(r => r.name === (res.room)),
+						roomInstances.find(r => r.name === (res.room._id)),
 						res.seats,
 						res.resStatus,
 						res.isAnnonymous,
@@ -89,7 +89,7 @@ export function ReserveSeat(){
 
 		const takenSlots = reservations.filter(res => {
 			const isSameDate = res.date.toDateString() === selectedDate.toDateString();
-			const isSameRoom = res.room === selectedRoom;
+			const isSameRoom = res.room.name === selectedRoom.name;
 			const isSameTime = res.time === selectedTime;
 
 			return isSameDate && isSameRoom && isSameTime;
