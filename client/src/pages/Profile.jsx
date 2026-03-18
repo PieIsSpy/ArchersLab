@@ -41,13 +41,13 @@ export function StudentForm() {
 		<form className="w-full space-y-3">
 			<div className="flex gap-[15px]">
 				<div className="mb-3 w-full flex-1">
-					<label className="block font-bold text-xs mb-1">FULL NAME</label>
+					<label className="block font-bold text-xs mb-1 ml-3">FULL NAME</label>
 					<input 
 					className={`${formelement}`}
 					type="text" defaultValue={currentUser.name}></input>
 				</div>
 				<div className="mb-3 w-full flex-1">
-					<label className="block font-bold text-xs mb-1">DISPLAY NAME</label>
+					<label className="block font-bold text-xs mb-1 ml-3">DISPLAY NAME</label>
 					<input 
 					className={`${formelement}`}
 					type="text" defaultValue={currentUser.nickname}></input>
@@ -56,13 +56,13 @@ export function StudentForm() {
 
 			<div className="flex gap-[15px]">
 				<div className="mb-3 w-full flex-1">
-					<label className="block font-bold text-xs mb-1">STUDENT ID</label>
+					<label className="block font-bold text-xs mb-1 ml-3">STUDENT ID</label>
 					<input 
 					className={`${formelement}`}
 					type="text" defaultValue={currentUser.id}></input>
 				</div>
 				<div className="mb-3 w-full flex-1">
-					<label className="block font-bold text-xs mb-1">EMAIL</label>
+					<label className="block font-bold text-xs mb-1 ml-3">EMAIL</label>
 					<input 
 					className={`${formelement}`}
 					type="text" defaultValue={currentUser.email}></input>
@@ -70,28 +70,28 @@ export function StudentForm() {
 			</div>
 
 			<div className="mb-3 w-full">
-				<label className="block font-bold text-xs mb-1">COLLEGE</label>
+				<label className="block font-bold text-xs mb-1 ml-3">COLLEGE</label>
 				<input 
 					className={`${formelement}`}
 				type="text" defaultValue={currentUser.college}></input>
 			</div>
 
 			<div className="mb-3 w-full">
-				<label className="block font-bold text-xs mb-1">PROGRAM</label>
+				<label className="block font-bold text-xs mb-1 ml-3">PROGRAM</label>
 				<input 
 					className={`${formelement}`}
 				type="text" defaultValue={currentUser.program}></input>
 			</div>
 
 			<div className="mb-3 w-full">
-				<label className="block font-bold text-xs mb-1">BIO</label>
+				<label className="block font-bold text-xs mb-1 ml-3">BIO</label>
 				<input 
 					className={`${formelement}`}
 				type="text" defaultValue={currentUser.bio}></input>
 			</div>
 
 			<div className="mb-3 w-full">
-				<label className="block font-bold text-xs mb-1">DESCRIPTION</label>
+				<label className="block font-bold text-xs mb-1 ml-3">DESCRIPTION</label>
 				<textarea rows="2" 
 					className={`${formelement}`}
 				type="text" defaultValue={currentUser.about}></textarea>
@@ -111,29 +111,31 @@ export function StudentForm() {
 export function AccountSettings() {
 	return (
 		<div className="w-full flex gap-5 m-5 px-4">
-			<div className="w-1/2 px-[10px] py-[6px] gray-89 rounded-xl text-sm font-['Inter',sans-serif] box-border">
-				<div className="my-2 text-xlgoogle font-bold">
-					Change Password
+				<div className="w-1/2">
+					<div className="mb-2 font-bold">
+						CHANGE PASSWORD
+					</div>
+					<div className="px-[10px] py-[6px] gray-89 rounded-xl text-sm font-['Inter',sans-serif] box-border">
+						<p className="mt-2">Update your password.</p>
+						<br/>
+						<Link to="/ChangePassword">
+							<button 
+								className="px-[15px] py-[5px] mb-2
+								bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none">
+								Update
+							</button>
+						</Link>
+					</div>
 				</div>
-				<p className="mt-2">Update your password.</p>
-				<br/>
-				<Link to="/ChangePassword">
-					<button 
-						className="px-[15px] py-[5px] mb-2
-						bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none">
-						Update
-					</button>
-				</Link>
-			</div>
-
 			{
 				!(currentUser.isAdmin) ? (
-				<div className="w-1/2 px-[10px] py-[6px] gray-89 rounded-xl text-sm font-['Inter',sans-serif] box-border">
-					<div className="my-2 text-xlgoogle font-bold">
-							Delete Account
-						</div>
-				<p className="mt-2">Action is permanent.</p>
-				<br/>
+				<div className="w-1/2">
+					<div className="mb-2 font-bold">
+							DELETE ACCOUNT
+					</div>
+					<div className="px-[10px] py-[6px] gray-89 rounded-xl text-sm font-['Inter',sans-serif] box-border">
+						<p className="mt-2">Action is permanent.</p>
+						<br/>
 						<Link to="/DeleteAccount">
 							<button 
 								className="px-[15px] py-[5px] mb-2
@@ -142,24 +144,26 @@ export function AccountSettings() {
 							</button>
 						</Link>
 					</div>
+				</div>
 				) : (
-				<div className="w-1/2 px-[10px] py-[6px] gray-89 rounded-xl text-sm font-['Inter',sans-serif] box-border">
-					<div className="my-2 text-xlgoogle font-bold">
-							Create Admin Account
+				<div className="w-1/2">
+					<div className="mb-2 font-bold">
+							CREATE ADMIN ACCOUNT
 					</div>
-				<p className="mt-2">Create an admin account for lab technicians</p>
-				<br/>
-						<Link to="/admin/AdminRegistration">
-							<button 
-								className="px-[15px] py-[5px] mb-2
-								bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none">
-								Create
-							</button>
-						</Link>
+					<div className="px-[10px] py-[6px] gray-89 rounded-xl text-sm font-['Inter',sans-serif] box-border">
+					<p className="mt-2">Create an admin account for lab technicians</p>
+					<br/>
+							<Link to="/admin/AdminRegistration">
+								<button 
+									className="px-[15px] py-[5px] mb-2
+									bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none">
+									Create
+								</button>
+							</Link>
 					</div>
+				</div>
 				)
 			}
-			
 		</div>
 	)
 }
