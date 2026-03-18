@@ -176,7 +176,7 @@ export function Profile() {
     };
     
     return (
-		<div className="grid grid-cols-3 gap-4 items-stretch w-3/4 mx-auto">
+		<div className="grid grid-cols-3 gap-4 items-stretch mx-auto">
 			<div className="col-span-1 min-h-[50vh] flex flex-col">
 			<div className="text-4xl font-black google mb-4 w-full">Profile</div>
 			<div className="gray-67 flex flex-col rounded-2xl p-4 items-center flex-1">
