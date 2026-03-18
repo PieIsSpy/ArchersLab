@@ -5,6 +5,7 @@ import "../dark-datepicker.css";
 import { Room } from "../models/Room";
 import { Reservation } from "../models/Reservation";
 import { userJSON_to_Object, currentUser } from "../models/User";
+import { InpersonModal } from "../components/Modals";
 
 export function ReserveRoom(){
 	const timeSlots = [
@@ -157,6 +158,17 @@ export function ReserveRoom(){
 		`);
 	}
 
+	const handleModal = () => {
+		if (!reservations.find((res) => 
+				res.date.toDateString() === selectedDate.toDateString() && 
+				res.room.name === selectedRoom.name)) {
+			setOpen(true)
+		}
+		else {
+			alert('The room is already reserved by someone else')
+		}
+	}
+
 	if (loading || !selectedRoom || rooms.length === 0) return <div>Loading...</div>
 	return(
 		<div className="flex flex-col justify-center items-center rounded-2xl gap-3">
@@ -245,13 +257,18 @@ export function ReserveRoom(){
 					<div className="bg-[#145b92] p-3 rounded-xl transition-all hover:scale-110 active:scale-105 active:bg-[#02497F] active:shadow-inner select-none"
 						onClick={() => {
 							if (currentUser.isAdmin)
-								setOpen(true)
+								handleModal()
 							else
 								reserveRoom(selectedTime, selectedRoom)
 						}}
 					>
 						Request Room Reservation
 					</div>
+					<InpersonModal
+						open={open}
+						onClose={() => setOpen(false)}
+						onConfirm={(info) => reserveRoom(selectedTime, selectedRoom, info)}
+					/>
 			</div>
 		</div>
 	);

@@ -30,6 +30,12 @@ export function InpersonModal({open, onClose, onConfirm}) {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+
+		if (!form.first_name || !form.last_name || !form.email || !form.id_number) {
+			alert('Please fill out missing fields')
+			return
+		}
+
 		const inpersonInfo = {
 			name: form.first_name + " " + form.last_name,
 			email: form.email,
