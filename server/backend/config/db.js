@@ -3,7 +3,9 @@ const chalk = require('chalk');
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.MONGO_URI);
+        const conn = await mongoose.connect(process.env.MONGO_URI, {
+            family: 4
+        });
         console.log(chalk.cyan.underline(`MongoDB Connected: ${conn.connection.host}`));
     } catch (error) {
         console.log(error);
