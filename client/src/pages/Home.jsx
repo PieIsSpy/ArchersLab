@@ -24,8 +24,8 @@ export function Home () {
 		"focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92] " +
 		"selection:bg-blue-300 selection:text-black";
     return (
-		<div className="m-5 w-3/4 mx-auto">
-			<div className="google p-4 my-20 rounded-2xl gray-67 shadow-lg flex items-center">
+		<div className="w-3/4 mx-auto mb-100">
+			<div className="google p-4 rounded-2xl gray-67 shadow-lg flex items-center">
 				<img
 					className="rounded-full w-15 h-15 mr-5"
 					src="./src/resources/karl.png"

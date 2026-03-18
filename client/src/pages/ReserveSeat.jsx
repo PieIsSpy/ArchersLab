@@ -165,7 +165,6 @@ export function ReserveSeat(){
 	];
 
 	const layout3 = [
-		[0,0,0,0,0,0,0],
 		[2,2,2,0,2,2,2],
 		[1,1,1,0,1,1,1],
 		[0,0,0,0,0,0,0],
@@ -260,7 +259,7 @@ export function ReserveSeat(){
 				</div>
 			)
 		}
-		return rows;
+		return <div className={`flex-row`}>{rows}</div>;
 	}
 
 	const renderSeats = () => {
@@ -336,12 +335,12 @@ export function ReserveSeat(){
 	
 	if (loading || !selectedRoom) return <div>Loading...</div>
 	return(
-		<div className="flex flex-col justify-center items-center rounded-2xl mt-15 gap-3 mx-auto">
-			<div className="grid gap-4 grid-rows-[auto_1fr]">
-				<div className="text-5xl google font-bold mr-220">
+		<div className="rounded-2xl gap-3 mx-auto">
+			<div className="grid gap-4 w-3/4 grid-rows-[auto_1fr]">
+				<div className="text-5xl google font-bold">
 					Reserve a seat		
 				</div>
-				<div className="gray-67 justify-center items-center rounded-2xl text-2xl google flex gap-20">
+				<div className="gray-67 justify-center items-center rounded-2xl text-2xl google flex gap-20 px-10">
 					<div className="gap-2 flex flex-row justify-center items-center">
 						<div className="text-xl google flex items-center justify-center">Date:</div>
 						<div className="text-xl w-[150px] h-[100px] flex items-center justify-center">
@@ -405,7 +404,7 @@ export function ReserveSeat(){
 				</div>
 				
 				<div className="grid grid-cols-[auto_1fr] justify-center items-stretch rounded-2xl gap-4">
-					<div className="gray-67 rounded-2xl p-8">
+					<div className="gray-67 w-200 h-160 rounded-2xl flex justify-center items-center p-8">
 						{renderSeats()}
 					</div>
 
@@ -465,14 +464,12 @@ export function ReserveSeat(){
 						</div>
 					</div>
 				</div>
-
-				
-			</div>
 			<InpersonModal
 				open={open}
 				onClose={() => setOpen(false)}
 				onConfirm={(info) => reserveSeat(selectedTime, selectedRoom, selectedSeats, info)}
 			/>
+			</div>
 		</div>
 	);
 }

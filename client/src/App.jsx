@@ -150,7 +150,7 @@ export default function App() {
 						</ul>
 					</nav>
 				</div>
-				<div className="ml-24">
+				<div className="h-screen flex items-center ml-24">
 					<Routes>
 						<Route path="/" element={<Home />} />
 						<Route path="/Profile" element={<Profile />} />
