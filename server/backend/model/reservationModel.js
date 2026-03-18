@@ -29,7 +29,7 @@ const reservationSchema = mongoose.Schema({
         type: String,
         default: ""
     },
-    isAnnonymous: {
+    isAnonymous: {
         type: Boolean,
         default: false
     },

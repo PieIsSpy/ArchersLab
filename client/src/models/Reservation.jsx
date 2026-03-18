@@ -9,7 +9,7 @@ export class Reservation {
 		room: string
 		seats: int[5]
 	*/
-	constructor(user, date, time, room, seats, status, reason, isAnnonymous, id) {
+	constructor(user, date, time, room, seats, status, reason, isAnonymous, id) {
 		this.user = user;
 		this.date = date;
 		this.time = time;
@@ -17,7 +17,7 @@ export class Reservation {
 		this.seats = seats;
 		this.status = status;
 		this.reason = reason;
-		this.isAnnonymous = isAnnonymous;
+		this.isAnonymous = isAnonymous;
 		this.id = id;
 	}
 }

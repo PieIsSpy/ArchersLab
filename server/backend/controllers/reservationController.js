@@ -15,7 +15,7 @@ const getReservations = asyncHandler(async (req, res) => {
 // @route   POST /api/reservations
 // @access  Private
 const createReservation = asyncHandler(async (req, res) => {
-    const { user, date, time, room, seats, resStatus, reason, isAnnonymous, inpersonInfo } = req.body;
+    const { user, date, time, room, seats, resStatus, reason, isAnonymous, inpersonInfo } = req.body;
 
     if (!(user || inpersonInfo) || !date || !time || !room) {
         res.status(400)
@@ -30,7 +30,7 @@ const createReservation = asyncHandler(async (req, res) => {
         seats: seats,
         resStatus: resStatus,
         reason: reason,
-        isAnnonymous: isAnnonymous,
+        isAnonymous: isAnonymous,
         inpersonInfo: inpersonInfo || null
     })
 
