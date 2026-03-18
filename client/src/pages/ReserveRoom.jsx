@@ -112,8 +112,8 @@ export function ReserveRoom(){
 	}
 
 	async function reserveRoom(selectedTime, selectedRoom, inpersonInfo = null) {
-		if (reservations.find((res) => res.date.toDateString() == selectedDate.toDateString())) {
-			alert('The room has already existing seat reservations or the room is already reserved')
+		if (reservations.find((res) => res.date.toDateString() == selectedDate.toDateString() && res.room.name === selectedRoom.name)) {
+			alert('The room is already reserved by someone else')
 			return
 		}
 		
