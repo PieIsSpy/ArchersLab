@@ -2,6 +2,9 @@ import { useState, useEffect} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../dark-datepicker.css";
+import { Room } from "../models/Room";
+import { Reservation } from "../models/Reservation";
+import { userJSON_to_Object, currentUser } from "../models/User";
 
 export function ReserveRoom(){
 	const timeSlots = [
@@ -12,18 +15,86 @@ export function ReserveRoom(){
 		"GK201", "GK202", "GK203", "GK204", "GK205",
 		"GK206", "GK207", "GK208", "GK209", "GK210"
 	];
+
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+
+	const [selectedDate, setSelectedDate] = useState(
+		new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000)
+	);
+
+	const minDate = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
+	const maxDate = new Date(today.getTime() + 31 * 24 * 60 * 60 * 1000);
 	
-	const [timeValue, setTimeValue] = useState(timeSlots[0]);
-	const [roomValue, setRoomValue] = useState(room[0]);
+	const [open, setOpen] = useState(false);
+	const [rooms, setRooms] = useState([]);
+
+	const [selectedTime, setSelectedTime] = useState("07:30-09:00");
+	const [selectedRoom, setSelectedRoom] = useState(null);
+
+	const [reservations, setReservations] = useState([])
+
+	const [loading, setLoading] = useState(true);
+
+	const fetchReservations = async () => {
+		const roomsUrl = 'http://localhost:5000/api/rooms';
+		const reservationsUrl = 'http://localhost:5000/api/reservations';
+		try {
+			// fetch data
+			const [roomsFetch, reservationsFetch] = await Promise.all([
+				fetch(roomsUrl),
+				fetch(reservationsUrl)
+			])
+
+			const roomsData = await roomsFetch.json();
+			const reservationsData = await reservationsFetch.json();
+
+			const roomInstances = roomsData.map(item =>
+				new Room(item._id, item.row, item.col, item.layout)
+			);
+			setRooms(roomInstances);
+
+			if (roomInstances.length > 0) {
+				setSelectedRoom(roomInstances[0]);
+			}
+
+			const reservationInstances = reservationsData.map(res => {
+				const userData = res.user ? res.user : res.inpersonInfo;
+				
+				return new Reservation(
+					userJSON_to_Object(userData),
+					new Date(res.date),
+					res.time,
+					roomInstances.find(r => r.name === (res.room._id)),
+					res.seats,
+					res.resStatus,
+					res.reason,
+					res.isAnonymous,
+					res._id
+				)
+			});
+
+			setReservations(reservationInstances)
+			console.log(reservationInstances)
+			setLoading(false);
+		} catch (error) {
+			console.error("Failed to fetch data:", error);
+			setLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		fetchReservations();
+	}, []);
 
 	const optionRoom = [];
-	for (let i = 0; i< room.length; i++){
+	for (let i = 0; i< rooms.length; i++){
 		optionRoom.push(
 			<option
 				key={i}
-				value={room[i]}
+				value={rooms[i].name}
 			>
-				{room[i]}
+				{rooms[i].name}
 			</option>
 		);
 	}
@@ -40,19 +111,56 @@ export function ReserveRoom(){
 		)
 	}
 
-	const today = new Date();
-	today.setHours(0, 0, 0, 0);
+	async function reserveRoom(selectedTime, selectedRoom, inpersonInfo = null) {
+		if (reservations.find((res) => res.date.toDateString() == selectedDate.toDateString())) {
+			alert('The room has already existing seat reservations or the room is already reserved')
+			return
+		}
+		
+		const newReservation = {
+			user: !inpersonInfo ? currentUser.id : null,
+			date: selectedDate.toISOString(),
+			time: selectedTime,
+			room: selectedRoom.name,
+			seats: [],
+			resStatus: "Upcoming",
+			reason: '',
+			isAnonymous: false,
+			inpersonInfo: inpersonInfo
+		};
 
-	const [selectedDate, setSelectedDate] = useState(
-		new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000)
-	);
+		try {
+			const response = await fetch('http://localhost:5000/api/reservations', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(newReservation)
+			})
 
-	const minDate = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
-	const maxDate = new Date(today.getTime() + 31 * 24 * 60 * 60 * 1000);
+			if (!response.ok) {
+				const error = await response.json();
+				throw new Error(error.message || 'Reservation Failed')
+			}
 
+			await fetchReservations();
+			alert("Reservation Successful!")
+		} catch (err) {
+			console.error("Error:", err);
+		}
+		
+		console.log(`
+			User has reserved room for
+			Date: ${selectedDate.toLocaleDateString()}
+			Time: ${selectedTime}
+			Room: ${selectedRoom.name}
+		`);
+	}
+
+	if (loading || !selectedRoom || rooms.length === 0) return <div>Loading...</div>
 	return(
-		<div className="flex flex-col justify-center items-center rounded-2xl gap-3 mx-auto">
-			<div className="mr-75">
+		<div className="flex flex-col justify-center items-center rounded-2xl gap-3">
+			<div className="mt-50 mr-75">
 				<div className="google text-5xl font-bold ">
 					Request for a room
 				</div>
@@ -93,21 +201,18 @@ export function ReserveRoom(){
 							</div>
 							
 							<select
-							className = "text-xl gray-89 text-center"
-							style={{
-								width: "120px",
-								height: "50px",
-								borderRadius: "8px",
-								padding: "6px 10px",
-							}}
-							value={roomValue}
-							onChange={(e) => {
-								
-								const newRoom = e.target.value;
-								setRoomValue(newRoom);
-								const newRoomIndex = room.indexOf(newRoom);
-								const newTimeIndex = timeSlots.indexOf(timeValue);
-							}}
+								className = "text-xl gray-89 text-center"
+								style={{
+									width: "120px",
+									height: "50px",
+									borderRadius: "8px",
+									padding: "6px 10px",
+								}}
+								value={selectedRoom.name}
+								onChange={(e) => {
+									const newRoom = rooms.find(r => r.name === e.target.value);
+									setSelectedRoom(newRoom);
+								}}
 							>
 							{optionRoom}
 							</select>
@@ -126,13 +231,10 @@ export function ReserveRoom(){
 								borderRadius: "8px",
 								padding: "6px 10px",
 							}}
-							value={timeValue}
-							onChange={(e) => {
-								const newTime = e.target.value;
-								setTimeValue(e.target.value);
-								const newRoomIndex = room.indexOf(roomValue);
-								const newTimeIndex = timeSlots.indexOf(newTime);
-							}}
+							value={selectedTime}
+							onChange={(e) => 
+								setSelectedTime(e.target.value)
+							}
 							>
 								{timeSlotOptions}
 							</select>
@@ -145,7 +247,7 @@ export function ReserveRoom(){
 							if (currentUser.isAdmin)
 								setOpen(true)
 							else
-								reserveRoom(timeValue, roomValue)
+								reserveRoom(selectedTime, selectedRoom)
 						}}
 					>
 						Request Room Reservation
