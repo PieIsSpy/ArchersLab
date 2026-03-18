@@ -4,13 +4,13 @@ import "../../dark-datepicker.css";
 import { rooms } from "../../models/Room";
 
 class ReservationClass {
-	constructor(user, date, time, room, seats, status, isAnnonymous) {
+	constructor(user, date, time, room, seats, status, isAnonymous) {
 		this.user = user;
 		this.date = date;
 		this.time = time;
 		this.room = room;
 		this.status = status
-		this.isAnnonymous = isAnnonymous;
+		this.isAnonymous = isAnonymous;
 	}
 }
 

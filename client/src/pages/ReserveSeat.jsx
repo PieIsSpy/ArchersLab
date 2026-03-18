@@ -59,7 +59,7 @@ export function ReserveSeat(){
 					res.seats,
 					res.resStatus,
 					res.reason,
-					res.isAnnonymous,
+					res.isAnonymous,
 					res._id
 				)
 			});
@@ -285,7 +285,7 @@ export function ReserveSeat(){
 			seats: selectedSeats,
 			resStatus: "Upcoming",
 			reason: '',
-			isAnnonymous: false,
+			isAnonymous: false,
 			inpersonInfo: inpersonInfo
 		};
 
