@@ -5,7 +5,7 @@ import { PencilSvg } from "../components/PencilSvg";
 import { ReservationTable } from "../components/ReservationTable";
 
 const formelement =
-  "w-full px-[10px] py-[6px] rounded-xl gray-89 text-lg font-['Inter',sans-serif] box-border " +
+  "w-full p-3 rounded-xl gray-89 text-l font-['Inter',sans-serif] box-border " +
   "focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]" +
   " selection:bg-blue-300 selection:text-black";
 
@@ -22,14 +22,14 @@ export function StudentProfile() {
   ];
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {fields
         .filter((field) => field.display)
         .map((field) => (
           <div key={field.key}>
-            <h2 className="font-bold text-s mb-1">{field.label}</h2>
-            <div className="rounded-xl gray-89 p-2 transition-transform transform hover:scale-[1.03]">
-              <h1 className="text-lg">{student[field.key] ?? "N/A"}</h1>
+            <h2 className="font-bold text-xs ml-3 mb-1">{field.label}</h2>
+            <div className="rounded-xl gray-89 p-3">
+              <h1 className="text-l">{student[field.key] ?? "N/A"}</h1>
             </div>
           </div>
         ))}
@@ -38,7 +38,7 @@ export function StudentProfile() {
 }
 export function StudentForm() {
 	return (
-		<form className="w-full px-4">
+		<form className="w-full space-y-3">
 			<div className="flex gap-[15px]">
 				<div className="mb-3 w-full flex-1">
 					<label className="block font-bold text-xs mb-1">FULL NAME</label>
@@ -172,7 +172,7 @@ export function Profile() {
     };
     
     return (
-		<div className="m-5 grid grid-cols-3 gap-4 items-stretch">
+		<div className="grid grid-cols-3 gap-4 items-stretch w-3/4 mx-auto">
 			<div className="col-span-1 min-h-[50vh] flex flex-col">
 			<div className="text-4xl font-black google mb-4 w-full">Profile</div>
 			<div className="gray-67 flex flex-col rounded-2xl p-4 items-center flex-1">
@@ -190,7 +190,7 @@ export function Profile() {
 				<h2 className="font-[serif] italic text-xl">{currentUser.bio}</h2>
 				</div>
 
-				<div className="w-full flex-1">
+				<div className="w-full flex-1 mt-8">
 				<StudentProfile />
 				</div>
 
@@ -229,7 +229,7 @@ export function Profile() {
 					</div>
 
 					<div className="text-3xl font-bold google w-full mb-4">Account Settings</div>
-					<div className="rounded-2xl pb-2 gray-67 flex flex-col items-center flex-1">
+					<div className="rounded-2xl gray-67 flex flex-col items-center">
 						<AccountSettings />
 					</div>
 				</div>

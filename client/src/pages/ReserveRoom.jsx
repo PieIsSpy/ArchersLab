@@ -51,8 +51,8 @@ export function ReserveRoom(){
 	const maxDate = new Date(today.getTime() + 31 * 24 * 60 * 60 * 1000);
 
 	return(
-		<div className="flex flex-col justify-center items-center rounded-2xl gap-3">
-			<div className="mt-50 mr-75">
+		<div className="flex flex-col justify-center items-center rounded-2xl gap-3 mx-auto">
+			<div className="mr-75">
 				<div className="google text-5xl font-bold ">
 					Request for a room
 				</div>
