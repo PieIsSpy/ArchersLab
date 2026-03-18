@@ -335,160 +335,137 @@ export function ReserveSeat(){
 	
 	if (loading || !selectedRoom) return <div>Loading...</div>
 	return(
-		<div className="flex flex-col justify-center items-center rounded-2xl mt-10 gap-3">
-			<div className="text-5xl google font-bold mr-220">
-				Reserve a seat		
-			</div>
-			<div className="flex flex-row gap-4">
-				<div className="flex flex-row justify-center items-center rounded-2xl">
-					<div className="flex items-center justify-center flex-col gap-4">
-						<div className="gray-67 justify-center items-center rounded-2xl text-2xl google flex gap-8 w-[800px]">
-							<div className="gap-2 flex flex-row justify-center items-center">
-								<div className="text-xl google flex items-center justify-center">Date:</div>
-								<div className="text-xl w-[150px] h-[100px] flex items-center justify-center">
-									<DatePicker
-										className="gray-89 text-xl w-full p-3 rounded-lg text-center
-										focus:outline-none focus:ring-2 focus:ring-[#145b92]
-										focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
-										selected={selectedDate}
-										onChange={handleDateChange}
-										minDate={minDate}
-										maxDate={maxDate}
-										dateFormat="MM/dd/yyyy"
-									/>
-								</div>
-							</div>
-
-							<label className="text-xl gap-3 flex flex-row justify-center items-center">
-								<div>Room:</div>
-								
-								<select
-									className = "text-xl gray-89 text-center"
-									style={{
-										width: "120px",
-										height: "50px",
-										borderRadius: "8px",
-										padding: "6px 10px",
-									}}
-									value={selectedRoom.name}
-									onChange={handleRoomChange}
-									>
-									{optionRoom}
-								</select>
-							</label>
-
-							<label className="text-xl gap-3 flex flex-row justify-center items-center">
-								<div>Timeslot:</div>
-								<select
-									className = "text-xl gray-89"
-									style={{
-										width: "155px",
-										height: "50px",
-										borderRadius: "8px",
-										padding: "6px 10px",
-									}}
-									value={selectedTime}
-									onChange={(e) => {
-										const newTime = e.target.value;
-										setSelectedTime(e.target.value);
-										const newRoomIndex = room.indexOf(selectedRoom);
-										const newTimeIndex = timeSlots.indexOf(newTime);
-									}}
-									>
-									{timeSlotOptions}
-								</select>
-							</label>
-						</div>
-
-			
-						<div className="min-w-[800px] min-h-[665px] w-fit h-fit p-8 gray-67 rounded-2xl">
-							{renderSeats()}
-						</div>
-					</div>
+		<div className="flex flex-col justify-center items-center rounded-2xl mt-15 gap-3 mx-auto">
+			<div className="grid gap-4 grid-rows-[auto_1fr]">
+				<div className="text-5xl google font-bold mr-220">
+					Reserve a seat		
 				</div>
-
-				<div className="w-[400px] h-[780px] gray-67 justify-center items-center rounded-2xl">
-					<div className="flex justify-center py-3 text-xl font-bold google border-b-2 border-gray-600 mx-auto w-90">
-						Chosen Seats
+				<div className="gray-67 justify-center items-center rounded-2xl text-2xl google flex gap-20">
+					<div className="gap-2 flex flex-row justify-center items-center">
+						<div className="text-xl google flex items-center justify-center">Date:</div>
+						<div className="text-xl w-[150px] h-[100px] flex items-center justify-center">
+							<DatePicker
+								className="gray-89 text-xl w-full p-3 rounded-lg text-center
+								focus:outline-none focus:ring-2 focus:ring-[#145b92]
+								focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
+								selected={selectedDate}
+								onChange={handleDateChange}
+								minDate={minDate}
+								maxDate={maxDate}
+								dateFormat="MM/dd/yyyy"
+							/>
+						</div>
 					</div>
 
-					<div className="flex justify-center items-center py-3 text-xl font-bold google border-b-2 border-gray-600 gap-4  mx-auto w-90">
-						<span>
-							Room<br></br>
-							<div className="font-normal">
-								{selectedRoom.name}
-							</div>
-						</span>
-
-						<div className="h-12 w-px bg-gray-600"></div>
+					<label className="text-xl gap-3 flex flex-row justify-center items-center">
+						<div>Room:</div>
 						
-						<span>
-							Timeslot<br></br>
-							<div className="font-normal w-30">
-								{timeSlots[timeIndex]}
-							</div>
-						</span>
+						<select
+							className = "text-xl gray-89 text-center"
+							style={{
+								width: "120px",
+								height: "50px",
+								borderRadius: "8px",
+								padding: "6px 10px",
+							}}
+							value={selectedRoom.name}
+							onChange={handleRoomChange}
+							>
+							{optionRoom}
+						</select>
+					</label>
 
-						<div className="h-12 w-px bg-gray-600"></div>
-
-						<span>
-							Date<br></br>
-							<div className="font-normal w-24">
-								{/* {selectedDate.toLocaleDateString()} */}
-							</div>
-						</span>
-					</div>
-					
-					<div className="[400px] h-[560px] overflow-auto justify-center">
-						<table className="w-[90%] mx-auto">
-							<tbody>
-							{selectedSeats.map(seatID => (
-								<tr key={seatID} className="border-b-2 border-gray-600">
-								<td className="text-left google m-10">Seat #{seatID}</td>
-								<td className="w-1/3 py-1 google">
-									<button
-									className="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200"
-									onClick={() => toggleSeatSelection(seatID)}
-									>
-									Remove
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										height="20px"
-										width="20px"
-										viewBox="0 -960 960 960"
-										className="flex-shrink-0"
-									>
-										<path
-										d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
-										fill="currentColor"
-										/>
-									</svg>
-									</button>
-								</td>
-								</tr>
-							))}
-							</tbody>
-						</table>
-					</div>
-
-
-					<div className="flex justify-center items-center py-3 text-xl font-bold google border-t-2 border-gray-600 gap-4  mx-auto w-90">
-						<button 
-							className="w-full font-bold
-							bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:bg-[#02497F] active:shadow-inner select-none"
-							onClick={()=> {
-								if (!selectedSeats.length)
-									alert("Please select at least one seat to reserve.")
-								else if (currentUser.isAdmin)
-									setOpen(true)
-								else
-									reserveSeat(selectedTime, selectedRoom, selectedSeats)
+					<label className="text-xl gap-3 flex flex-row justify-center items-center">
+						<div>Timeslot:</div>
+						<select
+							className = "text-xl gray-89"
+							style={{
+								width: "155px",
+								height: "50px",
+								borderRadius: "8px",
+								padding: "6px 10px",
+							}}
+							value={selectedTime}
+							onChange={(e) => {
+								const newTime = e.target.value;
+								setSelectedTime(e.target.value);
+								const newRoomIndex = room.indexOf(selectedRoom);
+								const newTimeIndex = timeSlots.indexOf(newTime);
 							}}
 							>
-							Reserve
-						</button>
+							{timeSlotOptions}
+						</select>
+					</label>
+					
+
+					<label className="text-xl gap-3 flex flex-row justify-center items-center">
+						<div>Anonymous?{" "}</div>
+						<input type="checkbox" class="appearance-none w-5 h-5 border-2 border-gray-400 rounded checked:bg-gray-500 checked:border-gray-500" />					</label>
+				</div>
+				
+				<div className="grid grid-cols-[auto_1fr] justify-center items-stretch rounded-2xl gap-4">
+					<div className="gray-67 rounded-2xl p-8">
+						{renderSeats()}
+					</div>
+
+					<div className="flex flex-col justify-center gray-67 rounded-2xl p-3">
+						<div className="flex justify-center w-full text-xl font-bold google border-b-2 pb-3 border-gray-600">
+							Chosen Seats
+						</div>
+
+						<div className="overflow-auto flex-1">
+							<table className="w-full mx-auto">
+								<tbody>
+								{selectedSeats.map(seatID => (
+									<tr key={seatID} className="border-b-2 border-gray-600">
+									<td className="text-left google">Seat #{seatID}</td>
+									<td className="w-1/3 py-1 google">
+										<button
+										className="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200"
+										onClick={() => toggleSeatSelection(seatID)}
+										>
+										Remove
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											height="20px"
+											width="20px"
+											viewBox="0 -960 960 960"
+											className="flex-shrink-0"
+										>
+											<path
+											d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
+											fill="currentColor"
+											/>
+										</svg>
+										</button>
+									</td>
+									</tr>
+								))}
+								</tbody>
+							</table>
+						</div>
+
+
+						<div className="flex justify-center items-center text-xl font-bold google gap-4 mx-auto w-full">
+							<button 
+								className="w-full font-bold
+								bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:bg-[#02497F] active:shadow-inner select-none"
+								onClick={()=> {
+									if (!selectedSeats.length)
+										alert("Please select at least one seat to reserve.")
+									else if (currentUser.isAdmin)
+										setOpen(true)
+									else
+										reserveSeat(selectedTime, selectedRoom, selectedSeats)
+								}}
+								>
+								Reserve
+							</button>
+						</div>
 					</div>
 				</div>
+
+				
 			</div>
 			<InpersonModal
 				open={open}
