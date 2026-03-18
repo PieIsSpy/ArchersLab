@@ -76,7 +76,7 @@ export default function App() {
 
 								<li>
 									<Link
-									to="/RequestRoom"
+									to="/ReserveRoom"
 									className={choice}
 									>
 									<svg
