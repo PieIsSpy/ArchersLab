@@ -479,7 +479,7 @@ export function ReserveSeat(){
 							onClick={()=> {
 								if (!selectedSeats.length)
 									alert("Please select at least one seat to reserve.")
-								else if (!currentUser.isAdmin)
+								else if (currentUser.isAdmin)
 									setOpen(true)
 								else
 									reserveSeat(selectedTime, selectedRoom, selectedSeats)
