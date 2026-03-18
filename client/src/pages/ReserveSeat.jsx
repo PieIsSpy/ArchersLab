@@ -284,6 +284,7 @@ export function ReserveSeat(){
 			room: selectedRoom.name,
 			seats: selectedSeats,
 			resStatus: "Upcoming",
+			reason: '',
 			isAnnonymous: false,
 			inpersonInfo: inpersonInfo
 		};
