@@ -58,6 +58,7 @@ export function ReserveSeat(){
 					roomInstances.find(r => r.name === (res.room._id)),
 					res.seats,
 					res.resStatus,
+					res.reason,
 					res.isAnnonymous,
 					res._id
 				)
