@@ -115,7 +115,12 @@ export function ReserveRoom(){
 	}
 
 	async function reserveRoom(selectedTime, selectedRoom, inpersonInfo = null) {
-		if (reservations.find((res) => res.date.toDateString() == selectedDate.toDateString() && res.room.name === selectedRoom.name)) {
+		if (!document.getElementById("reason-textarea").value){
+			alert('Reason field is empty. Please provide a valid reason.')
+			return
+		}
+
+		if (reservations.find((res) => res.date.toDateString() == selectedDate.toDateString() && res.time === selectedTime && res.room.name === selectedRoom.name)) {
 			alert('The room is already reserved by someone else')
 			return
 		}
@@ -127,7 +132,7 @@ export function ReserveRoom(){
 			room: selectedRoom.name,
 			seats: [],
 			resStatus: "Upcoming",
-			reason: '',
+			reason: document.getElementById("reason-textarea").value,
 			isAnonymous: false,
 			inpersonInfo: inpersonInfo
 		};
@@ -177,7 +182,7 @@ export function ReserveRoom(){
 		<div className="flex flex-col justify-center items-center rounded-2xl gap-3">
 			<div className="text-center">
 				<div className="google text-5xl font-bold ">
-					Request for a room
+					Request a room
 				</div>
 				<div className="google mt-2 text-gray-400">
 					Do note that each reservation must be made 14-31 days in advance.<br/>
@@ -188,74 +193,80 @@ export function ReserveRoom(){
 			{/* Outer Div that holds DATE ROOM TIMESLOT + REQ btn */}
 			<div className="flex flex-col justify-center items-center rounded-2xl gap-8">
 					{/* Inner Div that holds DATE ROOM TIMESLOT */}
-					<div className="gray-67 justify-center items-center rounded-2xl text-2xl google flex gap-12 w-[800px]">
-						
-						{/* Inner Div that holds DATE */}
-						<div className="gap-2 flex flex-row">
-							<div className="text-xl google flex items-center justify-center">
-								Date:
+					<div className="flex flex-col gray-67 rounded-2xl text-2xl google p-6">
+						<div className="flex justify-center items-center gap-x-12">
+							{/* Inner Div that holds DATE */}
+							<div className="gap-2 flex flex-row">
+								<div className="text-xl google flex items-center justify-center">
+									Date:
+								</div>
+								<div className="text-xl w-[150px] flex items-center justify-center">
+									<DatePicker
+										className="gray-89 text-xl w-full p-3 rounded-lg text-center
+										focus:outline-none focus:ring-2 focus:ring-[#145b92]
+										focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
+										selected={selectedDate}
+										onChange={(date) => setSelectedDate(date)}
+										minDate={minDate}
+										maxDate={maxDate}
+										dateFormat="MM/dd/yyyy"
+									/>
+								</div>
 							</div>
-							<div className="text-xl w-[150px] h-[100px] flex items-center justify-center">
-								<DatePicker
-									className="gray-89 text-xl w-full p-3 rounded-lg text-center
-									focus:outline-none focus:ring-2 focus:ring-[#145b92]
-									focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
-									selected={selectedDate}
-									onChange={(date) => setSelectedDate(date)}
-									minDate={minDate}
-									maxDate={maxDate}
-									dateFormat="MM/dd/yyyy"
-								/>
-							</div>
-						</div>
 
-						{/* Inner Div that holds ROOM */}
-						<div className="gap-2 flex flex-row">
-							<div className="text-xl google flex items-center justify-center">
-								Room:
+							{/* Inner Div that holds ROOM */}
+							<div className="gap-2 flex flex-row">
+								<div className="text-xl google flex items-center justify-center">
+									Room:
+								</div>
+								
+								<select
+									className = "text-xl gray-89 text-center"
+									style={{
+										width: "120px",
+										height: "50px",
+										borderRadius: "8px",
+										padding: "6px 10px",
+									}}
+									value={selectedRoom.name}
+									onChange={(e) => {
+										const newRoom = rooms.find(r => r.name === e.target.value);
+										setSelectedRoom(newRoom);
+									}}
+								>
+								{optionRoom}
+								</select>
 							</div>
-							
-							<select
-								className = "text-xl gray-89 text-center"
+
+							{/* Inner Div that holds TIMESLOT */}
+							<div className="gap-2 flex flex-row">
+								<div className="text-xl google flex items-center justify-center">
+									Timeslot:
+								</div>
+								<select
+								className = "text-xl gray-89"
 								style={{
-									width: "120px",
+									width: "150px",
 									height: "50px",
 									borderRadius: "8px",
 									padding: "6px 10px",
 								}}
-								value={selectedRoom.name}
-								onChange={(e) => {
-									const newRoom = rooms.find(r => r.name === e.target.value);
-									setSelectedRoom(newRoom);
-								}}
-							>
-							{optionRoom}
-							</select>
-						</div>
-
-						{/* Inner Div that holds TIMESLOT */}
-						<div className="gap-2 flex flex-row">
-							<div className="text-xl google flex items-center justify-center">
-								Timeslot:
+								value={selectedTime}
+								onChange={(e) => 
+									setSelectedTime(e.target.value)
+								}
+								>
+									{timeSlotOptions}
+								</select>
 							</div>
-							<select
-							className = "text-xl gray-89"
-							style={{
-								width: "150px",
-								height: "50px",
-								borderRadius: "8px",
-								padding: "6px 10px",
-							}}
-							value={selectedTime}
-							onChange={(e) => 
-								setSelectedTime(e.target.value)
-							}
-							>
-								{timeSlotOptions}
-							</select>
 						</div>
+						<div className="mt-5 text-xl google flex items-center">
+							Reason:
+						</div>
+						<textarea rows="2" defaultValue="SDKLJFSDKLF" className=
+  							"w-full p-3 rounded-xl gray-89 text-l font-['Inter',sans-serif] box-border focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
+						type="text" id="reason-textarea" maxLength="100"></textarea>
 					</div>
-					
 					{/* Reserve btn */}
 					<div className="bg-[#145b92] p-3 rounded-xl transition-all hover:scale-110 active:scale-105 active:bg-[#02497F] active:shadow-inner select-none"
 						onClick={() => {

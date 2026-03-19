@@ -10,7 +10,10 @@ import { DeleteAccount } from "./pages/DeleteAccount.jsx";
 import { ReserveSeat } from "./pages/ReserveSeat.jsx";
 import { ReserveRoom } from "./pages/ReserveRoom.jsx";
 import { AdminRegistration } from "./pages/admin/AdminRegistration.jsx";
+import { UserRegistration } from "./pages/UserRegistration.jsx";
 import { RoomReservations } from "./pages/admin/RoomReservations.jsx";
+import { UserLogin } from "./pages/UserLogin.jsx";
+
 import { currentUser } from "./models/User";
 
 export default function App() {
@@ -18,7 +21,7 @@ export default function App() {
 	return ( 
 		<Router>
 			<div className="h-screen">
-  				<div className="gray-67 w-24 h-full fixed top-0 left-0 flex flex-col justify-center items-center">
+  				<div className="gray-67 w-20 h-full fixed top-0 left-0 flex flex-col justify-center items-center">
 					
     				<nav className="flex flex-col items-center p-2">
 						<ul className="flex flex-col w-full gap-10">
@@ -70,7 +73,7 @@ export default function App() {
 									>
 										<path d="M19 3H5c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z" />
 									</svg>
-									<p className="text-xs text-center">Reserve</p>
+									<p className="text-xs text-center">Reserve a Seat</p>
 									</Link>
 								</li>
 
@@ -87,7 +90,7 @@ export default function App() {
 									>
 										<path d="M3 13h2v-2H3v2zm0-4h2V7H3v2zm4 4h14v-2H7v2zm0-4h14V7H7v2zm-4 8h2v-2H3v2zm4 0h14v-2H7v2z" />
 									</svg>
-									<p className="text-xs text-center">Request Room</p>
+									<p className="text-xs text-center">Request a Room</p>
 									</Link>
 								</li>
 							</div>
@@ -150,7 +153,7 @@ export default function App() {
 						</ul>
 					</nav>
 				</div>
-				<div className="h-screen flex items-center ml-24">
+				<div className="h-screen flex items-center ml-20">
 					<Routes>
 						<Route path="/" element={<Home />} />
 						<Route path="/Profile" element={<Profile />} />
@@ -160,6 +163,8 @@ export default function App() {
 						<Route path="/ReserveRoom" element={<ReserveRoom />} />
 						<Route path="/admin/AdminRegistration" element={<AdminRegistration />} />
 						<Route path="/admin/RoomReservations" element={<RoomReservations />} />
+						<Route path="/UserRegistration" element={<UserRegistration />} />
+						<Route path="/UserLogin" element={<UserLogin />} />
 					</Routes>
 				</div>
 			</div>
