@@ -46,7 +46,7 @@ export default function App() {
 						<ul className="flex flex-col w-full gap-10">
 							<li>
 								<Link
-								to="/"
+								to="/Dashboard"
 								className={choice}
 								>
 								<svg
