@@ -19,22 +19,42 @@ const store = new MongoDBSession({
 
 const app = express();
 
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
+
 app.use(session({
     secret: 'key that will sign cookie',
     resave: false,
     saveUninitialized: false,
-    store: store
+    store: store,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax'
+    }
 }))
 
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
-app.get('/', (req, res) => {
-    req.session.isAuth = true;
+app.get('/api/auth/init', (req, res) => {
+    if (req.session.isAuth) {
+        console.log('Returning Session', req.sessionID)
+    } else {
+        req.session.isAuth = true;
+        console.log('New Session Created')
+    }
+    
     // console.log(req.session);
     // console.log(req.session.id);
-    res.send("hello sessions")
+
+    res.status(200).json({
+        message: 'Session initialized',
+        isAuth: req.session.isAuth
+    })
 })
 
 app.use('/api/users', require('./routes/userRoutes'));

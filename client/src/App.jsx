@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-
+import { useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 
 // pages
@@ -17,6 +17,24 @@ import { UserLogin } from "./pages/UserLogin.jsx";
 import { currentUser } from "./models/User";
 
 export default function App() {
+	useEffect(() => {
+		fetch('http://localhost:5000/api/auth/init', {
+			method: 'GET',
+			credentials: 'include'
+		})
+		.then(async res => {
+			const isJson = res.headers.get('content-type')?.includes('application/json');
+			const data = isJson ? await res.json() : await res.text();
+
+			if (!res.ok) {
+				throw new Error(typeof data === 'string' ? data : data.message)
+			}
+			return data;
+		})
+		.then(data => console.log(data))
+		.catch(err => console.error(err))
+	}, [])
+
 	let choice = "flex flex-col items-center gap-2 rounded hover:bg-gray-700 transition"
 	return ( 
 		<Router>
