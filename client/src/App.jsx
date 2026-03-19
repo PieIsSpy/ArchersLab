@@ -24,7 +24,7 @@ export default function App() {
 	return ( 
 		<Router>
 			<div className="h-screen">
-  				{!location.pathname === "/" ?<div className="gray-67 w-20 h-full fixed top-0 left-0 flex flex-col justify-center items-center">
+  				{location.pathname != "/" ?<div className="gray-67 w-20 h-full fixed top-0 left-0 flex flex-col justify-center items-center">
 					
     				<nav className="flex flex-col items-center p-2">
 						<ul className="flex flex-col w-full gap-10">
@@ -156,7 +156,7 @@ export default function App() {
 						</ul>
 					</nav>
 				</div> : null}
-				<div className={!location.pathname === "/" ? "h-screen flex items-center ml-20" : "h-screen flex items-center"}>
+				<div className={location.pathname != "/" ? "h-screen flex items-center ml-20" : "h-screen flex items-center"}>
 					<Routes>
 						<Route path="/" element={<BoardingPage />} />
 						<Route path="/Dashboard" element={<Home />} />
