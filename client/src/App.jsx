@@ -19,6 +19,7 @@ import { currentUser } from "./models/User";
 export default function App() {
 	const [isAuth, setIsAuth] = useState(false);
 	const [isAdmin, setAdmin] = useState(false);
+	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(false);
 
 	const navigate = useNavigate();
@@ -72,7 +73,13 @@ export default function App() {
 						</div>
 					</div>
 				}/>
-				<Route path="/UserLogin" element={<UserLogin setAuth={setIsAuth}/>} />
+				<Route path="/UserLogin" element={
+					<UserLogin 
+						setIsAuth={setIsAuth}
+						setAdmin={setAdmin}
+						setUser={setUser}
+					/>
+				} />
 				<Route path="/UserRegistration" element={<UserRegistration />} />
 				<Route path='*' element={<Navigate to='/'/>} />
 			</ Routes>

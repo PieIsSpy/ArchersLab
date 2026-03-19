@@ -42,14 +42,17 @@ app.use(express.urlencoded({extended: false}));
 
 app.get('/api/auth/init', (req, res) => {
     if (req.session.isAuth) {
-        console.log('Returning Session', req.sessionID)
-    } else {
-        req.session.isAuth = true;
         console.log('New Session Created')
+        res.status(200).json({
+            isAuth: true,
+            user: req.session.user
+        })
+    } else {
+        res.status(200).json({
+            isAuth: false
+        })
+        
     }
-    
-    // console.log(req.session);
-    // console.log(req.session.id);
 
     res.status(200).json({
         message: 'Session initialized',

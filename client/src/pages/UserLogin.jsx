@@ -1,25 +1,44 @@
 import { useState } from "react";
 
-export function UserLogin() {
+export function UserLogin({setIsAuth, setAdmin, setUser}) {
 	const [form, setForm] = useState({
-		name: "",
-		email: "",
-		password: "",
-		confirmPassword: "",
+		id: null,
+		password: null
 	});
 
 	const handleChange = (e) => {
 		setForm({ ...form, [e.target.name]: e.target.value });
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if (form.password !== form.confirmPassword) {
-		alert("Passwords do not match");
-		return;
+		
+		try {
+			const response = await fetch('http://localhost:5000/api/users/login', {
+				method: 'POST',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({
+					id: Number(form.id),
+					password: form.password
+				})
+			})
+
+			if (response.ok) {
+				const data = await response.json();
+				const {isAdmin, ...userData} = data;
+
+				alert(`Welcome ${data.name}!`)
+
+				setIsAuth(true);
+				setAdmin(userData.isAdmin);
+				setUser(userData)
+			}
+			else {
+				alert('The user ID and password does not match')
+			}
+		} catch (err) {
+			console.error("Failed to fetch data:", err);
 		}
-		console.log("Admin account created:", form);
-		// Pls add API call here
 	};
 
 	const inputClass =
@@ -36,14 +55,14 @@ export function UserLogin() {
 			className="w-full flex flex-col items-center space-y-4 gray-67 rounded-2xl shadow-md p-4"
 			>
 				<div className="flex flex-col w-full">
-					<label className="font-bold text-xs mb-1">Email</label>
+					<label className="font-bold text-xs mb-1">ID</label>
 					<input
-					type="email"
-					name="email"
-					value={form.email}
+					type="text"
+					name="id"
+					value={form.id}
 					onChange={handleChange}
 					className={inputClass}
-					placeholder="Enter email"
+					placeholder="Enter ID"
 					/>
 				</div>
 
@@ -55,7 +74,7 @@ export function UserLogin() {
 					value={form.password}
 					onChange={handleChange}
 					className={inputClass}
-					placeholder="Enter password"
+					placeholder="Enter Password"
 					/>
 				</div>
 
