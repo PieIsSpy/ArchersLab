@@ -2,12 +2,17 @@ import { useState, useEffect } from "react";
 
 export function InpersonModal({open, onClose, onConfirm}) {
 	
-	const [form, setForm] = useState({
+	const emptyForm = {
 		first_name: "",
 		last_name: "",
 		email: "",
 		id_number: "",
+	};
+
+	const [form, setForm] = useState({
+		emptyForm
 	});
+
 
 	const inputClass =
 		"w-full mb-2 px-[10px] py-[6px] rounded-xl gray-89 text-sm font-['Inter',sans-serif] box-border " +
@@ -15,7 +20,7 @@ export function InpersonModal({open, onClose, onConfirm}) {
 
 	useEffect(() => {
 		const handleEsc = (e) => {
-			if (e.key === "Escape") onClose();
+			if (e.key === "Escape" && open) handleClose();
 		};
 
 		document.addEventListener("keydown", handleEsc);
@@ -28,11 +33,27 @@ export function InpersonModal({open, onClose, onConfirm}) {
 		setForm({ ...form, [e.target.name]: e.target.value });
 	};
 
+	const handleClose = () => {
+		setForm(emptyForm);
+		onClose();
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		if (!form.first_name || !form.last_name || !form.email || !form.id_number) {
 			alert('Please fill out missing fields')
+			return
+		}
+
+		if (form.id_number.length != 8){
+			alert("Invalid ID number length!")
+			return
+		}
+
+		if (/[a-zA-Z]/.test(form.id_number))
+		{
+			alert("ID number must only contain numbers");
 			return
 		}
 
@@ -43,7 +64,7 @@ export function InpersonModal({open, onClose, onConfirm}) {
 		}
 
 		onConfirm(inpersonInfo);
-		onClose();
+		handleClose();
 	};
 
 	return (
@@ -98,7 +119,7 @@ export function InpersonModal({open, onClose, onConfirm}) {
 						placeholder="Enter ID number"
 						/>
 					</div>
-
+						
 					<div className="flex justify-center mt-4">
 						<button
 						type="submit"
