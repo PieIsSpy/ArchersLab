@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { useEffect } from "react";
+import { Routes, Route, Link, Navigate, useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 
 // pages
@@ -12,12 +12,16 @@ import { ReserveRoom } from "./pages/ReserveRoom.jsx";
 import { AdminRegistration } from "./pages/admin/AdminRegistration.jsx";
 import { UserRegistration } from "./pages/UserRegistration.jsx";
 import { RoomReservations } from "./pages/admin/RoomReservations.jsx";
-import { BoardingPage } from "./pages/BoardingPage.jsx";
 import { UserLogin } from "./pages/UserLogin.jsx";
 
 import { currentUser } from "./models/User";
 
 export default function App() {
+	const [isAuth, setIsAuth] = useState(false);
+	const [loading, setLoading] = useState(false);
+
+	const navigate = useNavigate();
+
 	useEffect(() => {
 		fetch('http://localhost:5000/api/auth/init', {
 			method: 'GET',
@@ -37,8 +41,45 @@ export default function App() {
 	}, [])
 
 	let choice = "flex flex-col items-center gap-2 rounded hover:bg-gray-700 transition"
-	return ( 
-		<Router>
+	
+	if (loading) return <div className="flex h-screen items-center justify-center">Loading...</div>
+
+	if (isAuth) {
+		return (
+			<Routes>
+				<Route path='/' element={
+					<div className="bg-[#00000060] h-screen w-screen">
+						<img className="absolute z-0 h-screen w-screen top-0 left-0 blur-lg" src="src/resources/dlsu-jubilee.webp"></img>
+						<div className="bg-[#000000AA] relative z-10 flex flex-col h-screen items-center justify-center">
+							<h1 className="text-5xl google font-bold">Welcome to ArchersLab!</h1>
+							<div>A lab reservation system that works for <span>you</span>.</div>
+
+							<div className="mt-20 flex gap-8">
+								<button 
+									className="p-2 w-30 bg-[#145b92] rounded-xl select-none justify-center"
+									onClick={() => navigate("/UserRegistration")}
+								>
+									Sign up
+								</button>
+								<button
+									className="border w-30 p-2 rounded-xl flex justify-center"
+									onClick={() => navigate("/UserLogin")}
+								>
+									Log in
+								</button>
+							</div>
+						</div>
+					</div>
+				}/>
+				<Route path="/UserLogin" element={<UserLogin setAuth={setIsAuth}/>} />
+				<Route path="/UserRegistration" element={<UserRegistration />} />
+				<Route path='*' element={<Navigate to='/'/>} />
+			</ Routes>
+		)
+	}
+
+	return (
+		<>
 			<div className="h-screen">
   				{location.pathname != "/" ?<div className="gray-67 w-20 h-full fixed top-0 left-0 flex flex-col justify-center items-center">
 					
@@ -174,7 +215,6 @@ export default function App() {
 				</div> : null}
 				<div className={location.pathname != "/" ? "h-screen flex items-center ml-20" : "h-screen flex items-center"}>
 					<Routes>
-						<Route path="/" element={<BoardingPage />} />
 						<Route path="/Dashboard" element={<Home />} />
 						<Route path="/Profile" element={<Profile />} />
 						<Route path="/ChangePassword" element={<ChangePassword />} />
@@ -183,11 +223,10 @@ export default function App() {
 						<Route path="/ReserveRoom" element={<ReserveRoom />} />
 						<Route path="/admin/AdminRegistration" element={<AdminRegistration />} />
 						<Route path="/admin/RoomReservations" element={<RoomReservations />} />
-						<Route path="/UserRegistration" element={<UserRegistration />} />
-						<Route path="/UserLogin" element={<UserLogin />} />
+						<Route path='*' element={<Navigate to='/Dashboard'/>}/>
 					</Routes>
 				</div>
 			</div>
-		</Router>
-	);
+		</>
+	)
 }
