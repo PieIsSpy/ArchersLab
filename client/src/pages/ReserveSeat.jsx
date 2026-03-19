@@ -362,7 +362,7 @@ export function ReserveSeat(){
 		setSelectedSeats(prev => [...prev, seatID]);
 	}
 	
-	if (loading || !selectedRoom) return <div>Loading...</div>
+	if (loading || !selectedRoom) return <div className="mx-auto">Loading...</div>
 	return(
 		<div className="rounded-2xl gap-3 mx-auto">
 			<div className="grid gap-4 w-3/4 grid-rows-[auto_1fr]">

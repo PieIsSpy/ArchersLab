@@ -176,7 +176,7 @@ export function ReserveRoom(){
 		}
 	}
 
-	if (loading || !selectedRoom || rooms.length === 0) return <div>Loading...</div>
+	if (loading || !selectedRoom || rooms.length === 0) return <div className="mx-auto">Loading...</div>
 	return(
 	<div className="w-full min-h-screen flex justify-center items-center">
 		<div className="flex flex-col justify-center items-center rounded-2xl gap-3">
