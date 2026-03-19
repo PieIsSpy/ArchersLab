@@ -367,7 +367,7 @@ export function ReserveSeat(){
 		<div className="rounded-2xl gap-3 mx-auto">
 			<div className="grid gap-4 w-3/4 grid-rows-[auto_1fr]">
 				<div className="text-5xl google font-bold">
-					Reserve a seat/s		
+					Reserve a seat	
 				</div>
 				<div className="gray-67 justify-center items-center rounded-2xl text-2xl google flex gap-20 px-10">
 					<div className="gap-2 flex flex-row justify-center items-center">
