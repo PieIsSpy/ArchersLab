@@ -7,24 +7,78 @@ import { InpersonModal } from "../components/Modals";
 import { userJSON_to_Object, currentUser } from "../models/User";
 import { Reservation } from "../models/Reservation";
 
+const layout1 = [
+	[1,1,1,0,1,1,1,0,1,1,1],
+	[0,0,0,0,0,0,0,0,0,0,0],
+	[1,1,1,0,1,1,1,0,1,1,1],
+	[0,0,0,0,0,0,0,0,0,0,0],
+	[1,1,1,0,1,1,1,0,1,1,1],
+	[0,0,0,0,0,0,0,0,0,0,0],
+	[1,1,1,0,1,1,1,0,1,1,1],
+	[0,0,0,0,0,0,0,0,0,0,0],
+	[1,1,1,0,1,1,1,0,1,1,1]
+];
+
+const layout2 = [
+	[1,1,1,0,0,1,1,1],
+	[0,0,0,0,0,0,0,0],
+	[1,1,1,0,0,1,1,1],
+	[0,0,0,0,0,0,0,0],
+	[1,1,1,0,0,1,1,1],
+	[0,0,0,0,0,0,0,0],
+	[1,1,1,0,0,1,1,1],
+	[0,0,0,0,0,0,0,0],
+	[1,1,1,0,0,1,1,1]
+];
+
+const layout3 = [
+	[2,2,2,0,2,2,2],
+	[1,1,1,0,1,1,1],
+	[0,0,0,0,0,0,0],
+	[2,2,2,0,2,2,2],
+	[1,1,1,0,1,1,1]
+];
+
+const layout4 = [
+	[0,1,1,0,1,1,0],
+	[0,1,1,0,1,1,0],
+	[0,1,1,0,1,1,0],
+	[0,1,1,0,1,1,0],
+	[0,1,1,0,1,1,0],
+]
+
+const layout5 = [
+	[1,1,1,1,0,1,1,1,1],
+			[0],
+	[1,1,1,1,0,1,1,1,1],
+			[0],
+	[1,1,1,1,0,1,1,1,1],
+			[0],
+	[1,1,1,1,0,1,1,1,1],
+			[0],
+	[1,1,1,1,0,1,1,1,1],
+]
+
+const timeSlots = [
+	"07:30-09:00", "09:15-10:45", "11:00-12:30", "12:45-14:15", 
+	"14:30-16:00", "16:15-17:45", "18:00-19:30",
+];
+
 export function ReserveSeat(){
+	const [loading, setLoading] = useState(true);
 	const [open, setOpen] = useState(false);
+
 	const [rooms, setRooms] = useState([]);
+	const [reservations, setReservations] = useState([]);
 
 	const [selectedDate, setSelectedDate] = useState(new Date());
 	const [selectedTime, setSelectedTime] = useState("07:30-09:00");
 	const [selectedRoom, setSelectedRoom] = useState(rooms[0]);
 	const [selectedSeats, setSelectedSeats] = useState([]);
-	
-	const [reservations, setReservations] = useState([])
+
 	const [bookedSeats, setBookedSeats] = useState([]);
 
-	const [loading, setLoading] = useState(true);
-
-	const timeSlots = [
-		"07:30-09:00", "09:15-10:45", "11:00-12:30", "12:45-14:15", 
-		"14:30-16:00", "16:15-17:45", "18:00-19:30",
-	];
+	const [timeSlotOptions, setTimeSlotOptions] = useState([]);
 
 	const fetchReservations = async () => {
 		const roomsUrl = 'http://localhost:5000/api/rooms';
@@ -75,9 +129,32 @@ export function ReserveSeat(){
 	useEffect(() => {
 		fetchReservations();
 	}, []);
-	
-	const timeIndex = timeSlots.indexOf(selectedTime);
 
+	useEffect(() => {
+		var tempTimeSlots = [...timeSlots]
+
+		if (selectedRoom) 
+			console.log(selectedRoom.name)
+
+		reservations.forEach(res => {
+			if (res.date.toDateString() === selectedDate.toDateString() && // Same day
+				res.room.name === selectedRoom.name && // Same room
+				res.seats.length === 0) // No seats (Full room reservation)
+				{
+					tempTimeSlots.splice(tempTimeSlots.indexOf(res.time),1); // Temporarily remove from timeslot
+				}
+		});
+
+		console.log(tempTimeSlots)
+
+		setTimeSlotOptions(
+			tempTimeSlots.map(slot => <option key={slot} value={slot}>{slot}</option>)
+		);
+
+    	setSelectedTime(tempTimeSlots[0] || null);
+
+	}, [selectedDate, selectedRoom, reservations]); // only runs when date or room change
+	
 	useEffect(() => {
 		if (!selectedRoom) {
 			setBookedSeats([]);
@@ -102,7 +179,6 @@ export function ReserveSeat(){
 	const selected = new Date(selectedDate);
 	selected.setHours(0, 0, 0, 0);
 
-	// Set minimum and maximum date (earliest and latest)
 	const minDate = new Date();
 	const maxDate = new Date();
 	maxDate.setDate(today.getDate() + 13);
@@ -128,74 +204,6 @@ export function ReserveSeat(){
 			</option>
 		);
 	}
-
-	const timeSlotOptions = [];
-	for (let i = 0; i<timeSlots.length;i++){
-		timeSlotOptions.push(
-			<option
-				key={i}
-				value={timeSlots[i]}
-			>
-				{timeSlots[i]}
-			</option>
-		)
-	}
-
-	const layout1 = [
-		[1,1,1,0,1,1,1,0,1,1,1],
-		[0,0,0,0,0,0,0,0,0,0,0],
-		[1,1,1,0,1,1,1,0,1,1,1],
-		[0,0,0,0,0,0,0,0,0,0,0],
-		[1,1,1,0,1,1,1,0,1,1,1],
-		[0,0,0,0,0,0,0,0,0,0,0],
-		[1,1,1,0,1,1,1,0,1,1,1],
-		[0,0,0,0,0,0,0,0,0,0,0],
-		[1,1,1,0,1,1,1,0,1,1,1]
-	];
-
-	const layout2 = [
-		[1,1,1,0,0,1,1,1],
-		[0,0,0,0,0,0,0,0],
-		[1,1,1,0,0,1,1,1],
-		[0,0,0,0,0,0,0,0],
-		[1,1,1,0,0,1,1,1],
-		[0,0,0,0,0,0,0,0],
-		[1,1,1,0,0,1,1,1],
-		[0,0,0,0,0,0,0,0],
-		[1,1,1,0,0,1,1,1]
-	];
-
-	const layout3 = [
-		[2,2,2,0,2,2,2],
-		[1,1,1,0,1,1,1],
-		[0,0,0,0,0,0,0],
-		[2,2,2,0,2,2,2],
-		[1,1,1,0,1,1,1]
-	];
-
-	const layout4 = [
-		[0],
-		[0,1,1,0,1,1,0],
-		[0,1,1,0,1,1,0],
-		[0,1,1,0,1,1,0],
-		[0,1,1,0,1,1,0],
-		[0,1,1,0,1,1,0],
-		[0],
-	]
-
-		const layout5 = [
-		[0],
-		[1,1,1,1,0,1,1,1,1],
-				[0],
-		[1,1,1,1,0,1,1,1,1],
-				[0],
-		[1,1,1,1,0,1,1,1,1],
-				[0],
-		[1,1,1,1,0,1,1,1,1],
-				[0],
-		[1,1,1,1,0,1,1,1,1],
-		[0],
-	]
 
 	const deploySeats = (layoutArr) => {
 		const rows = [];
@@ -359,7 +367,9 @@ export function ReserveSeat(){
 			return;
 		}
 
-		setSelectedSeats(prev => [...prev, seatID]);
+		setSelectedSeats(prev =>
+			[...prev, seatID].sort((a, b) => a - b)
+		);
 	}
 	
 	if (loading || !selectedRoom) return <div className="mx-auto">Loading...</div>
@@ -418,7 +428,7 @@ export function ReserveSeat(){
 							onChange={(e) => {
 								const newTime = e.target.value;
 								setSelectedTime(e.target.value);
-								const newRoomIndex = room.indexOf(selectedRoom);
+								const newRoomIndex = rooms.indexOf(selectedRoom);
 								const newTimeIndex = timeSlots.indexOf(newTime);
 							}}
 							>
@@ -426,7 +436,7 @@ export function ReserveSeat(){
 						</select>
 					</label>
 					
-
+					
 					<label className="text-xl gap-3 flex flex-row justify-center items-center">
 						<div>Anonymous?{" "}</div>
 						<input type="checkbox" id="anonymous-checkbox" class="appearance-none w-5 h-5 border-2 border-gray-400 rounded checked:bg-gray-500 checked:border-gray-500" />					</label>
@@ -482,6 +492,7 @@ export function ReserveSeat(){
 								onClick={()=> {
 									if (!selectedSeats.length)
 										alert("Please select at least one seat to reserve.")
+									// ADMIN SWITCH
 									else if (currentUser.isAdmin)
 										setOpen(true)
 									else
