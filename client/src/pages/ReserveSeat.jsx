@@ -173,6 +173,30 @@ export function ReserveSeat(){
 		[1,1,1,0,1,1,1]
 	];
 
+	const layout4 = [
+		[0],
+		[0,1,1,0,1,1,0],
+		[0,1,1,0,1,1,0],
+		[0,1,1,0,1,1,0],
+		[0,1,1,0,1,1,0],
+		[0,1,1,0,1,1,0],
+		[0],
+	]
+
+		const layout5 = [
+		[0],
+		[1,1,1,1,0,1,1,1,1],
+				[0],
+		[1,1,1,1,0,1,1,1,1],
+				[0],
+		[1,1,1,1,0,1,1,1,1],
+				[0],
+		[1,1,1,1,0,1,1,1,1],
+				[0],
+		[1,1,1,1,0,1,1,1,1],
+		[0],
+	]
+
 	const deploySeats = (layoutArr) => {
 		const rows = [];
 		let seatidx = 1;
@@ -271,6 +295,10 @@ export function ReserveSeat(){
 				return deploySeats(layout2);
 			case 3:
 				return deploySeats(layout3);
+			case 4:
+				return deploySeats(layout4);
+			case 5:
+				return deploySeats(layout5);
 		}
 	}
 
