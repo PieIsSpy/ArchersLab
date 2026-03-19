@@ -180,7 +180,7 @@ export function ReserveRoom(){
 	return(
 	<div className="w-full min-h-screen flex justify-center items-center">
 		<div className="flex flex-col justify-center items-center rounded-2xl gap-3">
-			<div className="text-center">
+			<div className="mr-70">
 				<div className="google text-5xl font-bold ">
 					Request a room
 				</div>
@@ -263,7 +263,7 @@ export function ReserveRoom(){
 						<div className="mt-5 text-xl google flex items-center">
 							Reason:
 						</div>
-						<textarea rows="2" defaultValue="SDKLJFSDKLF" className=
+						<textarea rows="2" placeholder="Please insert reason here" className=
   							"w-full p-3 rounded-xl gray-89 text-l font-['Inter',sans-serif] box-border focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
 						type="text" id="reason-textarea" maxLength="100"></textarea>
 					</div>

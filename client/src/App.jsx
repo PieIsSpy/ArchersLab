@@ -20,7 +20,6 @@ import { currentUser } from "./models/User";
 export default function App() {
 
 	let choice = "flex flex-col items-center gap-2 rounded hover:bg-gray-700 transition"
-	
 	return ( 
 		<Router>
 			<div className="h-screen">
