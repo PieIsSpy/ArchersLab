@@ -38,17 +38,17 @@ export function StudentProfile() {
 }
 export function StudentForm() {
 	return (
-		<form className="w-full space-y-3">
+		<form className="w-full">
 			<div className="flex gap-[15px]">
 				<div className="mb-3 w-full flex-1">
 					<label className="block font-bold text-xs mb-1 ml-3">FULL NAME</label>
-					<input 
+					<input maxLength="40"
 					className={`${formelement}`}
 					type="text" defaultValue={currentUser.name}></input>
 				</div>
 				<div className="mb-3 w-full flex-1">
 					<label className="block font-bold text-xs mb-1 ml-3">DISPLAY NAME</label>
-					<input 
+					<input maxLength="25"
 					className={`${formelement}`}
 					type="text" defaultValue={currentUser.nickname}></input>
 				</div>
@@ -57,13 +57,13 @@ export function StudentForm() {
 			<div className="flex gap-[15px]">
 				<div className="mb-3 w-full flex-1">
 					<label className="block font-bold text-xs mb-1 ml-3">STUDENT ID</label>
-					<input 
+					<input maxLength="10"
 					className={`${formelement}`}
 					type="text" defaultValue={currentUser.id}></input>
 				</div>
 				<div className="mb-3 w-full flex-1">
 					<label className="block font-bold text-xs mb-1 ml-3">EMAIL</label>
-					<input 
+					<input maxLength="50"
 					className={`${formelement}`}
 					type="text" defaultValue={currentUser.email}></input>
 				</div>
@@ -71,28 +71,28 @@ export function StudentForm() {
 
 			<div className="mb-3 w-full">
 				<label className="block font-bold text-xs mb-1 ml-3">COLLEGE</label>
-				<input 
+				<input maxLength="50"
 					className={`${formelement}`}
 				type="text" defaultValue={currentUser.college}></input>
 			</div>
 
 			<div className="mb-3 w-full">
 				<label className="block font-bold text-xs mb-1 ml-3">PROGRAM</label>
-				<input 
+				<input maxLength="50"
 					className={`${formelement}`}
 				type="text" defaultValue={currentUser.program}></input>
 			</div>
 
 			<div className="mb-3 w-full">
 				<label className="block font-bold text-xs mb-1 ml-3">BIO</label>
-				<input 
+				<input maxLength="75"
 					className={`${formelement}`}
 				type="text" defaultValue={currentUser.bio}></input>
 			</div>
 
 			<div className="mb-3 w-full">
 				<label className="block font-bold text-xs mb-1 ml-3">DESCRIPTION</label>
-				<textarea rows="2" 
+				<textarea rows="2" maxLength="200"
 					className={`${formelement}`}
 				type="text" defaultValue={currentUser.about}></textarea>
 			</div>
@@ -178,43 +178,43 @@ export function Profile() {
     return (
 		<div className="grid grid-cols-3 gap-4 items-stretch mx-auto">
 			<div className="col-span-1 min-h-[50vh] flex flex-col">
-			<div className="text-4xl font-black google mb-4 w-full">Profile</div>
-			<div className="gray-67 flex flex-col rounded-2xl p-4 items-center flex-1">
-				<img
-				className="rounded-full w-40"
-				src="./src/resources/karl.png"
-				alt="Profile"
-				/>
+				<div className="text-4xl font-black google mb-4 w-full">Profile</div>
+				<div className="gray-67 flex flex-col rounded-2xl p-4 items-center flex-1">
+					<img
+					className="rounded-full w-40"
+					src="./src/resources/karl.png"
+					alt="Profile"
+					/>
 
-				<h1 className="text-5xl font-bold google">
-				{currentUser.nickname.length === 0 ? currentUser.name : currentUser.nickname}
-				</h1>
+					<h1 className="text-5xl font-bold google">
+					{currentUser.nickname.length === 0 ? currentUser.name : currentUser.nickname}
+					</h1>
 
-				<div className="text-center">
-				<h2 className="font-[serif] italic text-xl">{currentUser.bio}</h2>
+					<div className="text-center">
+					<h2 className="font-[serif] italic text-xl">{currentUser.bio}</h2>
+					</div>
+
+					<div className="w-full flex-1 mt-8">
+					<StudentProfile />
+					</div>
+
+					{!currentUser.isAdmin ? (
+					<button
+						className="border p-2 rounded-xl flex items-center transition-transform transform hover:scale-103 active:scale-95 mt-4"
+						onClick={handleToggle}
+					>
+						{showFirst ? (
+						<>
+							<PencilSvg /> Edit Profile
+						</>
+						) : (
+						<>
+							<PencilSvg /> Cancel Editing
+						</>
+						)}
+					</button>
+					): null}
 				</div>
-
-				<div className="w-full flex-1 mt-8">
-				<StudentProfile />
-				</div>
-
-				{!currentUser.isAdmin ? (
-				<button
-					className="border p-2 rounded-xl flex items-center transition-transform transform hover:scale-103 active:scale-95 mt-4"
-					onClick={handleToggle}
-				>
-					{showFirst ? (
-					<>
-						<PencilSvg /> Edit Profile
-					</>
-					) : (
-					<>
-						<PencilSvg /> Cancel Editing
-					</>
-					)}
-				</button>
-				): null}
-			</div>
 			</div>
 
 			<div className="col-span-2 min-h-[50vh] flex flex-col">
