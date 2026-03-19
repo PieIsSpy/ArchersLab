@@ -173,8 +173,9 @@ export function ReserveRoom(){
 
 	if (loading || !selectedRoom || rooms.length === 0) return <div>Loading...</div>
 	return(
+	<div className="w-full min-h-screen flex justify-center items-center">
 		<div className="flex flex-col justify-center items-center rounded-2xl gap-3">
-			<div className="mt-50 mr-75">
+			<div className="text-center">
 				<div className="google text-5xl font-bold ">
 					Request for a room
 				</div>
@@ -273,5 +274,7 @@ export function ReserveRoom(){
 					/>
 			</div>
 		</div>
+	</div>
+
 	);
 }
