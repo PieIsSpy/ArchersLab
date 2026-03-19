@@ -64,7 +64,11 @@ const timeSlots = [
 	"14:30-16:00", "16:15-17:45", "18:00-19:30",
 ];
 
+
+
 export function ReserveSeat(){
+	const [showBookedModal, setShowBookedModal] = useState(false);
+	const [modalMessage, setModalMessage] = useState("");
 	const [loading, setLoading] = useState(true);
 	const [open, setOpen] = useState(false);
 
@@ -79,6 +83,62 @@ export function ReserveSeat(){
 	const [bookedSeats, setBookedSeats] = useState([]);
 
 	const [timeSlotOptions, setTimeSlotOptions] = useState([]);
+
+	const Modal = ({ message }) => (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="gray-89 p-6 rounded-xl shadow-lg max-w-sm w-full text-center">
+        <p className="mb-4">{message}</p>
+        <button
+          onClick={() => setShowBookedModal(false)}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+	)
+	
+	const getReservationDetails = async (seatID, selectedRoom, selectedTime, selectedDate) => {
+		try {
+			const startOfDay = new Date(selectedDate);
+			startOfDay.setUTCHours(0, 0, 0, 0);
+
+			const endOfDay = new Date(selectedDate);
+			endOfDay.setUTCHours(23, 59, 59, 999);
+
+			const reservationInfo = await Reservation.findOne({
+				seats: { $in: [Number(seatID)] },
+				room: selectedRoom,
+				time: selectedTime,
+				date: {$gte: startOfDay, $lte: endOfDay},
+				resStatus: { $ne: "Cancelled" }
+			}).exec();
+
+			if (!reservationInfo) return null;
+
+			if (reservationInfo.isAnonymous) return "Anonymous";
+
+			if (reservationInfo.user) {
+				return reservationInfo.user.toString();
+			}
+
+			if (reservationInfo.inpersonInfo && reservationInfo.inpersonInfo.name) {
+				return reservationInfo.inpersonInfo.name;
+			}
+
+			return "Anonymous";
+		} catch (err) {
+			console.error(err);
+			return null;
+		}
+	};
+
+	const handleBookedSeatClick = async (seatID) => {
+		const name = await getReservationDetails(seatID, selectedRoom.name, selectedTime, selectedDate);
+		setModalMessage(`Seat #${seatID} is booked by ${name}`);
+		setShowBookedModal(true);
+	};
+
 
 	const fetchReservations = async () => {
 		const roomsUrl = 'http://localhost:5000/api/rooms';
@@ -225,10 +285,17 @@ export function ReserveSeat(){
 								) : null}
 								<button
 									id={seatID}
-									onClick={() => isBooked ? null : toggleSeatSelection(seatID)}
+									onClick={() => {
+										if (isBooked) {
+											handleBookedSeatClick(seatID);
+										} else {
+											toggleSeatSelection(seatID);
+										}
+									}
+									}
 									className={`
 										w-16 h-16 flex flex-col items-center justify-center 
-										${isBooked ? "booked cursor-not-allowed" : "hover:bg-gray-500"}
+										${isBooked ? "booked" : "hover:bg-gray-500"}
 										${isSelected ? "blue" : ""}
 									`}
 								>
@@ -252,10 +319,17 @@ export function ReserveSeat(){
 								<h1 className="m-0 text-xs">{seatID}</h1>
 								<button
 									id={seatID}
-									onClick={() => isBooked ? null : toggleSeatSelection(seatID)}
+									onClick={() => {
+										if (isBooked) {
+											handleBookedSeatClick(seatID);
+										} else {
+											toggleSeatSelection(seatID);
+										}
+									}
+								}
 									className={`
 										w-16 h-16 flex flex-col items-center justify-center 
-										${isBooked ? "booked cursor-not-allowed" : "hover:bg-gray-500"}
+										${isBooked ? "booked" : "hover:bg-gray-500"}
 										${isSelected ? "blue" : ""}
 									`}
 								>
@@ -363,7 +437,8 @@ export function ReserveSeat(){
 		}
 
 		if (selectedSeats.length >= 5) {
-			alert("You can only reserve up to 5 seats.");
+			setModalMessage(`You can only reserve 5 seats per timeslot/room!`)
+			setShowBookedModal(true)
 			return;
 		}
 
@@ -419,7 +494,7 @@ export function ReserveSeat(){
 						<select
 							className = "text-xl gray-89"
 							style={{
-								width: "155px",
+								width: "160px",
 								height: "50px",
 								borderRadius: "8px",
 								padding: "6px 10px",
@@ -491,7 +566,10 @@ export function ReserveSeat(){
 								bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:bg-[#02497F] active:shadow-inner select-none"
 								onClick={()=> {
 									if (!selectedSeats.length)
-										alert("Please select at least one seat to reserve.")
+										{
+										setModalMessage(`Please select a seat!`)
+										setShowBookedModal(true)
+										}
 									// ADMIN SWITCH
 									else if (currentUser.isAdmin)
 										setOpen(true)
@@ -509,6 +587,7 @@ export function ReserveSeat(){
 				onClose={() => setOpen(false)}
 				onConfirm={(info) => reserveSeat(selectedTime, selectedRoom, selectedSeats, info)}
 			/>
+			{showBookedModal && <Modal message={modalMessage} />}
 			</div>
 		</div>
 	);
