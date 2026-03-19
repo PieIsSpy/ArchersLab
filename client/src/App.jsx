@@ -10,7 +10,10 @@ import { DeleteAccount } from "./pages/DeleteAccount.jsx";
 import { ReserveSeat } from "./pages/ReserveSeat.jsx";
 import { ReserveRoom } from "./pages/ReserveRoom.jsx";
 import { AdminRegistration } from "./pages/admin/AdminRegistration.jsx";
+import { UserRegistration } from "./pages/UserRegistration.jsx";
 import { RoomReservations } from "./pages/admin/RoomReservations.jsx";
+import { UserLogin } from "./pages/UserLogin.jsx";
+
 import { currentUser } from "./models/User";
 
 export default function App() {
@@ -160,6 +163,8 @@ export default function App() {
 						<Route path="/ReserveRoom" element={<ReserveRoom />} />
 						<Route path="/admin/AdminRegistration" element={<AdminRegistration />} />
 						<Route path="/admin/RoomReservations" element={<RoomReservations />} />
+						<Route path="/UserRegistration" element={<UserRegistration />} />
+						<Route path="/UserLogin" element={<UserLogin />} />
 					</Routes>
 				</div>
 			</div>
