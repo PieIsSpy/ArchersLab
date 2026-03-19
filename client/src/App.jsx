@@ -12,16 +12,19 @@ import { ReserveRoom } from "./pages/ReserveRoom.jsx";
 import { AdminRegistration } from "./pages/admin/AdminRegistration.jsx";
 import { UserRegistration } from "./pages/UserRegistration.jsx";
 import { RoomReservations } from "./pages/admin/RoomReservations.jsx";
+import { BoardingPage } from "./pages/BoardingPage.jsx";
 import { UserLogin } from "./pages/UserLogin.jsx";
 
 import { currentUser } from "./models/User";
 
 export default function App() {
+
 	let choice = "flex flex-col items-center gap-2 rounded hover:bg-gray-700 transition"
+	
 	return ( 
 		<Router>
 			<div className="h-screen">
-  				<div className="gray-67 w-20 h-full fixed top-0 left-0 flex flex-col justify-center items-center">
+  				{!location.pathname === "/" ?<div className="gray-67 w-20 h-full fixed top-0 left-0 flex flex-col justify-center items-center">
 					
     				<nav className="flex flex-col items-center p-2">
 						<ul className="flex flex-col w-full gap-10">
@@ -152,10 +155,11 @@ export default function App() {
 						}
 						</ul>
 					</nav>
-				</div>
-				<div className="h-screen flex items-center ml-20">
+				</div> : null}
+				<div className={!location.pathname === "/" ? "h-screen flex items-center ml-20" : "h-screen flex items-center"}>
 					<Routes>
-						<Route path="/" element={<Home />} />
+						<Route path="/" element={<BoardingPage />} />
+						<Route path="/Dashboard" element={<Home />} />
 						<Route path="/Profile" element={<Profile />} />
 						<Route path="/ChangePassword" element={<ChangePassword />} />
 						<Route path="/DeleteAccount" element={<DeleteAccount />} />

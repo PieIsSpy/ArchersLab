@@ -216,7 +216,7 @@ export function Profile() {
 					): null}
 				</div>
 			</div>
-
+				
 			<div className="col-span-2 min-h-[50vh] flex flex-col">
 			{showFirst && !currentUser.isAdmin ? (
 				<div className="flex flex-col flex-1">
