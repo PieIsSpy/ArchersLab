@@ -51,6 +51,18 @@ export function UserRegistration() {
 				</div>
 
 				<div className="flex flex-col w-full">
+					<label className="font-bold text-xs mb-1">ID</label>
+					<input
+					type="text"
+					name="ID"
+					value={form.email}
+					onChange={handleChange}
+					className={inputClass}
+					placeholder="Enter ID Number"
+					/>
+				</div>
+
+				<div className="flex flex-col w-full">
 					<label className="font-bold text-xs mb-1">Email</label>
 					<input
 					type="email"
