@@ -91,7 +91,7 @@ export function StudentForm() {
 			</div>
 
 			<div className="mb-3 w-full">
-				<label className="block font-bold text-xs mb-1 ml-3">DESCRIPTION</label>
+				<label className="block font-bold text-xs mb-1 ml-3">ABOUT</label>
 				<textarea rows="2" maxLength="200"
 					className={`${formelement}`}
 				type="text" defaultValue={currentUser.about}></textarea>
@@ -194,7 +194,7 @@ export function Profile() {
 					<h2 className="font-[serif] italic text-xl">{currentUser.bio}</h2>
 					</div>
 
-					<div className="w-full flex-1 mt-8">
+					<div className="w-100 mt-8">
 					<StudentProfile />
 					</div>
 

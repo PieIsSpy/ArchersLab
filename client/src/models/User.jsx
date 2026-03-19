@@ -43,13 +43,14 @@ export function userJSON_to_Object(json) {
 
 export let users = [
   new User(
-    "Karl Omandac",
-    "06706789",
-    "karl_omandac@dlsu.edu.ph",
-    "Backend Rat",
-    "College of Computer Studies",
-    "Bachelor of Science in Computer Science",
-    "Man I dont even know what i want, excuse me do you sell crab legs?"
+    "Karl Omandac", // Name
+    "06706789", // ID
+    "karl_omandac@dlsu.edu.ph", // Email
+    "Backend Rat", // Nickname
+    "Specializer in backend", // BIO
+    "College of Computer Studies", // College
+    "Bachelor of Science in Computer Science", // program
+    "Man I dont even know what i want, excuse me do you sell crab legs?" // about
   ),
   new User(
     "Byron Ang",
