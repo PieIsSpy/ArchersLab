@@ -178,8 +178,9 @@ export function ReserveRoom(){
 
 	if (loading || !selectedRoom || rooms.length === 0) return <div>Loading...</div>
 	return(
-		<div className="mx-auto flex flex-col justify-center items-center rounded-2xl gap-3">
-			<div className="mr-70">
+	<div className="w-full min-h-screen flex justify-center items-center">
+		<div className="flex flex-col justify-center items-center rounded-2xl gap-3">
+			<div className="text-center">
 				<div className="google text-5xl font-bold ">
 					Request a room
 				</div>
@@ -245,7 +246,7 @@ export function ReserveRoom(){
 								<select
 								className = "text-xl gray-89"
 								style={{
-									width: "150px",
+									width: "160px",
 									height: "50px",
 									borderRadius: "8px",
 									padding: "6px 10px",
@@ -284,5 +285,7 @@ export function ReserveRoom(){
 					/>
 			</div>
 		</div>
+	</div>
+
 	);
 }
