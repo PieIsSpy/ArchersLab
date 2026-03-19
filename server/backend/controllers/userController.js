@@ -11,6 +11,34 @@ const getUsers = asyncHandler(async (req, res) => {
     res.status(200).json(users)
 })
 
+const loginUser = asyncHandler(async (req, res) => {
+    const {id, password} = req.body;
+
+    const user = await User.findOne({_id: Number(id)})
+
+    if (user && (user.password === password)) {
+        req.session.isAuth = true;
+        req.session.use = {id: user._id, isAdmin: user.isAdmin}
+
+        res.status(200).json({ 
+            name: user.name,
+            id: user._id,
+            email: user.email,
+            nickname: user.nickname,
+            bio: user.bio,
+            college: user.college,
+            program: user.program,
+            about: user.about,
+            pfp_url: user.pfp_url,
+            isAdmin: user.isAdmin
+        })
+    }
+    else {
+        res.status(400);
+        throw new Error('User not found');
+    }
+})
+
 // @desc    Create User
 // @route   POST /api/users
 // @access  Private
@@ -71,5 +99,5 @@ const deleteUser = asyncHandler(async (req, res) => {
 })
 
 module.exports = {
-    getUsers, createUser, updateUser, deleteUser
+    getUsers, loginUser, createUser, updateUser, deleteUser
 }
