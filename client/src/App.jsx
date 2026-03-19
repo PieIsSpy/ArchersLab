@@ -18,6 +18,7 @@ import { currentUser } from "./models/User";
 
 export default function App() {
 	const [isAuth, setIsAuth] = useState(false);
+	const [isAdmin, setAdmin] = useState(false);
 	const [loading, setLoading] = useState(false);
 
 	const navigate = useNavigate();
@@ -44,7 +45,7 @@ export default function App() {
 	
 	if (loading) return <div className="flex h-screen items-center justify-center">Loading...</div>
 
-	if (isAuth) {
+	if (!isAuth) {
 		return (
 			<Routes>
 				<Route path='/' element={
@@ -118,7 +119,7 @@ export default function App() {
 								<p className="text-xs text-center">Profile</p>
 								</Link>
 							</li>
-						{ !currentUser.isAdmin ? (
+						{ !isAdmin ? (
 							<div className="flex flex-col w-full gap-10">
 								<li>
 									<Link
@@ -221,8 +222,14 @@ export default function App() {
 						<Route path="/DeleteAccount" element={<DeleteAccount />} />
 						<Route path="/ReserveSeat" element={<ReserveSeat />} />
 						<Route path="/ReserveRoom" element={<ReserveRoom />} />
-						<Route path="/admin/AdminRegistration" element={<AdminRegistration />} />
-						<Route path="/admin/RoomReservations" element={<RoomReservations />} />
+						{
+							isAdmin ? (
+								<>
+									<Route path="/admin/AdminRegistration" element={<AdminRegistration />} />
+									<Route path="/admin/RoomReservations" element={<RoomReservations />} />
+								</>
+							): null
+						}
 						<Route path='*' element={<Navigate to='/Dashboard'/>}/>
 					</Routes>
 				</div>
