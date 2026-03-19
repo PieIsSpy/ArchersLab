@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema({
     },
     nickname: {
         type: String,
-        required: [false],
+        required: false,
         default: ''
     },
     _id: {
@@ -16,7 +16,7 @@ const userSchema = mongoose.Schema({
     },
     bio: {
         type: String,
-        required: [false],
+        required: false,
         default: ''
     },
     email: {
@@ -25,15 +25,17 @@ const userSchema = mongoose.Schema({
     },
     college: {
         type: String,
-        required: [true, 'Please add your College'],
+        required: false,
+        default: ''
     },
     program: {
         type: String,
-        required: [true, 'Please add your Program'],
+        required: false,
+        default: ''
     },
     about: {
         type: String,
-        required: [false],
+        required: false,
         default: ''
     },
     pfp_url: {
