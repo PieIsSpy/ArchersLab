@@ -246,7 +246,7 @@ export function ReserveRoom(){
 								<select
 								className = "text-xl gray-89"
 								style={{
-									width: "150px",
+									width: "160px",
 									height: "50px",
 									borderRadius: "8px",
 									padding: "6px 10px",
