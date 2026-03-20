@@ -18,7 +18,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     if (user && (user.password === password)) {
         req.session.isAuth = true;
-        req.session.use = {id: user._id, isAdmin: user.isAdmin}
+        req.session.user = {id: user._id, isAdmin: user.isAdmin}
 
         req.session.save((err) => {
             if (err) {
