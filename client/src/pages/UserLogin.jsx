@@ -26,13 +26,12 @@ export function UserLogin({setIsAuth, setAdmin, setUser}) {
 
 			if (response.ok) {
 				const data = await response.json();
-				const {isAdmin, ...userData} = data;
 
 				alert(`Welcome ${data.name}!`)
 
 				setIsAuth(true);
-				setAdmin(userData.isAdmin);
-				setUser(userData)
+				setAdmin(data.isAdmin);
+				setUser(data)
 			}
 			else {
 				alert('The user ID and password does not match')
