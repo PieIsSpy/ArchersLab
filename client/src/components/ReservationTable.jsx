@@ -1,7 +1,4 @@
 import { useState, useEffect } from "react";
-import { Room } from "../models/Room";
-import { User, userJSON_to_Object } from "../models/User";
-import { Reservation } from "../models/Reservation";
 
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
