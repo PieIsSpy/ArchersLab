@@ -176,7 +176,7 @@ export function AccountSettings() {
 }
 
 export function Profile() {
-	const {currentUser} = useContext(UserContext)
+	const {currentUser, loading} = useContext(UserContext)
     const [showFirst, setShowFirst] = useState(true);
 	console.log(currentUser)
 
@@ -184,7 +184,7 @@ export function Profile() {
         setShowFirst((prev) => !prev);
     };
 
-	if (!currentUser) {
+	if (loading) {
 		return <div className="mx-auto">Loading...</div>
 	}
     

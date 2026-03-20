@@ -39,6 +39,11 @@ export default function App() {
 				setAdmin(data.user?.isAdmin || false);
 				setIsAuth(true);
 			}
+			else {
+				setUser(null);
+				setIsAuth(false);
+				setAdmin(false);
+			}
 		})
 		.catch(err => console.error(err))
 		.finally(() => setLoading(false))
@@ -108,7 +113,7 @@ export default function App() {
 	}
 
 	return (
-		<UserContext.Provider value={{currentUser: user, setUser, isAdmin}}>
+		<UserContext.Provider value={{currentUser: user, setUser, isAdmin, loading}}>
 			<div className="h-screen">
   				{location.pathname != "/" ?<div className="gray-67 w-20 h-full fixed top-0 left-0 flex flex-col justify-center items-center">
 					
