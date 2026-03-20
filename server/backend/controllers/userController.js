@@ -75,7 +75,7 @@ const updateUser = asyncHandler(async (req, res) => {
         throw new Error('User not found');
     }
 
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {new: true})
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {new: true}).select('-password')
 
     res.status(200).json(updatedUser)
 })

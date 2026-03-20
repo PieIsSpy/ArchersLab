@@ -41,20 +41,67 @@ export function UserProfile() {
 }
 
 export function UserForm() {
-	const {currentUser} = useContext(UserContext)
+	const {currentUser, setUser} = useContext(UserContext)
+	const [form, setForm] = useState({
+		nickname: null,
+		email: null,
+		college: null,
+		program: null,
+		bio: null,
+		about: null,
+		pfp_url: null
+	})
+
+	const handleChange = (e) => {
+		setForm({...form, [e.target.name]: e.target.value})
+	}
+
+	const updateUser = async (e) => {
+		e.preventDefault();
+		for (const key in form) {
+			if (form[key] === null)
+				delete form[key]
+		}
+
+		console.log(form)
+
+		try {
+			const response = await fetch(`http://localhost:5000/api/users/${currentUser._id}`, {
+				method: 'PUT',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify(form)
+			})
+
+			if (response.ok) {
+				const data = await response.json();
+				console.log(data)
+
+				alert(`Profile Successfully Updated`)
+				setUser(data)
+			}
+			else {
+				alert('The user ID and password does not match')
+			}
+		} catch (err) {
+			console.error("Failed to fetch data:", err);
+		}
+	}
 
 	return (
-		<form className="w-full">
+		<form className="w-full" onSubmit={updateUser}>
 			<div className="flex gap-[15px]">
 				<div className="mb-3 w-full flex-1">
 					<label className="block font-bold text-xs mb-1 ml-3">FULL NAME</label>
 					<input maxLength="40"
 					className={`${formelement}`}
-					type="text" defaultValue={currentUser.name}></input>
+					type="text" defaultValue={currentUser.name} readOnly></input>
 				</div>
 				<div className="mb-3 w-full flex-1">
 					<label className="block font-bold text-xs mb-1 ml-3">DISPLAY NAME</label>
 					<input maxLength="25"
+					onChange={handleChange}
+					name='nickname'
+					value={form.nickname}
 					className={`${formelement}`}
 					type="text" defaultValue={currentUser.nickname}></input>
 				</div>
@@ -65,11 +112,14 @@ export function UserForm() {
 					<label className="block font-bold text-xs mb-1 ml-3">STUDENT ID</label>
 					<input maxLength="10"
 					className={`${formelement}`}
-					type="text" defaultValue={currentUser._id}></input>
+					type="text" defaultValue={currentUser._id} readOnly></input>
 				</div>
 				<div className="mb-3 w-full flex-1">
 					<label className="block font-bold text-xs mb-1 ml-3">EMAIL</label>
 					<input maxLength="50"
+					onChange={handleChange}
+					name='email'
+					value={form.email}
 					className={`${formelement}`}
 					type="text" defaultValue={currentUser.email}></input>
 				</div>
@@ -78,6 +128,9 @@ export function UserForm() {
 			<div className="mb-3 w-full">
 				<label className="block font-bold text-xs mb-1 ml-3">COLLEGE</label>
 				<input maxLength="50"
+				onChange={handleChange}
+				name='college'
+				value={form.college}
 					className={`${formelement}`}
 				type="text" defaultValue={currentUser.college}></input>
 			</div>
@@ -85,6 +138,9 @@ export function UserForm() {
 			<div className="mb-3 w-full">
 				<label className="block font-bold text-xs mb-1 ml-3">PROGRAM</label>
 				<input maxLength="50"
+				onChange={handleChange}
+				name='program'
+				value={form.program}
 					className={`${formelement}`}
 				type="text" defaultValue={currentUser.program}></input>
 			</div>
@@ -92,19 +148,36 @@ export function UserForm() {
 			<div className="mb-3 w-full">
 				<label className="block font-bold text-xs mb-1 ml-3">BIO</label>
 				<input maxLength="75"
+				onChange={handleChange}
+				name='bio'
+				value={form.bio}
 					className={`${formelement}`}
 				type="text" defaultValue={currentUser.bio}></input>
 			</div>
 
 			<div className="mb-3 w-full">
+				<label className="block font-bold text-xs mb-1 ml-3">PROFILE PICTURE URL</label>
+				<input maxLength="75"
+				onChange={handleChange}
+				name='pfp_url'
+				value={form.pfp_url}
+					className={`${formelement}`}
+				type="text" defaultValue={currentUser.pfp_url}></input>
+			</div>
+
+			<div className="mb-3 w-full">
 				<label className="block font-bold text-xs mb-1 ml-3">ABOUT</label>
 				<textarea rows="2" maxLength="200"
+				onChange={handleChange}
+				name='about'
+				value={form.about}
 					className={`${formelement}`}
 				type="text" defaultValue={currentUser.about}></textarea>
 			</div>
 
 			<div className="flex justify-center mt-4 mb-3">
 				<button 
+					type='submit'
 					className=" px-[10px] py-[6px]
 						bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none">
 					Save Changes
@@ -194,8 +267,11 @@ export function Profile() {
 				<div className="text-4xl font-black google mb-4 w-full">Profile</div>
 				<div className="gray-67 flex flex-col rounded-2xl p-4 items-center flex-1">
 					<img
-					className="rounded-full w-40"
-					src="./src/resources/karl.png"
+					className="rounded-full w-40 h-40"
+					// src="./src/resources/default.jpg"
+					width='100'
+					// src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSepbhRLPNDHSzHUzCtAGMAL77l09LCnMDClA&s'
+					src={currentUser.pfp_url ? 'https://cors-anywhere.herokuapp.com/' + currentUser.pfp_url : "./src/resources/default.jpg"}
 					alt="Profile"
 					/>
 
