@@ -4,10 +4,15 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../dark-datepicker.css";
 import { Room } from "../models/Room";
 import { Reservation } from "../models/Reservation";
-import { userJSON_to_Object, currentUser } from "../models/User";
+import { userJSON_to_Object } from "../models/User";
 import { InpersonModal } from "../components/Modals";
 
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
+
 export function ReserveRoom(){
+	const {currentUser} = useContext(UserContext)
+
 	const timeSlots = [
 		"07:30-09:00", "09:15-10:45", "11:00-12:30", "12:45-14:15", 
 		"14:30-16:00", "16:15-17:45", "18:00-19:30",

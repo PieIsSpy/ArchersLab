@@ -4,8 +4,11 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../dark-datepicker.css";
 import { Room } from "../models/Room";
 import { InpersonModal } from "../components/Modals";
-import { userJSON_to_Object, currentUser } from "../models/User";
+import { userJSON_to_Object } from "../models/User";
 import { Reservation } from "../models/Reservation";
+
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 const layout1 = [
 	[1,1,1,0,1,1,1,0,1,1,1],
@@ -64,9 +67,10 @@ const timeSlots = [
 	"14:30-16:00", "16:15-17:45", "18:00-19:30",
 ];
 
-
-
 export function ReserveSeat(){
+	const {currentUser} = useContext(UserContext)
+	
+	
 	const [showBookedModal, setShowBookedModal] = useState(false);
 	const [modalMessage, setModalMessage] = useState("");
 	const [loading, setLoading] = useState(true);
