@@ -1,5 +1,33 @@
 import { useState, useEffect } from "react";
 
+export function Modal ({open, onClose, children}){
+		
+	useEffect(() => {
+		const handleEsc = (e) => {
+			if (e.key === "Escape" && open) handleClose();
+		};
+
+		document.addEventListener("keydown", handleEsc);
+		return () => document.removeEventListener("keydown", handleEsc);
+	}, [onClose]);
+
+	if (!open) return null;
+
+	return (
+		<div className="ml-24 fixed inset-0 bg-[#000000cc] flex flex-col items-center justify-center" onClick={onClose}>
+		<div className="gray-89 p-6 rounded-xl shadow-lg max-w-sm w-full text-center">
+			{children}
+			<button
+			onClick={() => onClose()}
+			className="px-4 py-2 bg-[#145b92] transition-all hover:bg-[#02497F] text-white rounded"
+			>
+			Close
+			</button>
+		</div>
+		</div>
+	);
+}
+
 export function InpersonModal({open, onClose, onConfirm}) {
 	
 	const emptyForm = {

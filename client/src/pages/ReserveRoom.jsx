@@ -44,6 +44,8 @@ export function ReserveRoom(){
 
 	const [loading, setLoading] = useState(true);
 
+	const [timeSlotOptions, setTimeSlotOptions] = useState([]);
+
 	const fetchReservations = async () => {
 		const roomsUrl = 'http://localhost:5000/api/rooms';
 		const reservationsUrl = 'http://localhost:5000/api/reservations';
@@ -107,17 +109,30 @@ export function ReserveRoom(){
 		);
 	}
 
-	const timeSlotOptions = [];
-	for (let i = 0; i<timeSlots.length;i++){
-		timeSlotOptions.push(
-			<option
-				key={i}
-				value={timeSlots[i]}
-			>
-				{timeSlots[i]}
-			</option>
-		)
-	}
+	useEffect(() => {
+		var tempTimeSlots = [...timeSlots]
+
+		if (selectedRoom) 
+			console.log(selectedRoom.name)
+
+		reservations.forEach(res => {
+			if (res.date.toDateString() === selectedDate.toDateString() && // Same day
+				res.room.name === selectedRoom.name && // Same room
+				res.seats.length === 0) // No seats (Full room reservation)
+				{
+					tempTimeSlots.splice(tempTimeSlots.indexOf(res.time),1); // Temporarily remove from timeslot
+				}
+		});
+
+		console.log(tempTimeSlots)
+
+		setTimeSlotOptions(
+			tempTimeSlots.map(slot => <option key={slot} value={slot}>{slot}</option>)
+		);
+
+		setSelectedTime(tempTimeSlots[0] || null);
+
+	}, [selectedDate, selectedRoom, reservations]); // only runs when date or room change
 
 	async function reserveRoom(selectedTime, selectedRoom, inpersonInfo = null) {
 		if (!document.getElementById("reason-textarea").value){
@@ -162,6 +177,7 @@ export function ReserveRoom(){
 			console.error("Error:", err);
 		}
 		
+		document.getElementById("reason-textarea").value = '';
 		console.log(`
 			User has reserved room for
 			Date: ${selectedDate.toLocaleDateString()}

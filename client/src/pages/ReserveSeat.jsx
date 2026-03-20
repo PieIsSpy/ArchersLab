@@ -3,7 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../dark-datepicker.css";
 import { Room } from "../models/Room";
-import { InpersonModal } from "../components/Modals";
+import { Modal, InpersonModal } from "../components/Modals";
 import { userJSON_to_Object } from "../models/User";
 import { Reservation } from "../models/Reservation";
 
@@ -72,9 +72,11 @@ export function ReserveSeat(){
 	
 	
 	const [showBookedModal, setShowBookedModal] = useState(false);
-	const [modalMessage, setModalMessage] = useState("");
-	const [loading, setLoading] = useState(true);
+	const [modalChildren, setModalChildren] = useState();
+
 	const [open, setOpen] = useState(false);
+
+	const [loading, setLoading] = useState(true);
 
 	const [rooms, setRooms] = useState([]);
 	const [reservations, setReservations] = useState([]);
@@ -87,20 +89,6 @@ export function ReserveSeat(){
 	const [bookedSeats, setBookedSeats] = useState([]);
 
 	const [timeSlotOptions, setTimeSlotOptions] = useState([]);
-
-	const Modal = ({ message }) => (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="gray-89 p-6 rounded-xl shadow-lg max-w-sm w-full text-center">
-        <p className="mb-4">{message}</p>
-        <button
-          onClick={() => setShowBookedModal(false)}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Close
-        </button>
-      </div>
-    </div>
-	)
 	
 	const getReservationDetails = (seatID) => {
 		const res = reservations.find(r =>
@@ -118,9 +106,17 @@ export function ReserveSeat(){
 
 		return "Unknown User";
 	};
+	
 	const handleBookedSeatClick = async (seatID) => {
 		const name = getReservationDetails(seatID);
-		setModalMessage(`Seat #${seatID} is already reserved by:${name}`);
+		setModalChildren(
+			<>
+			{/* PLEASE PLEASE PLEASE ADD A USER REDIRECTION HERE SOMETIME TOMORROW! */}
+				<p >Seat is already booked by:</p>
+				<h1 className="mt-10 text-3xl font-bold google">{name}</h1>
+				<p className="text-gray-500 mb-10">View Profile</p>
+			</>
+		);
 		setShowBookedModal(true);
 	};
 
@@ -269,6 +265,11 @@ export function ReserveSeat(){
 									<h1 className="m-0 text-xs">{seatID}</h1>
 								) : null}
 								<button
+									className={`
+										w-16 h-16 flex flex-col items-center justify-center 
+										${isBooked ? "booked" : "hover:bg-gray-500"}
+										${isSelected ? "blue" : ""}
+									`}
 									id={seatID}
 									onClick={() => {
 										if (isBooked) {
@@ -278,17 +279,14 @@ export function ReserveSeat(){
 										}
 									}
 									}
-									className={`
-										w-16 h-16 flex flex-col items-center justify-center 
-										${isBooked ? "booked" : "hover:bg-gray-500"}
-										${isSelected ? "blue" : ""}
-									`}
 								>
+									<div className="w-16 h-16">
 									<img
 										src="./src/resources/computer.png"
 										alt="computer"
 										className="w-16 h-16 object-contain"
 									/>
+									</div>
 								</button>
 								{hasReversed ? (
 									<h1 className="m-0 text-xs">{seatID}</h1>
@@ -332,15 +330,15 @@ export function ReserveSeat(){
 				else
 				{
 					cols.push(
-						<button
-						className="w-16 h-1 flex items-center justify-center my-5"
+						<div
+						className="w-16 h-10 flex items-center justify-center"
 						>
 						<img
 							src="./src/resources/emptyspace.png"
 							alt="empty"
-							className="w-50 h-25 object-contain"
+							className="w-16 h-10 object-contain"
 						/>
-						</button>
+						</div>
 					)
 					
 				}
@@ -422,8 +420,7 @@ export function ReserveSeat(){
 		}
 
 		if (selectedSeats.length >= 5) {
-			setModalMessage(`You can only reserve 5 seats per timeslot/room!`)
-			setShowBookedModal(true)
+			alert(`You can only reserve 5 seats per timeslot/room!`)
 			return;
 		}
 
@@ -551,10 +548,9 @@ export function ReserveSeat(){
 								bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:bg-[#02497F] active:shadow-inner select-none"
 								onClick={()=> {
 									if (!selectedSeats.length)
-										{
-										setModalMessage(`Please select a seat!`)
-										setShowBookedModal(true)
-										}
+									{
+										alert(`Please select a seat!`)
+									}
 									// ADMIN SWITCH
 									else if (currentUser.isAdmin)
 										setOpen(true)
@@ -572,7 +568,11 @@ export function ReserveSeat(){
 				onClose={() => setOpen(false)}
 				onConfirm={(info) => reserveSeat(selectedTime, selectedRoom, selectedSeats, info)}
 			/>
-			{showBookedModal && <Modal message={modalMessage} />}
+			<Modal
+				open={showBookedModal}
+				onClose={() => setShowBookedModal(false)}
+			 	children={modalChildren} 
+			/>
 			</div>
 		</div>
 	);
