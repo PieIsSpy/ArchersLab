@@ -25,22 +25,44 @@ export default function App() {
 	const navigate = useNavigate();
 
 	useEffect(() => {
+		setLoading(true)
 		fetch('http://localhost:5000/api/auth/init', {
 			method: 'GET',
 			credentials: 'include'
 		})
-		.then(async res => {
-			const isJson = res.headers.get('content-type')?.includes('application/json');
-			const data = isJson ? await res.json() : await res.text();
-
-			if (!res.ok) {
-				throw new Error(typeof data === 'string' ? data : data.message)
-			}
-			return data;
+		.then(res => {
+			if (!res.ok) return {isAuth: false}
+			return res.json();
 		})
-		.then(data => console.log(data))
+		.then(data => {
+			if (data.isAuth) {
+				setIsAuth(true);
+				setAdmin(data.user?.isAdmin || false);
+				setUser(data.user)
+			}
+		})
 		.catch(err => console.error(err))
+		.finally(() => setLoading(false))
 	}, [])
+
+	const handleLogout = async () => {
+		try {
+			const response = await fetch('http://localhost:5000/api/users/logout', {
+				method: 'POST',
+				credentials: 'include'
+			})
+
+			if (response.ok) {
+				setAdmin(false)
+				setIsAuth(false)
+				setUser(null)
+
+				navigate('/')
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	}
 
 	let choice = "flex flex-col items-center gap-2 rounded hover:bg-gray-700 transition"
 	
@@ -216,8 +238,23 @@ export default function App() {
 								</li>
 							</div>
 						)
-
 						}
+							<li>
+								<Link
+								className={choice}
+								onClick={handleLogout}
+								>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									fill="currentColor"
+									className="w-5 h-5"
+								>
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-open-icon lucide-door-open"><path d="M11 20H2"/><path d="M11 4.562v16.157a1 1 0 0 0 1.242.97L19 20V5.562a2 2 0 0 0-1.515-1.94l-4-1A2 2 0 0 0 11 4.561z"/><path d="M11 4H8a2 2 0 0 0-2 2v14"/><path d="M14 12h.01"/><path d="M22 20h-3"/></svg>
+								</svg>
+								<p className="text-xs text-center">Log Out</p>
+								</Link>
+							</li>
 						</ul>
 					</nav>
 				</div> : null}

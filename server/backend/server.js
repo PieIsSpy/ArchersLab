@@ -14,8 +14,12 @@ connectDB();
 
 const store = new MongoDBSession({
     uri: process.env.MONGO_URI,
-    collection: 'sessions'
+    collection: 'sessions',
+    expires: 1000 * 60 * 60 * 24
 })
+
+store.on('error', (error) => console.log('Error:', error))
+store.on('connected', () => console.log('Store Connected to Mongo'))
 
 const app = express();
 
@@ -24,9 +28,12 @@ app.use(cors({
     credentials: true
 }));
 
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+
 app.use(session({
     secret: 'key that will sign cookie',
-    resave: false,
+    resave: true,
     saveUninitialized: false,
     store: store,
     cookie: {
@@ -37,26 +44,30 @@ app.use(session({
     }
 }))
 
-app.use(express.json());
-app.use(express.urlencoded({extended: false}));
-
 app.get('/api/auth/init', (req, res) => {
+    console.log("id:", req.sessionID)
+    console.log('isAuth:', req.session.isAuth)
     if (req.session.isAuth) {
         console.log('New Session Created')
-        res.status(200).json({
+        return res.status(200).json({
             isAuth: true,
             user: req.session.user
         })
     } else {
-        res.status(200).json({
+        return res.status(200).json({
             isAuth: false
         })
-        
     }
+})
 
-    res.status(200).json({
-        message: 'Session initialized',
-        isAuth: req.session.isAuth
+app.post('/api/users/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({message: 'Could not log out'})
+        }
+
+        res.clearCookie('connect.sid');
+        res.status(200).json({message: 'Logged out'})
     })
 })
 

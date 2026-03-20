@@ -20,7 +20,8 @@ export function UserLogin({setIsAuth, setAdmin, setUser}) {
 				body: JSON.stringify({
 					id: Number(form.id),
 					password: form.password
-				})
+				}),
+				credentials: 'include'
 			})
 
 			if (response.ok) {

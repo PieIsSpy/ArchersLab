@@ -20,17 +20,22 @@ const loginUser = asyncHandler(async (req, res) => {
         req.session.isAuth = true;
         req.session.use = {id: user._id, isAdmin: user.isAdmin}
 
-        res.status(200).json({ 
-            name: user.name,
-            id: user._id,
-            email: user.email,
-            nickname: user.nickname,
-            bio: user.bio,
-            college: user.college,
-            program: user.program,
-            about: user.about,
-            pfp_url: user.pfp_url,
-            isAdmin: user.isAdmin
+        req.session.save((err) => {
+            if (err) {
+                return res.status(500).json({message: 'Session storage failed'})
+            }
+            res.status(200).json({ 
+                name: user.name,
+                id: user._id,
+                email: user.email,
+                nickname: user.nickname,
+                bio: user.bio,
+                college: user.college,
+                program: user.program,
+                about: user.about,
+                pfp_url: user.pfp_url,
+                isAdmin: user.isAdmin
+            })
         })
     }
     else {
