@@ -6,7 +6,7 @@ const User = require('../model/userModel')
 // @route   GET /api/users
 // @access  Private
 const getUsers = asyncHandler(async (req, res) => {
-    const users = await User.find()
+    const users = await User.find().select('-password')
 
     res.status(200).json(users)
 })
@@ -24,18 +24,10 @@ const loginUser = asyncHandler(async (req, res) => {
             if (err) {
                 return res.status(500).json({message: 'Session storage failed'})
             }
-            res.status(200).json({ 
-                name: user.name,
-                id: user._id,
-                email: user.email,
-                nickname: user.nickname,
-                bio: user.bio,
-                college: user.college,
-                program: user.program,
-                about: user.about,
-                pfp_url: user.pfp_url,
-                isAdmin: user.isAdmin
-            })
+            const userRes = user.toObject();
+            delete userRes.password
+
+            res.status(200).json(userRes)
         })
     }
     else {
