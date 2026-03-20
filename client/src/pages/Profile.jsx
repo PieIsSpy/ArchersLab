@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { currentUser } from "../models/User";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 import { PencilSvg } from "../components/PencilSvg";
 import { ReservationTable } from "../components/ReservationTable";
 
@@ -9,34 +10,39 @@ const formelement =
   "focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]" +
   " selection:bg-blue-300 selection:text-black";
 
-export function StudentProfile() {
-  const [student, setStudent] = useState(currentUser);
 
-  const fields = [
-    { label: "FULL NAME", key: "name", editable: false, display: true },
-    { label: "ID", key: "id", editable: false, display: true },
-    { label: "EMAIL", key: "email", editable: true, display: true },
-    { label: "COLLEGE", key: "college", editable: true, display: true },
-    { label: "PROGRAM", key: "program", editable: true, display: true },
-    { label: "ABOUT", key: "about", editable: true, display: true },
-  ];
 
-  return (
-    <div className="space-y-3">
-      {fields
-        .filter((field) => field.display)
-        .map((field) => (
-          <div key={field.key}>
-            <h2 className="font-bold text-xs ml-3 mb-1">{field.label}</h2>
-            <div className="rounded-xl gray-89 p-3">
-              <h1 className="text-l">{student[field.key] ?? "N/A"}</h1>
-            </div>
-          </div>
-        ))}
-    </div>
-  );
+export function UserProfile() {
+	const {currentUser} = useContext(UserContext)
+
+	const fields = [
+	{ label: "FULL NAME", key: "name", editable: false, display: true },
+	{ label: "ID", key: "_id", editable: false, display: true },
+	{ label: "EMAIL", key: "email", editable: true, display: true },
+	{ label: "COLLEGE", key: "college", editable: true, display: true },
+	{ label: "PROGRAM", key: "program", editable: true, display: true },
+	{ label: "ABOUT", key: "about", editable: true, display: true },
+	];
+
+	return (
+	<div className="space-y-3">
+		{fields
+		.filter((field) => field.display)
+		.map((field) => (
+			<div key={field.key}>
+			<h2 className="font-bold text-xs ml-3 mb-1">{field.label}</h2>
+			<div className="rounded-xl gray-89 p-3">
+				<h1 className="text-l">{currentUser[field.key] ?? "N/A"}</h1>
+			</div>
+			</div>
+		))}
+	</div>
+	);
 }
-export function StudentForm() {
+
+export function UserForm() {
+	const {currentUser} = useContext(UserContext)
+
 	return (
 		<form className="w-full">
 			<div className="flex gap-[15px]">
@@ -59,7 +65,7 @@ export function StudentForm() {
 					<label className="block font-bold text-xs mb-1 ml-3">STUDENT ID</label>
 					<input maxLength="10"
 					className={`${formelement}`}
-					type="text" defaultValue={currentUser.id}></input>
+					type="text" defaultValue={currentUser._id}></input>
 				</div>
 				<div className="mb-3 w-full flex-1">
 					<label className="block font-bold text-xs mb-1 ml-3">EMAIL</label>
@@ -109,6 +115,7 @@ export function StudentForm() {
 }
 
 export function AccountSettings() {
+	const {currentUser} = useContext(UserContext)
 	return (
 		<div className="w-full flex gap-5 m-5 px-4">
 				<div className="w-1/2">
@@ -169,11 +176,17 @@ export function AccountSettings() {
 }
 
 export function Profile() {
+	const {currentUser} = useContext(UserContext)
     const [showFirst, setShowFirst] = useState(true);
+	console.log(currentUser)
 
     const handleToggle = () => {
         setShowFirst((prev) => !prev);
     };
+
+	if (!currentUser) {
+		return <div className="mx-auto">Loading...</div>
+	}
     
     return (
 		<div className="grid grid-cols-3 gap-4 items-stretch mx-auto">
@@ -195,7 +208,7 @@ export function Profile() {
 					</div>
 
 					<div className="w-100 mt-8">
-					<StudentProfile />
+					<UserProfile />
 					</div>
 
 					{!currentUser.isAdmin ? (
@@ -222,14 +235,14 @@ export function Profile() {
 				<div className="flex flex-col flex-1">
 				<div className="text-3xl font-bold google mb-4 w-full">Reservations</div>
 				<div className="rounded-2xl p-4 gray-67 flex flex-col items-center flex-1">
-					<ReservationTable student={currentUser} />
+					<ReservationTable />
 				</div>
 				</div>
 			) : (
 				<div className="flex flex-col flex-1">
 					<div className="text-3xl font-bold google w-full mb-4">Edit Details</div>
 					<div className="gray-67 flex flex-col rounded-2xl p-4 items-center mb-4 flex-1">
-						<StudentForm />
+						<UserForm />
 					</div>
 
 					<div className="text-3xl font-bold google w-full mb-4">Account Settings</div>

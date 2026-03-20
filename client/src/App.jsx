@@ -14,12 +14,18 @@ import { UserRegistration } from "./pages/UserRegistration.jsx";
 import { RoomReservations } from "./pages/admin/RoomReservations.jsx";
 import { UserLogin } from "./pages/UserLogin.jsx";
 
-import { currentUser } from "./models/User";
+import { userJSON_to_Object } from "./models/User";
+import { UserContext } from "./context/UserContext.jsx";
 
 export default function App() {
 	const [isAuth, setIsAuth] = useState(false);
 	const [isAdmin, setAdmin] = useState(false);
-	const [user, setUser] = useState(null);
+	const [user, setUser] = useState(() => {
+		const saved = localStorage.getItem('user');
+		if (!saved) return null;
+
+		return userJSON_to_Object(JSON.parse(saved))
+	});
 	const [loading, setLoading] = useState(false);
 
 	const navigate = useNavigate();
@@ -36,9 +42,9 @@ export default function App() {
 		})
 		.then(data => {
 			if (data.isAuth) {
-				setIsAuth(true);
+				setUser(userJSON_to_Object(data.user))
 				setAdmin(data.user?.isAdmin || false);
-				setUser(data.user)
+				setIsAuth(true);
 			}
 		})
 		.catch(err => console.error(err))
@@ -109,7 +115,7 @@ export default function App() {
 	}
 
 	return (
-		<>
+		<UserContext.Provider value={{currentUser: user, setUser, isAdmin}}>
 			<div className="h-screen">
   				{location.pathname != "/" ?<div className="gray-67 w-20 h-full fixed top-0 left-0 flex flex-col justify-center items-center">
 					
@@ -278,6 +284,6 @@ export default function App() {
 					</Routes>
 				</div>
 			</div>
-		</>
+		</UserContext.Provider>
 	)
 }
