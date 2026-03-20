@@ -13,19 +13,12 @@ import { AdminRegistration } from "./pages/admin/AdminRegistration.jsx";
 import { UserRegistration } from "./pages/UserRegistration.jsx";
 import { RoomReservations } from "./pages/admin/RoomReservations.jsx";
 import { UserLogin } from "./pages/UserLogin.jsx";
-
-import { userJSON_to_Object } from "./models/User";
 import { UserContext } from "./context/UserContext.jsx";
 
 export default function App() {
 	const [isAuth, setIsAuth] = useState(false);
 	const [isAdmin, setAdmin] = useState(false);
-	const [user, setUser] = useState(() => {
-		const saved = localStorage.getItem('user');
-		if (!saved) return null;
-
-		return userJSON_to_Object(JSON.parse(saved))
-	});
+	const [user, setUser] = useState(null);
 	const [loading, setLoading] = useState(false);
 
 	const navigate = useNavigate();
@@ -42,7 +35,7 @@ export default function App() {
 		})
 		.then(data => {
 			if (data.isAuth) {
-				setUser(userJSON_to_Object(data.user))
+				setUser(data.user)
 				setAdmin(data.user?.isAdmin || false);
 				setIsAuth(true);
 			}
