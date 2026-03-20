@@ -19,9 +19,41 @@ export default function App() {
 	const [isAuth, setIsAuth] = useState(false);
 	const [isAdmin, setAdmin] = useState(false);
 	const [user, setUser] = useState(null);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(true);
 
 	const navigate = useNavigate();
+	const location = useLocation();
+
+	const ProtectedRoute = ({children}) => {
+		if (loading) return <div className="h-screen flex items-center justify-center">Authenticating...</div>;
+		if (!isAuth) return <Navigate to='/' />
+		return children;
+	}
+
+	const navBarElems = [
+		{
+			route: 'Dashboard',
+			viewBox: '0 0 512 512',
+			svg: 'M256 0 L512 256 L448 256 L448 512 L288 512 L288 384 L224 384 L224 512 L64 512 L64 256 L0 256 Z'
+		},
+		{
+			route: 'Profile',
+			viewBox: '0 0 24 24',
+			svg: 'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'
+		},
+		{
+			route: 'ReserveSeat',
+			alt_name: 'Seat Reservation',
+			viewBox: '0 0 24 24',
+			svg: 'M19 3H5c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z'
+		},
+		{
+			route: 'ReserveRoom',
+			alt_name: 'Room Reservation',
+			viewBox: '0 0 24 24',
+			svg: 'M3 13h2v-2H3v2zm0-4h2V7H3v2zm4 4h14v-2H7v2zm0-4h14V7H7v2zm-4 8h2v-2H3v2zm4 0h14v-2H7v2z'
+		}
+	]
 
 	useEffect(() => {
 		setLoading(true)
@@ -34,6 +66,7 @@ export default function App() {
 			return res.json();
 		})
 		.then(data => {
+			console.log(data)
 			if (data.isAuth) {
 				setUser(data.user)
 				setAdmin(data.user?.isAdmin || false);
@@ -72,213 +105,129 @@ export default function App() {
 	
 	if (loading) return <div className="flex h-screen items-center justify-center">Loading...</div>
 
-	if (!isAuth) {
-		return (
-			<Routes>
-				<Route path='/' element={
-					<div className="bg-[#00000060] h-screen w-screen">
-						<img className="absolute z-0 h-screen w-screen top-0 left-0 blur-lg" src="src/resources/dlsu-jubilee.webp"></img>
-						<div className="bg-[#000000AA] relative z-10 flex flex-col h-screen items-center justify-center">
-							<h1 className="text-5xl google font-bold">Welcome to ArchersLab!</h1>
-							<div>A lab reservation system that works for <span>you</span>.</div>
-
-							<div className="mt-20 flex gap-8">
-								<button 
-									className="p-2 w-30 bg-[#145b92] rounded-xl select-none justify-center"
-									onClick={() => navigate("/UserRegistration")}
-								>
-									Sign up
-								</button>
-								<button
-									className="border w-30 p-2 rounded-xl flex justify-center"
-									onClick={() => navigate("/UserLogin")}
-								>
-									Log in
-								</button>
-							</div>
-						</div>
-					</div>
-				}/>
-				<Route path="/UserLogin" element={
-					<UserLogin 
-						setIsAuth={setIsAuth}
-						setAdmin={setAdmin}
-						setUser={setUser}
-					/>
-				} />
-				<Route path="/UserRegistration" element={<UserRegistration />} />
-				<Route path='*' element={<Navigate to='/'/>} />
-			</ Routes>
-		)
-	}
-
 	return (
 		<UserContext.Provider value={{currentUser: user, setUser, isAdmin, loading}}>
 			<div className="h-screen">
-  				{location.pathname != "/" ?<div className="gray-67 w-20 h-full fixed top-0 left-0 flex flex-col justify-center items-center">
-					
-    				<nav className="flex flex-col items-center p-2">
-						<ul className="flex flex-col w-full gap-10">
-							<li>
-								<Link
-								to="/Dashboard"
-								className={choice}
-								>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 512 512"
-									className="w-5 h-5"
-									fill="currentColor"
-								>
-									<path d="M256 0 L512 256 L448 256 L448 512 L288 512 L288 384 L224 384 L224 512 L64 512 L64 256 L0 256 Z" />
+			{isAuth && location.pathname !== '/' ? (
+				<div className="gray-67 w-20 h-full fixed top-0 left-0 flex flex-col justify-center items-center">
+				<nav className="flex flex-col items-center p-2">
+					<ul className="flex flex-col w-full gap-10">
+					{navBarElems.map((elem) => (
+						<li key={elem.route}>
+							<Link 
+							to={`/${elem.route}`}
+							className={choice}
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="w-5 h-5" viewBox={elem.viewBox}>
+									<path d={elem.svg}/>
 								</svg>
-								<p className="text-xs text-center">Home</p>
-								</Link>
-							</li>
+								<p className="text-[10px] text-center leading-tight">
+									{elem.alt_name ? elem.alt_name : elem.route}
+								</p>
+							</Link>
+						</li>
+					))}
 
-							<li>
-								<Link
-								to="/Profile"
-								className={choice}
-								>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-									fill="currentColor"
-									className="w-5 h-5"
-								>
-									<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-								</svg>
-								<p className="text-xs text-center">Profile</p>
-								</Link>
-							</li>
-						{ !isAdmin ? (
-							<div className="flex flex-col w-full gap-10">
-								<li>
-									<Link
-									to="/ReserveSeat"
-									className={choice}
-									>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="currentColor"
-										className="w-5 h-5"
-									>
-										<path d="M19 3H5c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z" />
-									</svg>
-									<p className="text-xs text-center">Reserve a Seat</p>
-									</Link>
-								</li>
+					{isAdmin && (
+						<li>
+							<Link
+							to="/admin/RoomReservations"
+							className={choice}
+							>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+								fill="currentColor"
+								className="w-5 h-5"
+							>
+								<path d="M3 13h2v-2H3v2zm0-4h2V7H3v2zm4 4h14v-2H7v2zm0-4h14V7H7v2zm-4 8h2v-2H3v2zm4 0h14v-2H7v2z" />
+							</svg>
+							<p className="text-xs text-center">View Room Reservations</p>
+							</Link>
+						</li>
+					)}
 
-								<li>
-									<Link
-									to="/ReserveRoom"
-									className={choice}
-									>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="currentColor"
-										className="w-5 h-5"
-									>
-										<path d="M3 13h2v-2H3v2zm0-4h2V7H3v2zm4 4h14v-2H7v2zm0-4h14V7H7v2zm-4 8h2v-2H3v2zm4 0h14v-2H7v2z" />
-									</svg>
-									<p className="text-xs text-center">Request a Room</p>
-									</Link>
-								</li>
-							</div>
-						) : (
-							<div className="flex flex-col w-full gap-10">
-								<li>
-									<Link
-									to="/ReserveSeat"
-									className={choice}
-									>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="currentColor"
-										className="w-5 h-5"
-									>
-										<path d="M19 3H5c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z" />
-									</svg>
-									<p className="text-xs text-center">In-Person Reservation</p>
-									</Link>
-								</li>
+						<li>
+							<Link
+							className={choice}
+							onClick={handleLogout}
+							>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+								<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
+							</svg>
+							<p className="text-xs text-center">Log Out</p>
+							</Link>
+						</li>
+					</ul>
+				</nav>
+				</div>
+			) : null}
 
-								<li>
-									<Link
-									to="/ReserveRoom"
-									className={choice}
-									>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="currentColor"
-										className="w-5 h-5"
-									>
-										<path d="M19 3H5c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z" />
-									</svg>
-									<p className="text-xs text-center">In-Person Room Reservation</p>
-									</Link>
-								</li>
-
-								<li>
-									<Link
-									to="/admin/RoomReservations"
-									className={choice}
-									>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="currentColor"
-										className="w-5 h-5"
-									>
-										<path d="M3 13h2v-2H3v2zm0-4h2V7H3v2zm4 4h14v-2H7v2zm0-4h14V7H7v2zm-4 8h2v-2H3v2zm4 0h14v-2H7v2z" />
-									</svg>
-									<p className="text-xs text-center">View Room Reservations</p>
-									</Link>
-								</li>
-							</div>
-						)
-						}
-							<li>
-								<Link
-								className={choice}
-								onClick={handleLogout}
-								>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									viewBox="0 0 24 24"
-									fill="currentColor"
-									className="w-5 h-5"
-								>
-									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-door-open-icon lucide-door-open"><path d="M11 20H2"/><path d="M11 4.562v16.157a1 1 0 0 0 1.242.97L19 20V5.562a2 2 0 0 0-1.515-1.94l-4-1A2 2 0 0 0 11 4.561z"/><path d="M11 4H8a2 2 0 0 0-2 2v14"/><path d="M14 12h.01"/><path d="M22 20h-3"/></svg>
-								</svg>
-								<p className="text-xs text-center">Log Out</p>
-								</Link>
-							</li>
-						</ul>
-					</nav>
-				</div> : null}
 				<div className={location.pathname != "/" ? "h-screen flex items-center ml-20" : "h-screen flex items-center"}>
 					<Routes>
-						<Route path="/Dashboard" element={<Home />} />
-						<Route path="/Profile" element={<Profile />} />
-						<Route path="/ChangePassword" element={<ChangePassword />} />
-						<Route path="/DeleteAccount" element={<DeleteAccount />} />
-						<Route path="/ReserveSeat" element={<ReserveSeat />} />
-						<Route path="/ReserveRoom" element={<ReserveRoom />} />
-						{
-							isAdmin ? (
-								<>
-									<Route path="/admin/AdminRegistration" element={<AdminRegistration />} />
-									<Route path="/admin/RoomReservations" element={<RoomReservations />} />
-								</>
-							): null
+						<Route path='/' element={
+							loading ? (
+								<div className="h-screen flex items-center justify-center">Loading...</div>
+							) : !isAuth ? (
+								<div className="bg-[#00000060] h-screen w-screen">
+									<img className="absolute z-0 h-screen w-screen top-0 left-0 blur-lg" src="src/resources/dlsu-jubilee.webp"></img>
+									<div className="bg-[#000000AA] relative z-10 flex flex-col h-screen items-center justify-center">
+										<h1 className="text-5xl google font-bold">Welcome to ArchersLab!</h1>
+										<div>A lab reservation system that works for <span>you</span>.</div>
+
+										<div className="mt-20 flex gap-8">
+											<button 
+												className="p-2 w-30 bg-[#145b92] rounded-xl select-none justify-center"
+												onClick={() => navigate("/UserRegistration")}
+											>
+												Sign up
+											</button>
+											<button
+												className="border w-30 p-2 rounded-xl flex justify-center"
+												onClick={() => navigate("/UserLogin")}
+											>
+												Log in
+											</button>
+										</div>
+									</div>
+								</div>
+							) : (
+								<Navigate to='/Dashboard'/> 
+							)
+						}/>
+						<Route path="/UserLogin" element={
+							isAuth ? <Navigate to='/Dashboard'/> : (
+							<UserLogin 
+								setIsAuth={setIsAuth}
+								setAdmin={setAdmin}
+								setUser={setUser}
+							/>
+							)
+						} />
+						<Route path="/UserRegistration" element={
+							isAuth ? <Navigate to='/Dashboard'/> : <UserRegistration />
+						} />
+						
+						<Route path="/Dashboard" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                        <Route path="/Profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                        <Route path="/ReserveSeat" element={<ProtectedRoute><ReserveSeat /></ProtectedRoute>} />
+                        <Route path="/ReserveRoom" element={<ProtectedRoute><ReserveRoom /></ProtectedRoute>} />
+                        <Route path="/ChangePassword" element={<ChangePassword />} />
+
+						{!isAdmin && (
+							<Route path="/DeleteAccount" element={<DeleteAccount />} />
+						)
+
 						}
-						<Route path='*' element={<Navigate to='/Dashboard'/>}/>
+						
+                        {isAdmin && (
+                            <>
+                                <Route path="/admin/AdminRegistration" element={<ProtectedRoute><AdminRegistration /></ProtectedRoute>} />
+                                <Route path="/admin/RoomReservations" element={<ProtectedRoute><RoomReservations /></ProtectedRoute>} />
+                            </>
+                        )}
+
+                        <Route path="*" element={<Navigate to={isAuth ? "/Dashboard" : "/"} />} />
 					</Routes>
 				</div>
 			</div>
