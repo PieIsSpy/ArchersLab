@@ -98,44 +98,25 @@ export function ReserveSeat(){
     </div>
 	)
 	
-	const getReservationDetails = async (seatID, selectedRoom, selectedTime, selectedDate) => {
-		try {
-			const startOfDay = new Date(selectedDate);
-			startOfDay.setUTCHours(0, 0, 0, 0);
+	const getReservationDetails = (seatID) => {
+		const res = reservations.find(r =>
+			r.date.toDateString() === selectedDate.toDateString() &&
+			r.room.name === selectedRoom.name &&
+			r.time === selectedTime &&
+			r.seats.includes(seatID)
+		);
 
-			const endOfDay = new Date(selectedDate);
-			endOfDay.setUTCHours(23, 59, 59, 999);
+		if (!res) return "Unknown User";
 
-			const reservationInfo = await Reservation.findOne({
-				seats: { $in: [Number(seatID)] },
-				room: selectedRoom,
-				time: selectedTime,
-				date: {$gte: startOfDay, $lte: endOfDay},
-				resStatus: { $ne: "Cancelled" }
-			}).exec();
+		if (res.isAnonymous) return "Anonymous";
+		if (res.user) return res.user?.name || "User";
+		if (res.inpersonInfo?.name) return res.inpersonInfo.name;
 
-			if (!reservationInfo) return null;
-
-			if (reservationInfo.isAnonymous) return "Anonymous";
-
-			if (reservationInfo.user) {
-				return reservationInfo.user.toString();
-			}
-
-			if (reservationInfo.inpersonInfo && reservationInfo.inpersonInfo.name) {
-				return reservationInfo.inpersonInfo.name;
-			}
-
-			return "Anonymous";
-		} catch (err) {
-			console.error(err);
-			return null;
-		}
+		return "Unknown User";
 	};
-
 	const handleBookedSeatClick = async (seatID) => {
-		const name = await getReservationDetails(seatID, selectedRoom.name, selectedTime, selectedDate);
-		setModalMessage(`Seat #${seatID} is booked by ${name}`);
+		const name = getReservationDetails(seatID);
+		setModalMessage(`Seat #${seatID} is already reserved by:${name}`);
 		setShowBookedModal(true);
 	};
 
