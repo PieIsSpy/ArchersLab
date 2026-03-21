@@ -14,6 +14,7 @@ import { UserRegistration } from "./pages/UserRegistration.jsx";
 import { RoomReservations } from "./pages/admin/RoomReservations.jsx";
 import { UserLogin } from "./pages/UserLogin.jsx";
 import { UserContext } from "./context/UserContext.jsx";
+import { currentUser } from "./models/User.jsx";
 
 export default function App() {
 	const [isAuth, setIsAuth] = useState(false);
@@ -115,7 +116,7 @@ export default function App() {
 					{navBarElems.map((elem) => (
 						<li key={elem.route}>
 							<Link 
-							to={`/${elem.route}`}
+							to={elem.route === 'Profile' ? `/${elem.route}/${user._id}` : `/${elem.route}`}
 							className={choice}
 							>
 								<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="w-5 h-5" viewBox={elem.viewBox}>
@@ -209,7 +210,7 @@ export default function App() {
 						} />
 						
 						<Route path="/Dashboard" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-                        <Route path="/Profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                        <Route path="/Profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                         <Route path="/ReserveSeat" element={<ProtectedRoute><ReserveSeat /></ProtectedRoute>} />
                         <Route path="/ReserveRoom" element={<ProtectedRoute><ReserveRoom /></ProtectedRoute>} />
                         <Route path="/ChangePassword" element={<ChangePassword />} />

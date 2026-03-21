@@ -3,15 +3,25 @@ import { useState, useEffect } from "react";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
-function ReservationTableBody({reservations, sort}) {
+function ReservationTableBody({reservations, mode, view, sort}) {
 	const {currentUser} = useContext(UserContext)
 
 	if (currentUser && reservations.length > 0) {
 		const now = new Date();
 
-		const list = !(currentUser.isAdmin)
-			? reservations.filter(res => currentUser._id === res.user?._id)
-			: reservations;
+		const list = reservations.filter(res => {
+			if (mode === 'profile') {
+				if (!(String(res.user?._id) === String(view))) return false;
+			}
+
+			const isOwnerOfRes = currentUser && String(res.user?._id) === String(currentUser._id);
+
+			if (currentUser.isAdmin || isOwnerOfRes) {
+				return true;
+			}
+
+			return res.isAnonymous === false;
+		});
 
 		list.forEach(row => {
 			const date = new Date(row.date); // assuming row[1] is the date
@@ -64,7 +74,7 @@ function ReservationTableBody({reservations, sort}) {
 				<td>{res.time}</td>
 				<td>{res.room?._id || "N/A"}</td>
 				<td>{res.seats.join(", ")}</td>
-				{!currentUser && (
+				{(mode === 'global' && currentUser.isAdmin) && (
 					<td className="flex items-center gap-2">
 						{res.user.name 
 						
@@ -108,28 +118,20 @@ function ReservationTableBody({reservations, sort}) {
 	}
 }
 
-export function ReservationTable() {
+export function ReservationTable({view, mode='global'}) {
 	const [sort, setSort] = useState("");
-
-	const [users, setUsers] = useState([]);
     const {currentUser} = useContext(UserContext)
     const [reservations, setReservations] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const fetchReservations = async () => {
         const reservationsUrl = 'http://localhost:5000/api/reservations';
-		const usersUrl = 'http://localhost:5000/api/users';
         try {
-            const [reservationsFetch, usersFetch] = await Promise.all([
-                fetch(reservationsUrl),
-				fetch(usersUrl)
-            ]);
+			const response = await fetch(reservationsUrl)
 
-            const reservationsData = await reservationsFetch.json();
-            const usersData = await usersFetch.json();
+            const reservationsData = await response.json();
 
 			setReservations(reservationsData)
-			setUsers(usersData)
 			
             setLoading(false);
         } catch (error) {
@@ -169,7 +171,7 @@ export function ReservationTable() {
 							:<div className="ml-2 w-4 w-4"></div>}</div>
 						</th>
 						<th>Seats Reserved</th>
-						{!currentUser && <th className={th_class} onClick={() => setSort("user-sort")}>
+						{mode === 'global' && currentUser.isAdmin && <th className={th_class} onClick={() => setSort("user-sort")}>
 							<div className={th_div}>
 								User
 								{sort==='user-sort'?<svg className="ml-2 w-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#c5c5c5"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12 7C12.2652 7 12.5196 7.10536 12.7071 7.29289L19.7071 14.2929C20.0976 14.6834 20.0976 15.3166 19.7071 15.7071C19.3166 16.0976 18.6834 16.0976 18.2929 15.7071L12 9.41421L5.70711 15.7071C5.31658 16.0976 4.68342 16.0976 4.29289 15.7071C3.90237 15.3166 3.90237 14.6834 4.29289 14.2929L11.2929 7.29289C11.4804 7.10536 11.7348 7 12 7Z" fill="#c5c5c5"></path> </g></svg>
@@ -188,7 +190,8 @@ export function ReservationTable() {
 				<tbody>
 					<ReservationTableBody
 						reservations={reservations}
-						users={users}
+						mode={mode}
+						view={view}
 						sort={sort}
 					/>
 				</tbody>
