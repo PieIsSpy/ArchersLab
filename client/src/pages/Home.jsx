@@ -62,8 +62,8 @@ export function Home () {
 		<div className="w-3/4 mx-auto">
 			<div className="google p-4 rounded-2xl gray-67 shadow-lg flex items-center">
 				<img
-					className="rounded-full w-15 h-15 mr-5"
-					src="./src/resources/karl.png"
+					className="rounded-full w-15 h-15 mr-5 object-cover"
+					src={currentUser.pfp_url ? currentUser.pfp_url : "./src/resources/default.jpg"}
 					alt="Profile"
 				/>
 				<div>

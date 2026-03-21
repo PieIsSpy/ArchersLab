@@ -157,7 +157,7 @@ export function UserForm() {
 
 			<div className="mb-3 w-full">
 				<label className="block font-bold text-xs mb-1 ml-3">PROFILE PICTURE URL</label>
-				<input maxLength="75"
+				<input maxLength="1000"
 				onChange={handleChange}
 				name='pfp_url'
 				value={form.pfp_url}
@@ -260,6 +260,8 @@ export function Profile() {
 	if (loading) {
 		return <div className="mx-auto">Loading...</div>
 	}
+	
+	console.log(currentUser)
     
     return (
 		<div className="grid grid-cols-3 gap-4 items-stretch mx-auto">
@@ -267,16 +269,16 @@ export function Profile() {
 				<div className="text-4xl font-black google mb-4 w-full">Profile</div>
 				<div className="gray-67 flex flex-col rounded-2xl p-4 items-center flex-1">
 					<img
-					className="rounded-full w-40 h-40"
+					className="rounded-full w-40 h-40 object-cover"
 					// src="./src/resources/default.jpg"
 					width='100'
 					// src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSepbhRLPNDHSzHUzCtAGMAL77l09LCnMDClA&s'
-					src={currentUser.pfp_url ? 'https://cors-anywhere.herokuapp.com/' + currentUser.pfp_url : "./src/resources/default.jpg"}
+					src={currentUser.pfp_url ? currentUser.pfp_url : "./src/resources/default.jpg"}
 					alt="Profile"
 					/>
 
 					<h1 className="text-5xl font-bold google">
-					{currentUser.nickname.length === 0 ? currentUser.name : currentUser.nickname}
+					{currentUser.nickname ? currentUser.nickname : currentUser.name ? currentUser.name : "Anonymous"}
 					</h1>
 
 					<div className="text-center">
