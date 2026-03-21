@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { PencilSvg } from "../components/PencilSvg";
 import { ReservationTable } from "../components/ReservationTable";
+import defaultPfp from '../resources/default.jpg'
 
 const formelement =
   "w-full p-3 rounded-xl gray-89 text-l font-['Inter',sans-serif] box-border " +
@@ -12,9 +13,7 @@ const formelement =
 
 
 
-export function UserProfile() {
-	const {currentUser} = useContext(UserContext)
-
+export function UserProfile({user}) {
 	const fields = [
 	{ label: "FULL NAME", key: "name", editable: false, display: true },
 	{ label: "ID", key: "_id", editable: false, display: true },
@@ -32,7 +31,7 @@ export function UserProfile() {
 			<div key={field.key}>
 			<h2 className="font-bold text-xs ml-3 mb-1">{field.label}</h2>
 			<div className="rounded-xl gray-89 p-3">
-				<h1 className="text-l">{currentUser[field.key] ?? "N/A"}</h1>
+				<h1 className="text-l">{user[field.key] ?? "N/A"}</h1>
 			</div>
 			</div>
 		))}
@@ -80,7 +79,7 @@ export function UserForm() {
 				setUser(data)
 			}
 			else {
-				alert('The user ID and password does not match')
+				alert('Error updating profile')
 			}
 		} catch (err) {
 			console.error("Failed to fetch data:", err);
@@ -249,19 +248,43 @@ export function AccountSettings() {
 }
 
 export function Profile() {
+	const {id} = useParams();
 	const {currentUser, loading} = useContext(UserContext)
     const [showFirst, setShowFirst] = useState(true);
+	const [fetching, setFetching] = useState(true);
+	const [view, setView] = useState(null)
+	const isCurrentUser = currentUser && (String(currentUser._id) === String(id))
 	console.log(currentUser)
+
+	useEffect(() => {
+		const fetchView = async () => {
+			setFetching(true);
+			try {
+				const response = await fetch(`http://localhost:5000/api/users/${id}`)
+
+				if (response.ok) {
+					const data = await response.json();
+					setView(data)
+				}
+			} catch (err) {
+				console.error('Error fetching:', err)
+			} finally {
+				setFetching(false)
+			}
+		}
+
+		fetchView()
+	}, [id])
 
     const handleToggle = () => {
         setShowFirst((prev) => !prev);
     };
 
-	if (loading) {
+	if (loading || fetching) {
 		return <div className="mx-auto">Loading...</div>
 	}
 	
-	console.log(currentUser)
+	console.log(view)
     
     return (
 		<div className="grid grid-cols-3 gap-4 items-stretch mx-auto">
@@ -270,26 +293,24 @@ export function Profile() {
 				<div className="gray-67 flex flex-col rounded-2xl p-4 items-center flex-1">
 					<img
 					className="rounded-full w-40 h-40 object-cover"
-					// src="./src/resources/default.jpg"
 					width='100'
-					// src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSepbhRLPNDHSzHUzCtAGMAL77l09LCnMDClA&s'
-					src={currentUser.pfp_url ? currentUser.pfp_url : "./src/resources/default.jpg"}
+					src={view.pfp_url ? view.pfp_url : defaultPfp}
 					alt="Profile"
 					/>
 
 					<h1 className="text-5xl font-bold google">
-					{currentUser.nickname ? currentUser.nickname : currentUser.name ? currentUser.name : "Anonymous"}
+					{view.nickname ? view.nickname : view.name ? view.name : "Anonymous"}
 					</h1>
 
 					<div className="text-center">
-					<h2 className="font-[serif] italic text-xl">{currentUser.bio}</h2>
+					<h2 className="font-[serif] italic text-xl">{view.bio}</h2>
 					</div>
 
 					<div className="w-100 mt-8">
-					<UserProfile />
+					<UserProfile user={view}/>
 					</div>
 
-					{!currentUser.isAdmin ? (
+					{isCurrentUser && !view.isAdmin ? (
 					<button
 						className="border p-2 rounded-xl flex items-center transition-transform transform hover:scale-103 active:scale-95 mt-4"
 						onClick={handleToggle}
@@ -309,25 +330,28 @@ export function Profile() {
 			</div>
 				
 			<div className="col-span-2 min-h-[50vh] flex flex-col">
-			{showFirst && !currentUser.isAdmin ? (
+			{showFirst && (!isCurrentUser || (isCurrentUser && !currentUser.isAdmin)) ? (
 				<div className="flex flex-col flex-1">
 				<div className="text-3xl font-bold google mb-4 w-full">Reservations</div>
 				<div className="rounded-2xl p-4 gray-67 flex flex-col items-center flex-1">
-					<ReservationTable />
+					<ReservationTable view={id} mode={'profile'} />
 				</div>
 				</div>
 			) : (
-				<div className="flex flex-col flex-1">
-					<div className="text-3xl font-bold google w-full mb-4">Edit Details</div>
-					<div className="gray-67 flex flex-col rounded-2xl p-4 items-center mb-4 flex-1">
-						<UserForm />
-					</div>
+				(isCurrentUser && (
+						<div className="flex flex-col flex-1">
+							<div className="text-3xl font-bold google w-full mb-4">Edit Details</div>
+							<div className="gray-67 flex flex-col rounded-2xl p-4 items-center mb-4 flex-1">
+								<UserForm />
+							</div>
 
-					<div className="text-3xl font-bold google w-full mb-4">Account Settings</div>
-					<div className="rounded-2xl gray-67 flex flex-col items-center">
-						<AccountSettings />
-					</div>
-				</div>
+							<div className="text-3xl font-bold google w-full mb-4">Account Settings</div>
+							<div className="rounded-2xl gray-67 flex flex-col items-center">
+								<AccountSettings />
+							</div>
+						</div>
+					)
+				)
 			)}
 			</div>
 		</div>

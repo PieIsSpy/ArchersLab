@@ -1,6 +1,12 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 export function ChangePassword() {
+	const {currentUser} = useContext(UserContext)
+	const navigate = useNavigate();
+
 	const [form, setForm] = useState({
 		oldPassword: "",
 		newPassword: "",
@@ -11,14 +17,34 @@ export function ChangePassword() {
 		setForm({ ...form, [e.target.name]: e.target.value });
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (form.newPassword !== form.confirmPassword) {
-		alert("Passwords do not match");
-		return;
+			alert("Passwords do not match");
+			return;
 		}
-		console.log("Password change submitted:", form);
-		// Pls add API call here
+		
+		try {
+			const response = await fetch(`http://localhost:5000/api/users/${currentUser._id}`, {
+				method: 'PUT',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({
+					oldPassword: form.oldPassword,
+					password: form.newPassword
+				})
+			})
+
+			const data = await response.json();
+			if (response.ok) {
+				alert('Password Successfully Updated');
+				navigate(`/Profile/${currentUser._id}`);
+			}
+			else {
+				alert(data.message)
+			}
+		} catch (err) {
+			console.error("Failed to fetch data:", err);
+		}
 	};
 
 	const inputClass =

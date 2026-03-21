@@ -106,7 +106,7 @@ export default function App() {
 	if (loading) return <div className="flex h-screen items-center justify-center">Loading...</div>
 
 	return (
-		<UserContext.Provider value={{currentUser: user, setUser, isAdmin, loading}}>
+		<UserContext.Provider value={{currentUser: user, setUser, setIsAuth, setAdmin, isAdmin, loading}}>
 			<div className="h-screen">
 			{isAuth && location.pathname !== '/' ? (
 				<div className="gray-67 w-20 h-full fixed top-0 left-0 flex flex-col justify-center items-center">
@@ -115,7 +115,7 @@ export default function App() {
 					{navBarElems.map((elem) => (
 						<li key={elem.route}>
 							<Link 
-							to={`/${elem.route}`}
+							to={elem.route === 'Profile' ? `/${elem.route}/${user._id}` : `/${elem.route}`}
 							className={choice}
 							>
 								<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="w-5 h-5" viewBox={elem.viewBox}>
@@ -209,7 +209,7 @@ export default function App() {
 						} />
 						
 						<Route path="/Home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-                        <Route path="/Profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                        <Route path="/Profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                         <Route path="/ReserveSeat" element={<ProtectedRoute><ReserveSeat /></ProtectedRoute>} />
                         <Route path="/ReserveRoom" element={<ProtectedRoute><ReserveRoom /></ProtectedRoute>} />
                         <Route path="/ChangePassword" element={<ChangePassword />} />

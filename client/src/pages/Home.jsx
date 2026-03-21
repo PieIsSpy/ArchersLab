@@ -77,7 +77,14 @@ export function Home () {
 				</div>
 			</div>
 		{/* ADMIN SWITCH */}
-		{currentUser.isAdmin ? (
+		{!currentUser.isAdmin ? (
+			<div>
+				<h2 className="mt-12 font-black google text-4xl">Current Reservations</h2>
+				<div className="px-4 mt-4 rounded-2xl gray-67 shadow-lg">
+					<ReservationTable view={currentUser._id} mode={'profile'}/>
+				</div>
+			</div>
+		):(
 			<div>
 				<h2 className="m-5 font-black google text-5xl">All Reservations</h2>
 				{/* Outer Div that holds DATE ROOM TIMESLOT + REQ btn */}
@@ -159,14 +166,16 @@ export function Home () {
 					/>
 				</div>
 			</div>
-		):(
-			<div>
-				<h2 className="mt-12 font-black google text-4xl">Current Reservations</h2>
-				<div className="px-4 mt-4 rounded-2xl gray-67 shadow-lg">
-					<ReservationTable student={currentUser}/>
-				</div>
-			</div>
-		)}
+		)
+		// (
+		// 	<div>
+		// 		<h2 className="mt-12 font-black google text-4xl">Current Reservations</h2>
+		// 		<div className="px-4 mt-4 rounded-2xl gray-67 shadow-lg">
+		// 			<ReservationTable student={currentUser}/>
+		// 		</div>
+		// 	</div>
+		// )
+		}
 		</div>
 	);
 }
