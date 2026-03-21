@@ -6,7 +6,7 @@ export function UserRegistration() {
 
 	const [form, setForm] = useState({
 		name: "",
-		id: null,
+		id: '',
 		email: "",
 		password: "",
 		confirmPassword: "",
@@ -29,8 +29,12 @@ export function UserRegistration() {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if (!form.name || !form.email || !form.password || !form.confirmPassword) {
+		if (!form.name || !form.id || !form.email || !form.password || !form.confirmPassword) {
 			alert('Please fill out missing fields')
+			return;
+		}
+		else if (form.id.length !== 8 || isNaN(Number(form.id))) {
+			alert("Invalid ID");
 			return;
 		}
 		else if (form.password !== form.confirmPassword) {
