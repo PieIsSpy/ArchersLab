@@ -29,17 +29,18 @@ export function ChangePassword() {
 				method: 'PUT',
 				headers: {'Content-Type': 'application/json'},
 				body: JSON.stringify({
+					oldPassword: form.oldPassword,
 					password: form.newPassword
 				})
 			})
 
+			const data = await response.json();
 			if (response.ok) {
-				const data = await response.json();
 				alert('Password Successfully Updated');
 				navigate(`/Profile/${currentUser._id}`);
 			}
 			else {
-				alert('Error updating password')
+				alert(data.message)
 			}
 		} catch (err) {
 			console.error("Failed to fetch data:", err);

@@ -80,6 +80,20 @@ const updateUser = asyncHandler(async (req, res) => {
         throw new Error('User not found');
     }
 
+    if (req.body.oldPassword) {
+        if (user.password !== req.body.oldPassword) {
+            res.status(401)
+            throw new Error('Old Password incorrect')
+        }
+
+        user.password = req.body.password;
+        await user.save();
+
+        const userResponse = user.toObject();
+        delete userResponse.password
+        return res.status(200).json(userResponse)
+    }
+
     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {new: true}).select('-password')
 
     res.status(200).json(updatedUser)
