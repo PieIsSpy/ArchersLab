@@ -203,8 +203,8 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 
 				case 'user-sort':
 					list.sort((a, b) => {
-						const nameA = (a.user.name || a.user || "").toUpperCase();
-						const nameB = (b.user.name || b.user || "").toUpperCase();
+						const nameA = (a.user ? a.user.name : "").toUpperCase();
+						const nameB = (b.user ? b.user.name : "").toUpperCase();
 						return nameA.localeCompare(nameB);
 					});
 					break;
@@ -228,7 +228,7 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 				}
 
 				if (filter[1])
-					list = list.filter(res => res.room.name === filterBy[1]);
+					list = list.filter(res => res.room._id === filterBy[1]);
 
 				if (filter[2] && filterBy[2]) {
 					const query = filterBy[2].toLowerCase();
