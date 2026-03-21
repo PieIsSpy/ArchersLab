@@ -78,7 +78,7 @@ export function UserForm() {
 				setUser(data)
 			}
 			else {
-				alert('The user ID and password does not match')
+				alert('Error updating profile')
 			}
 		} catch (err) {
 			console.error("Failed to fetch data:", err);
