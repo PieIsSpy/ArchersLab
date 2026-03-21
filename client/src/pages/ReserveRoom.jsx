@@ -10,34 +10,37 @@ import { InpersonModal } from "../components/Modals";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
+const timeSlots = [
+	"07:30-09:00", "09:15-10:45", "11:00-12:30", "12:45-14:15", 
+	"14:30-16:00", "16:15-17:45", "18:00-19:30",
+];
+
 export function ReserveRoom(){
 	const {currentUser} = useContext(UserContext)
 
-	const timeSlots = [
-		"07:30-09:00", "09:15-10:45", "11:00-12:30", "12:45-14:15", 
-		"14:30-16:00", "16:15-17:45", "18:00-19:30",
-	];
-	const room = [
-		"A1904", "C314", "G210", "G211", "G302A",
-		"G302B", "G304A", "G304B", "G306A", "G306B", "G404A", "G404B",
-		"J212", "L212", "L229", "L320", "L335", "V103", "V205", "V206", 
-		"V208A", "V208B", "V301", "V310", "Y602"
-	];
+	// helper
+	function basedate(d = new Date()) {
+		const date = new Date(d);
+		date.setHours(8, 0, 0, 0);
+		return date;
+	}
 
-	const today = new Date();
-	today.setHours(0, 0, 0, 0);
+	// date limits
+	const today = basedate();
+	
+	const minDate = today;
+	minDate.setDate(minDate.getDate() + 14);
 
-	const [selectedDate, setSelectedDate] = useState(
-		new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000)
-	);
+	const maxDate = new Date(today);
+	maxDate.setDate(maxDate.getDate() + 31);
 
-	const minDate = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
-	const maxDate = new Date(today.getTime() + 31 * 24 * 60 * 60 * 1000);
+	// date selection
+	const [selectedDate, setSelectedDate] = useState(() => minDate);
 	
 	const [open, setOpen] = useState(false);
 	const [rooms, setRooms] = useState([]);
 
-	const [selectedTime, setSelectedTime] = useState("07:30-09:00");
+	const [selectedTime, setSelectedTime] = useState(null);
 	const [selectedRoom, setSelectedRoom] = useState(null);
 
 	const [reservations, setReservations] = useState([])
@@ -59,9 +62,9 @@ export function ReserveRoom(){
 			const roomsData = await roomsFetch.json();
 			const reservationsData = await reservationsFetch.json();
 
-			const roomInstances = roomsData.map(item =>
-				new Room(item._id, item.row, item.col, item.layout)
-			);
+			const roomInstances = roomsData
+				.map(item => new Room(item._id, item.row, item.col, item.layout))
+				.sort((a, b) => a.name.localeCompare(b.name));
 			setRooms(roomInstances);
 
 			if (roomInstances.length > 0) {
@@ -134,13 +137,16 @@ export function ReserveRoom(){
 
 	}, [selectedDate, selectedRoom, reservations]); // only runs when date or room change
 
-	async function reserveRoom(selectedTime, selectedRoom, inpersonInfo = null) {
+	async function reserveRoom(inpersonInfo = null) {
+		console.log("selectedtime:"+selectedTime)
+		console.log("selectedate:"+selectedDate)
+
 		if (!document.getElementById("reason-textarea").value){
 			alert('Reason field is empty. Please provide a valid reason.')
 			return
 		}
 
-		if (reservations.find((res) => res.date.toDateString() == selectedDate.toDateString() && res.time === selectedTime && res.room.name === selectedRoom.name)) {
+		if (reservations.find((res) => res.date.toDateString() === selectedDate.toDateString() && res.time === selectedTime && res.room.name === selectedRoom.name)) {
 			alert('The room is already reserved by someone else')
 			return
 		}
@@ -151,7 +157,7 @@ export function ReserveRoom(){
 			time: selectedTime,
 			room: selectedRoom.name,
 			seats: [],
-			resStatus: "Upcoming",
+			resStatus: "Pending",
 			reason: document.getElementById("reason-textarea").value,
 			isAnonymous: false,
 			inpersonInfo: inpersonInfo
@@ -188,6 +194,7 @@ export function ReserveRoom(){
 
 	const handleModal = () => {
 		if (!reservations.find((res) => 
+				res.time === selectedTime &&
 				res.date.toDateString() === selectedDate.toDateString() && 
 				res.room.name === selectedRoom.name)) {
 			setOpen(true)
@@ -294,7 +301,7 @@ export function ReserveRoom(){
 							if (currentUser.isAdmin)
 								handleModal()
 							else
-								reserveRoom(selectedTime, selectedRoom)
+								reserveRoom()
 						}}
 					>
 						Request Room Reservation
@@ -302,7 +309,7 @@ export function ReserveRoom(){
 					<InpersonModal
 						open={open}
 						onClose={() => setOpen(false)}
-						onConfirm={(info) => reserveRoom(selectedTime, selectedRoom, info)}
+						onConfirm={(info) => reserveRoom(info)}
 					/>
 			</div>
 		</div>

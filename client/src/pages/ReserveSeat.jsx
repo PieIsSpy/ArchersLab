@@ -67,27 +67,45 @@ const timeSlots = [
 	"14:30-16:00", "16:15-17:45", "18:00-19:30",
 ];
 
-export function ReserveSeat(){
-	const {currentUser} = useContext(UserContext)
-	
-	
+export function ReserveSeat()
+{
+	// context
+	const { currentUser } = useContext(UserContext);
+
+	// UI state
+	const [loading, setLoading] = useState(true);
+	const [open, setOpen] = useState(false);
 	const [showBookedModal, setShowBookedModal] = useState(false);
 	const [modalChildren, setModalChildren] = useState();
 
-	const [open, setOpen] = useState(false);
-
-	const [loading, setLoading] = useState(true);
-
+	// data
 	const [rooms, setRooms] = useState([]);
 	const [reservations, setReservations] = useState([]);
 
-	const [selectedDate, setSelectedDate] = useState(new Date());
+	// helper
+	function basedate(d = new Date()) {
+		const date = new Date(d);
+		date.setHours(8, 0, 0, 0);
+		return date;
+	}
+
+	// date selection
+	const [selectedDate, setSelectedDate] = useState(() => basedate());
+
+	// date limits
+	const today = basedate();
+	const minDate = today;
+
+	const maxDate = new Date(today);
+	maxDate.setDate(maxDate.getDate() + 10);
+
+	// selection
 	const [selectedTime, setSelectedTime] = useState("07:30-09:00");
-	const [selectedRoom, setSelectedRoom] = useState(rooms[0]);
+	const [selectedRoom, setSelectedRoom] = useState(null); // set after rooms load
 	const [selectedSeats, setSelectedSeats] = useState([]);
 
-	const [bookedSeats, setBookedSeats] = useState([]);
-
+	// computed / dependent state
+	const [takenSeats, setTakenSeats] = useState([]);
 	const [timeSlotOptions, setTimeSlotOptions] = useState([]);
 	
 	const getReservationDetails = (seatID) => {
@@ -120,7 +138,6 @@ export function ReserveSeat(){
 		setShowBookedModal(true);
 	};
 
-
 	const fetchReservations = async () => {
 		const roomsUrl = 'http://localhost:5000/api/rooms';
 		const reservationsUrl = 'http://localhost:5000/api/reservations';
@@ -134,9 +151,9 @@ export function ReserveSeat(){
 			const roomsData = await roomsFetch.json();
 			const reservationsData = await reservationsFetch.json();
 
-			const roomInstances = roomsData.map(item =>
-				new Room(item._id, item.row, item.col, item.layout)
-			);
+			const roomInstances = roomsData
+				.map(item => new Room(item._id, item.row, item.col, item.layout))
+				.sort((a, b) => a.name.localeCompare(b.name));
 			setRooms(roomInstances);
 
 			if (roomInstances.length > 0) {
@@ -174,19 +191,14 @@ export function ReserveSeat(){
 	useEffect(() => {
 		var tempTimeSlots = [...timeSlots]
 
-		if (selectedRoom) 
-			console.log(selectedRoom.name)
-
 		reservations.forEach(res => {
 			if (res.date.toDateString() === selectedDate.toDateString() && // Same day
 				res.room.name === selectedRoom.name && // Same room
 				res.seats.length === 0) // No seats (Full room reservation)
 				{
-					tempTimeSlots.splice(tempTimeSlots.indexOf(res.time),1); // Temporarily remove from timeslot
+					tempTimeSlots.splice(tempTimeSlots.indexOf(res.time),1);
 				}
 		});
-
-		console.log(tempTimeSlots)
 
 		setTimeSlotOptions(
 			tempTimeSlots.map(slot => <option key={slot} value={slot}>{slot}</option>)
@@ -194,45 +206,24 @@ export function ReserveSeat(){
 
     	setSelectedTime(tempTimeSlots[0] || null);
 
-	}, [selectedDate, selectedRoom, reservations]); // only runs when date or room change
+	}, [selectedDate, selectedRoom, reservations])
 	
 	useEffect(() => {
 		if (!selectedRoom) {
-			setBookedSeats([]);
+			setTakenSeats([]);
+			setSelectedSeats([]);
 			return;
 		}
 
-		const takenSlots = reservations.filter(res => {
-			const isSameDate = res.date.toDateString() === selectedDate.toDateString();
-			const isSameRoom = res.room.name === selectedRoom.name;
-			const isSameTime = res.time === selectedTime;
+		const takenSlots = reservations.filter(res =>
+			res.date.toDateString() === selectedDate.toDateString() &&
+			res.room.name === selectedRoom.name &&
+			res.time === selectedTime
+		).flatMap(res => res.seats);
 
-			return isSameDate && isSameRoom && isSameTime;
-		}).flatMap(res => res.seats);
-
-		setBookedSeats(takenSlots);
+		setTakenSeats(takenSlots);
 		setSelectedSeats([]);
 	}, [selectedDate, selectedRoom, selectedTime, reservations]);
-
-	const today = new Date();
-	today.setHours(0, 0, 0, 0);
-
-	const selected = new Date(selectedDate);
-	selected.setHours(0, 0, 0, 0);
-
-	const minDate = new Date();
-	const maxDate = new Date();
-	maxDate.setDate(today.getDate() + 13);
-
-	const handleDateChange = (newDate) => {
-		setSelectedDate(newDate)
-	};
-
-	const handleRoomChange = (e) => {
-		const newRoom = rooms.find(r => r.name === e.target.value);
-		setSelectedRoom(newRoom);
-		setSelectedSeats([])
-	}
 	
 	const optionRoom = [];
 	for (let i = 0; i< rooms.length; i++){
@@ -255,7 +246,7 @@ export function ReserveSeat(){
 			for (let j = 0; j < layoutArr[i].length; j++) {
 				if(layoutArr[i][j] != 0){
 					const seatID = seatidx;
-					const isBooked = bookedSeats.includes(seatID);
+					const isTaken = takenSeats.includes(seatID);
 					const isSelected = selectedSeats.includes(seatID);
 					if(layoutArr[i][j] === 1)
 					{
@@ -267,12 +258,12 @@ export function ReserveSeat(){
 								<button
 									className={`
 										w-16 h-16 flex flex-col items-center justify-center 
-										${isBooked ? "booked" : "hover:bg-gray-500"}
+										${isTaken ? "booked" : "hover:bg-gray-500"}
 										${isSelected ? "blue" : ""}
 									`}
 									id={seatID}
 									onClick={() => {
-										if (isBooked) {
+										if (isTaken) {
 											handleBookedSeatClick(seatID);
 										} else {
 											toggleSeatSelection(seatID);
@@ -303,7 +294,7 @@ export function ReserveSeat(){
 								<button
 									id={seatID}
 									onClick={() => {
-										if (isBooked) {
+										if (isTaken) {
 											handleBookedSeatClick(seatID);
 										} else {
 											toggleSeatSelection(seatID);
@@ -312,7 +303,7 @@ export function ReserveSeat(){
 								}
 									className={`
 										w-16 h-16 flex flex-col items-center justify-center 
-										${isBooked ? "booked" : "hover:bg-gray-500"}
+										${isTaken ? "booked" : "hover:bg-gray-500"}
 										${isSelected ? "blue" : ""}
 									`}
 								>
@@ -447,7 +438,7 @@ export function ReserveSeat(){
 								focus:outline-none focus:ring-2 focus:ring-[#145b92]
 								focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
 								selected={selectedDate}
-								onChange={handleDateChange}
+								onChange={() => {setSelectedDate(selectedDate); }}
 								minDate={minDate}
 								maxDate={maxDate}
 								dateFormat="MM/dd/yyyy"
@@ -467,7 +458,11 @@ export function ReserveSeat(){
 								padding: "6px 10px",
 							}}
 							value={selectedRoom.name}
-							onChange={handleRoomChange}
+							onChange={(e) => {
+								const newRoom = rooms.find(r => r.name === e.target.value);
+								setSelectedRoom(newRoom);
+								setSelectedSeats([])
+							}}
 							>
 							{optionRoom}
 						</select>
@@ -553,8 +548,8 @@ export function ReserveSeat(){
 									{
 										alert(`Please select a seat!`)
 									}
-									// ADMIN SWITCH
-									else if (currentUser.isAdmin)
+									// ADMIN SWITCH, enable modal
+									else if (currentUser.isAdmin) 
 										setOpen(true)
 									else
 										reserveSeat(selectedTime, selectedRoom, selectedSeats)

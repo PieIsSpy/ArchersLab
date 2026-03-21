@@ -13,7 +13,18 @@ export function UserRegistration() {
 	});
 
 	const handleChange = (e) => {
-		setForm({ ...form, [e.target.name]: e.target.value });
+		const { name, value } = e.target;
+
+		if (name === "name") {
+			if (!/^[a-zA-Z\s]*$/.test(value)) return;
+		}
+
+		if (name === "id") {
+			if (!/^\d*$/.test(value)) return;
+			if (value.length > 8) return;
+		}
+
+		setForm({ ...form, [name]: value });
 	};
 
 	const handleSubmit = async (e) => {
