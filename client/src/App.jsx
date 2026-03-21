@@ -32,7 +32,7 @@ export default function App() {
 
 	const navBarElems = [
 		{
-			route: 'Dashboard',
+			route: 'Home',
 			viewBox: '0 0 512 512',
 			svg: 'M256 0 L512 256 L448 256 L448 512 L288 512 L288 384 L224 384 L224 512 L64 512 L64 256 L0 256 Z'
 		},
@@ -163,7 +163,7 @@ export default function App() {
 				</div>
 			) : null}
 
-				<div className={location.pathname != "/" ? "h-screen flex items-center ml-20" : "h-screen flex items-center"}>
+				<div className={location.pathname != "/" && location.pathname != "/UserLogin" && location.pathname != "/UserRegistration" ? "h-screen flex items-center ml-20" : "h-screen flex items-center"}>
 					<Routes>
 						<Route path='/' element={
 							loading ? (
@@ -192,11 +192,11 @@ export default function App() {
 									</div>
 								</div>
 							) : (
-								<Navigate to='/Dashboard'/> 
+								<Navigate to='/Home'/> 
 							)
 						}/>
 						<Route path="/UserLogin" element={
-							isAuth ? <Navigate to='/Dashboard'/> : (
+							isAuth ? <Navigate to='/Home'/> : (
 							<UserLogin 
 								setIsAuth={setIsAuth}
 								setAdmin={setAdmin}
@@ -205,10 +205,10 @@ export default function App() {
 							)
 						} />
 						<Route path="/UserRegistration" element={
-							isAuth ? <Navigate to='/Dashboard'/> : <UserRegistration />
+							isAuth ? <Navigate to='/Home'/> : <UserRegistration />
 						} />
 						
-						<Route path="/Dashboard" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+						<Route path="/Home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
                         <Route path="/Profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                         <Route path="/ReserveSeat" element={<ProtectedRoute><ReserveSeat /></ProtectedRoute>} />
                         <Route path="/ReserveRoom" element={<ProtectedRoute><ReserveRoom /></ProtectedRoute>} />

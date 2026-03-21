@@ -7,8 +7,16 @@ export function UserLogin({setIsAuth, setAdmin, setUser}) {
 	});
 
 	const handleChange = (e) => {
-		setForm({ ...form, [e.target.name]: e.target.value });
+		const { name, value } = e.target;
+
+		if (name === "id") {
+			if (!/^\d*$/.test(value)) return;
+			if (value.length > 8) return;
+		}
+
+		setForm({ ...form, [name]: value });
 	};
+
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();

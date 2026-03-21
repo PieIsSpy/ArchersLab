@@ -1,170 +1,164 @@
+import { useState, useEffect } from "react";
+import { Clock } from "../../components/Clock";
+import { Room } from "../../models/Room";
+import { ReservationTable } from "../../components/ReservationTable";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../../dark-datepicker.css";
-import { rooms } from "../../models/Room";
 
-class ReservationClass {
-	constructor(user, date, time, room, seats, status, isAnonymous) {
-		this.user = user;
-		this.date = date;
-		this.time = time;
-		this.room = room;
-		this.status = status
-		this.isAnonymous = isAnonymous;
+import { useContext } from "react";
+import { UserContext } from "../../context/UserContext";
+
+export function RoomReservations () 
+{
+	const [loading, setLoading] = useState(true);
+
+	const {currentUser} = useContext(UserContext)
+	// console.log(currentUser)
+	
+	const [rooms, setRooms] = useState([]);
+	const [filter, setFilter] = useState([]);
+	const [filterBy, setFilterBy] = useState([]);
+
+	const [selectedDate, setSelectedDate] = useState(null);
+	const [selectedRoom, setSelectedRoom] = useState(null);
+	const [selectedUser, setSelectedUser] = useState(null);
+
+	const handleDateChange = (newDate) => {
+		setSelectedDate(newDate)
+	};
+
+	const fetchRooms = async () => {
+		try {
+			const roomsFetch = await fetch('http://localhost:5000/api/rooms');
+			const roomsData = await roomsFetch.json();
+
+			const roomInstances = roomsData
+				.map(item => new Room(item._id, item.row, item.col, item.layout))
+				.sort((a, b) => a.name.localeCompare(b.name));
+
+			setRooms(roomInstances);
+			
+			setLoading(false);
+		} catch (error) {
+			console.error("Failed to fetch data:", error);
+			setLoading(false);
+		}
 	}
-}
 
-const optionRoom = [];
-for (let i = 0; i< rooms.length; i++){
-	optionRoom.push(
-		<option
-			key={i}
-			value={rooms[i].name}
-		>
-			{rooms[i].name}
-		</option>
-	);
-}
+	useEffect(() => {
+		fetchRooms()
+	}, [])
 
-let list = [
-	new ReservationClass("Omandac, K.", new Date("2025-02-16T11:14:00"), "6:00AM-7:00AM", "GK201", [11, 12], "Upcoming", 0),
-	new ReservationClass("Tee, J.", new Date("2025-02-16T11:14:00"), "7:00AM-8:00AM", "GK201", [11, 12], "Cancelled", 0),
-]
+	useEffect(() => {
+		console.log (selectedDate)
+		console.log (selectedRoom)
+		console.log (selectedUser)
+		setFilter([!!selectedDate, !!selectedRoom, !!selectedUser])
+		setFilterBy([selectedDate,selectedRoom,selectedUser])
+	}, [selectedDate, selectedRoom, selectedUser])
 
-function Reservation() {
-	return list.map((res, index) => (
-		<tr key={`${index}`} className="border-t-2 border-gray-67">
-		<td>{res.date.toLocaleDateString()}</td>
-		<td>{res.time}</td>
-		<td>{res.room}</td>
-		<td className="flex items-center gap-2">{res.user}
-			<button className="flex items-center gap-2 transition-all duration-200">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="currentColor"
-					className="flex-shrink-0 w-5 h-5"
-				>
-					<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-				</svg>
-			</button>
-		</td>
-		<td>{res.status}</td>
-		<td className="flex items-center gap-2">
-			{res.status === "Upcoming" ? (
-				<button className="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200">
-					Cancel
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						height="20px"
-						width="20px"
-						viewBox="0 -960 960 960"
-						className="flex-shrink-0"
-					>
-						<path
-						d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
-						fill="currentColor"
-						/>
-					</svg>
-				</button>
-			) : null}
-		</td>
-		</tr>
-	))
-}
-
-export function ReservationTable() {
-	return (
-		<table className="table-auto w-full text-left">
-			<thead className="font-bold border-b border-gray-600">
-				<tr>
-					<th className="w-1/5">
-						Date
-					</th>
-					<th className="w-1/5">
-						Time
-					</th>
-					<th className="w-1/5">
-						Room
-					</th>
-					<th className="w-1/5">
-						Requester
-					</th>
-					<th className="w-1/21">
-						Status
-					</th>
-					<th>
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-				<Reservation/>
-			</tbody>
-		</table>
-	)
-}
-
-export function RoomReservations () {
 	const formcontrol =
 		"gray-89 text-xl text-center px-3 h-10 w-43 rounded-xl bg-transparent " +
 		"focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92] " +
 		"selection:bg-blue-300 selection:text-black";
 
-		return (
-		<div className="m-5 w-2/3 mx-auto my-40">
-			<h2 className="font-black google text-5xl mb-5">Room Reservation Requests</h2>
-			{/* Outer Div that holds DATE ROOM TIMESLOT + REQ btn */}
-			<div className="p-4 gray-67 flex flex-col rounded-2xl">
-				<h2 className="google text-3xl text-gray-400 mb-3">Filter by</h2>
-					{/* Inner Div that holds DATE ROOM TIMESLOT */}
-					<div className="justify-center items-center rounded-2xl text-2xl google flex gap-12 w-full">
-						
-						{/* Inner Div that holds DATE */}
-						<div className="gap-2 flex flex-row">
-							<div className="text-xl google flex items-center justify-center">
-								Date:
-							</div>
-							<div className="text-xl flex items-center justify-center">
-								<DatePicker
-									className={formcontrol}
-									selected={null}
-									onChange={null}
-									minDate={null}
-									maxDate={null}
-									dateFormat="MM/dd/yyyy"
-								/>
-							</div>
-						</div>
-
-						{/* Inner Div that holds ROOM */}
-						<div className="gap-2 flex flex-row">
-							<div className="text-xl google flex items-center justify-center">
-								Room:
-							</div>
+	if (loading) return <div className="mx-auto">Loading...</div>
+	return (
+		<div className="w-3/4 mx-auto">
+			<div className="google p-4 rounded-2xl gray-67 shadow-lg flex items-center">
+				<img
+					className="rounded-full w-15 h-15 mr-5 object-cover"
+					src={currentUser.pfp_url ? currentUser.pfp_url : "./src/resources/default.jpg"}
+					alt="Profile"
+				/>
+				<div>
+					<h2 className="font-bold text-xl">Good day, {currentUser.name}!</h2>
+					<h2 className="text-gray-500 text-l mt-1"><Clock /></h2>
+				</div>
+			</div>
+			<div>
+				<h2 className="m-5 font-black google text-5xl">Room Reservations</h2>
+				{/* Outer Div that holds DATE ROOM TIMESLOT + REQ btn */}
+				<div className="p-4 gray-67 flex flex-col rounded-2xl">
+					<h2 className="google text-3xl text-gray-400 mb-3">Filter by</h2>
+						{/* Inner Div that holds DATE ROOM TIMESLOT */}
+						<div className="justify-center items-center rounded-2xl text-2xl google flex gap-12 w-full">
 							
-							<select
-									className={formcontrol}
-							value={null}
-							onChange={(e) => {
-							}}
-							>
-							{optionRoom}
-							</select>
-						</div>
+							{/* Inner Div that holds DATE */}
+							<div className="gap-2 flex flex-row items-center justify-center">
+								<div className="text-xl google flex items-center justify-center">
+									Date:
+								</div>
+								<div className="text-xl flex items-center justify-center">
+									<DatePicker
+										className={formcontrol}
+										selected={selectedDate}
+										onChange={handleDateChange}
+										dateFormat="MM/dd/yyyy"
+										placeholderText="Select a date..."
+									/>
+								</div>
+								<div className="w-8 h-8 gray-89 rounded-lg"
+									onClick={()=>setSelectedDate("")}>
 
-						{/* Inner Div that holds NAME */}
-						<div className="gap-2 flex flex-row">
-							<div className="text-xl google flex items-center justify-center">
-								Name:
+									<svg viewBox="-2.5 0 61 61" xmlns="http://www.w3.org/2000/svg" fill="#c5c5c5" stroke="#c5c5c5"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><defs><filter id="a" width="200%" height="200%" x="-50%" y="-50%" filterUnits="objectBoundingBox"><feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset><feGaussianBlur stdDeviation="10" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix><feMerge><feMergeNode in="shadowMatrixOuter1"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter></defs><path fill-rule="evenodd" d="M36 26v10.997c0 1.659-1.337 3.003-3.009 3.003h-9.981c-1.662 0-3.009-1.342-3.009-3.003v-10.997h16zm-2 0v10.998c0 .554-.456 1.002-1.002 1.002h-9.995c-.554 0-1.002-.456-1.002-1.002v-10.998h12zm-9-5c0-.552.451-1 .991-1h4.018c.547 0 .991.444.991 1 0 .552-.451 1-.991 1h-4.018c-.547 0-.991-.444-.991-1zm0 6.997c0-.551.444-.997 1-.997.552 0 1 .453 1 .997v6.006c0 .551-.444.997-1 .997-.552 0-1-.453-1-.997v-6.006zm4 0c0-.551.444-.997 1-.997.552 0 1 .453 1 .997v6.006c0 .551-.444.997-1 .997-.552 0-1-.453-1-.997v-6.006zm-6-5.997h-4.008c-.536 0-.992.448-.992 1 0 .556.444 1 .992 1h18.016c.536 0 .992-.448.992-1 0-.556-.444-1-.992-1h-4.008v-1c0-1.653-1.343-3-3-3h-3.999c-1.652 0-3 1.343-3 3v1z" filter="url(#a)"></path></g></svg>
+								</div>
 							</div>
-							<input
-								className={formcontrol}
-							/>
+
+							{/* Inner Div that holds ROOM */}
+							<div className="gap-2 flex flex-row">
+								<div className="text-xl google flex items-center justify-center">
+									Room:
+								</div>
+								
+								<select
+									value={selectedRoom ? selectedRoom.name : "" }
+									className={formcontrol}
+									onChange={(e) => {
+										const room = rooms.find(r => r.name === e.target.value);
+										if (room) 
+											setSelectedRoom(room.name)
+										else 
+											setSelectedRoom(null);
+									}}
+								>
+									<option value="">Select room...</option>
+									{rooms.map((room) => (
+										<option value={room.name}>{room.name}</option>
+									))}
+								</select>
+							</div>
+
+							{/* Inner Div that holds NAME */}
+							<div className="gap-2 flex flex-row items-center">
+								<div className="text-xl google flex items-center justify-center">
+									Name:
+								</div>
+								<input
+									value={selectedUser}
+									className={formcontrol}
+									onChange={(e) => {
+										setSelectedUser(e.target.value)
+									}}
+									placeholder="Input a user..."
+								/>
+								<div className="w-8 h-8 gray-89 rounded-lg"
+									onClick={()=>setSelectedUser("")}>
+
+									<svg viewBox="-2.5 0 61 61" xmlns="http://www.w3.org/2000/svg" fill="#c5c5c5" stroke="#c5c5c5"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><defs><filter id="a" width="200%" height="200%" x="-50%" y="-50%" filterUnits="objectBoundingBox"><feOffset dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset><feGaussianBlur stdDeviation="10" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix><feMerge><feMergeNode in="shadowMatrixOuter1"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter></defs><path fill-rule="evenodd" d="M36 26v10.997c0 1.659-1.337 3.003-3.009 3.003h-9.981c-1.662 0-3.009-1.342-3.009-3.003v-10.997h16zm-2 0v10.998c0 .554-.456 1.002-1.002 1.002h-9.995c-.554 0-1.002-.456-1.002-1.002v-10.998h12zm-9-5c0-.552.451-1 .991-1h4.018c.547 0 .991.444.991 1 0 .552-.451 1-.991 1h-4.018c-.547 0-.991-.444-.991-1zm0 6.997c0-.551.444-.997 1-.997.552 0 1 .453 1 .997v6.006c0 .551-.444.997-1 .997-.552 0-1-.453-1-.997v-6.006zm4 0c0-.551.444-.997 1-.997.552 0 1 .453 1 .997v6.006c0 .551-.444.997-1 .997-.552 0-1-.453-1-.997v-6.006zm-6-5.997h-4.008c-.536 0-.992.448-.992 1 0 .556.444 1 .992 1h18.016c.536 0 .992-.448.992-1 0-.556-.444-1-.992-1h-4.008v-1c0-1.653-1.343-3-3-3h-3.999c-1.652 0-3 1.343-3 3v1z" filter="url(#a)"></path></g></svg>
+								</div>
+							</div>
 						</div>
-					</div>
+				</div>
+				<div className="px-4 mt-4 rounded-2xl gray-67 shadow-lg">
+					<ReservationTable
+						filter = {filter}
+						filterBy = {filterBy}
+						mode = {"room"}
+					/>
+				</div>
 			</div>
-			<div className="px-4 mt-4 rounded-2xl gray-67 shadow-lg">
-				<ReservationTable/>
-			</div>
-		</div>);
+		</div>
+	);
 }
