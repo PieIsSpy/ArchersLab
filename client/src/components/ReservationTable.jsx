@@ -76,9 +76,9 @@ function ReservationTableBody({reservations, mode, view, sort}) {
 				<td>{res.seats.join(", ")}</td>
 				{(mode === 'global' && currentUser.isAdmin) && (
 					<td className="flex items-center gap-2">
-						{res.user.name 
+						{res.user?.name 
 						
-						|| res.user
+						|| res.inpersonInfo?.name
 						
 						|| "Anonymous"}
 						<button className="flex items-center gap-2 transition-all duration-200">
