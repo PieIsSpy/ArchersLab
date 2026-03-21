@@ -17,16 +17,16 @@ const loginUser = asyncHandler(async (req, res) => {
     const user = await User.findOne({_id: Number(id)})
 
     if (user && (user.password === password)) {
+        const userRes = user.toObject();
+        delete userRes.password
+
         req.session.isAuth = true;
-        req.session.user = {id: user._id, isAdmin: user.isAdmin}
+        req.session.user = userRes;
 
         req.session.save((err) => {
             if (err) {
                 return res.status(500).json({message: 'Session storage failed'})
             }
-            const userRes = user.toObject();
-            delete userRes.password
-
             res.status(200).json(userRes)
         })
     }

@@ -146,7 +146,7 @@ export function ReserveRoom(){
 		}
 		
 		const newReservation = {
-			user: !inpersonInfo ? currentUser.id : null,
+			user: !inpersonInfo ? currentUser._id : null,
 			date: selectedDate.toISOString(),
 			time: selectedTime,
 			room: selectedRoom.name,
