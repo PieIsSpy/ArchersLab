@@ -121,7 +121,8 @@ export function ReserveRoom(){
 		reservations.forEach(res => {
 			if (res.date.toDateString() === selectedDate.toDateString() && // Same day
 				res.room.name === selectedRoom.name && // Same room
-				res.seats.length === 0) // No seats (Full room reservation)
+				res.seats.length === 0 &&
+				res.resStatus === "Cancelled") // No seats (Full room reservation)
 				{
 					tempTimeSlots.splice(tempTimeSlots.indexOf(res.time),1); // Temporarily remove from timeslot
 				}
@@ -145,6 +146,10 @@ export function ReserveRoom(){
 			alert('Reason field is empty. Please provide a valid reason.')
 			return
 		}
+
+		reservations.forEach((res)=>console.log(res.date.toDateString()))
+		console.log(selectedDate.toDateString())
+		console.log(reservations)
 
 		if (reservations.find((res) => res.date.toDateString() === selectedDate.toDateString() && res.time === selectedTime && res.room.name === selectedRoom.name)) {
 			alert('The room is already reserved by someone else')

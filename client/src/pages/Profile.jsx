@@ -7,7 +7,7 @@ import { ReservationTable } from "../components/ReservationTable";
 import defaultPfp from '../resources/default.jpg'
 
 const formelement =
-  "w-full p-3 rounded-xl gray-89 text-l font-['Inter',sans-serif] box-border " +
+  "w-full p-2 rounded-xl gray-89 text-l font-['Inter',sans-serif] box-border " +
   "focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]" +
   " selection:bg-blue-300 selection:text-black";
 
@@ -331,12 +331,10 @@ export function Profile() {
 				
 			<div className="col-span-2 min-h-[50vh] flex flex-col">
 			{showFirst && (!isCurrentUser || (isCurrentUser && !currentUser.isAdmin)) ? (
-				<div className="flex flex-col flex-1">
-				<div className="text-3xl font-bold google mb-4 w-full">Reservations</div>
-				<div className="rounded-2xl p-4 gray-67 flex flex-col items-center flex-1">
+				<><div className="text-3xl font-bold google mb-4 w-full">Reservations</div>
+				<div className="rounded-2xl p-4 gray-67 items-center flex-1">
 					<ReservationTable view={id} mode={'profile'} />
-				</div>
-				</div>
+				</div></>
 			) : (
 				(isCurrentUser && (
 						<div className="flex flex-col flex-1">

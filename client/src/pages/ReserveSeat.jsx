@@ -2,10 +2,8 @@ import { useState, useEffect} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../dark-datepicker.css";
-import { Room } from "../models/Room";
 import { Modal, InpersonModal } from "../components/Modals";
-import { userJSON_to_Object } from "../models/User";
-import { Reservation } from "../models/Reservation";
+import { Link } from "react-router-dom";
 
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
@@ -90,7 +88,7 @@ export function ReserveSeat()
 	}
 
 	// date selection
-	const [selectedDate, setSelectedDate] = useState(() => basedate());
+	const [selectedDate, setSelectedDate] = useState(basedate(new Date));
 
 	// date limits
 	const today = basedate();
@@ -109,95 +107,106 @@ export function ReserveSeat()
 	const [timeSlotOptions, setTimeSlotOptions] = useState([]);
 	
 	const getReservationDetails = (seatID) => {
-		const res = reservations.find(r =>
-			r.date.toDateString() === selectedDate.toDateString() &&
-			r.room.name === selectedRoom.name &&
-			r.time === selectedTime &&
-			r.seats.includes(seatID)
+		const selectedDateStr = selectedDate.toDateString();
+		const res = reservations.find(r => {
+				const resDate = new Date(r.date).toDateString();
+				return (
+					resDate === selectedDateStr &&
+					r.room._id === selectedRoom._id &&
+					r.time === selectedTime &&
+					r.seats.includes(seatID)
+				)
+			}
 		);
 
-		if (!res) return "Unknown User";
+		if (!res) return {name: "Unknown User", isRegistered: false};
 
-		if (res.isAnonymous) return "Anonymous";
-		if (res.user) return res.user?.name || "User";
-		if (res.inpersonInfo?.name) return res.inpersonInfo.name;
+		if (res.isAnonymous) return {name: "Anonymous", isRegistered: false};
+		if (res.user) return {name: res.user.name, id: res.user._id, isRegistered: true}
+		if (res.inpersonInfo) return {name: res.inpersonInfo.name, isRegistered: false}
 
-		return "Unknown User";
+		return {name: "Unknown User", isRegistered: false};
 	};
 	
 	const handleBookedSeatClick = async (seatID) => {
-		const name = getReservationDetails(seatID);
+		const info = getReservationDetails(seatID);
 		setModalChildren(
 			<>
 			{/* PLEASE PLEASE PLEASE ADD A USER REDIRECTION HERE SOMETIME TOMORROW! */}
 				<p >Seat is already booked by:</p>
-				<h1 className="mt-10 text-3xl font-bold google">{name}</h1>
-				<p className="text-gray-500 mb-10">View Profile</p>
+				<h1 className="mt-10 text-3xl font-bold google">{info.name}</h1>
+				{info.isRegistered ? (
+					<Link 
+					to={`/Profile/${info?.id}`} 
+					className="text-gray-500 mb-10 hover:text-blue-600 transition-colors block"
+					>
+					View Profile
+					</Link>
+				):<div className="mb-10"></div>}
 			</>
 		);
 		setShowBookedModal(true);
 	};
 
-	const fetchReservations = async () => {
-		const roomsUrl = 'http://localhost:5000/api/rooms';
-		const reservationsUrl = 'http://localhost:5000/api/reservations';
-		try {
-			// fetch data
-			const [roomsFetch, reservationsFetch] = await Promise.all([
-				fetch(roomsUrl),
-				fetch(reservationsUrl)
-			])
+    const fetchRooms = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('http://localhost:5000/api/rooms')
 
-			const roomsData = await roomsFetch.json();
-			const reservationsData = await reservationsFetch.json();
+            if (response.ok) {
+                const data = await response.json()
+                setRooms(data)
+				// console.log(data)
+				if (data.length > 0) {
+					setSelectedRoom(data[0]);
+				}
+            }
+        } catch (err) {
+            console.error('Error fetching', err) 
+        } finally {
+            setLoading(false)
+        }
+    }
 
-			const roomInstances = roomsData
-				.map(item => new Room(item._id, item.row, item.col, item.layout))
-				.sort((a, b) => a.name.localeCompare(b.name));
-			setRooms(roomInstances);
+    const fetchReservations = async () => {
+        const reservationsUrl = 'http://localhost:5000/api/reservations';
+        try {
+			const response = await fetch(reservationsUrl)
 
-			if (roomInstances.length > 0) {
-				setSelectedRoom(roomInstances[0]);
-			}
+            const reservationsData = await response.json();
 
-			const reservationInstances = reservationsData.map(res => {
-				const userData = res.user ? res.user : res.inpersonInfo;
-				
-				return new Reservation(
-					userJSON_to_Object(userData),
-					new Date(res.date),
-					res.time,
-					roomInstances.find(r => r.name === (res.room._id)),
-					res.seats,
-					res.resStatus,
-					res.reason,
-					res.isAnonymous,
-					res._id
-				)
-			});
-
-			setReservations(reservationInstances)
-			setLoading(false);
-		} catch (error) {
-			console.error("Failed to fetch data:", error);
+			setReservations(reservationsData)
+        } catch (error) {
+            console.error("Failed to fetch data:", error);
+        } finally {
 			setLoading(false);
 		}
-	};
+    };
 
 	useEffect(() => {
+        fetchRooms();
 		fetchReservations();
 	}, []);
 
 	useEffect(() => {
 		var tempTimeSlots = [...timeSlots]
 
+		// if (selectedRoom) 
+			// console.log(selectedRoom._id)
+		
+		// console.log(selectedRoom)
 		reservations.forEach(res => {
-			if (res.date.toDateString() === selectedDate.toDateString() && // Same day
-				res.room.name === selectedRoom.name && // Same room
-				res.seats.length === 0) // No seats (Full room reservation)
-				{
-					tempTimeSlots.splice(tempTimeSlots.indexOf(res.time),1);
-				}
+			const resDate = new Date(res.date);
+			console.log(res.resStatus)
+			console.log(res)
+			if (selectedRoom)
+				if (resDate.toDateString() === selectedDate.toDateString() && // Same day
+					res.room._id === selectedRoom._id && // Same room
+					res.seats.length === 0 &&
+					res.resStatus != "Cancelled") // No seats (Full room reservation)
+					{
+						tempTimeSlots.splice(tempTimeSlots.indexOf(res.time),1);
+					}
 		});
 
 		setTimeSlotOptions(
@@ -215,11 +224,12 @@ export function ReserveSeat()
 			return;
 		}
 
-		const takenSlots = reservations.filter(res =>
-			res.date.toDateString() === selectedDate.toDateString() &&
-			res.room.name === selectedRoom.name &&
-			res.time === selectedTime
-		).flatMap(res => res.seats);
+		const takenSlots = reservations.filter(res => {
+			return new Date(res.date).toDateString() === selectedDate.toDateString() &&
+				res.room._id === selectedRoom._id &&
+				res.time === selectedTime &&
+				res.resStatus != "Cancelled"
+		})
 
 		setTakenSeats(takenSlots);
 		setSelectedSeats([]);
@@ -230,9 +240,9 @@ export function ReserveSeat()
 		optionRoom.push(
 			<option
 				key={i}
-				value={rooms[i].name}
+				value={rooms[i]._id}
 			>
-				{rooms[i].name}
+				{rooms[i]._id}
 			</option>
 		);
 	}
@@ -246,7 +256,7 @@ export function ReserveSeat()
 			for (let j = 0; j < layoutArr[i].length; j++) {
 				if(layoutArr[i][j] != 0){
 					const seatID = seatidx;
-					const isTaken = takenSeats.includes(seatID);
+					const isTaken = takenSeats.some(res => res.seats.includes(seatID));
 					const isSelected = selectedSeats.includes(seatID);
 					if(layoutArr[i][j] === 1)
 					{
@@ -344,7 +354,7 @@ export function ReserveSeat()
 	}
 
 	const renderSeats = () => {
-		switch (selectedRoom.layoutID) {
+		switch (selectedRoom.layout) {
 			case 1:
 				return deploySeats(layout1);
 			case 2:
@@ -365,15 +375,15 @@ export function ReserveSeat()
 			user: !inpersonInfo ? currentUser._id : null,
 			date: selectedDate.toISOString(),
 			time: selectedTime,
-			room: selectedRoom.name,
+			room: selectedRoom._id,
 			seats: selectedSeats,
 			resStatus: "Upcoming",
 			reason: '',
 			isAnonymous: document.getElementById("anonymous-checkbox").checked,
 			inpersonInfo: inpersonInfo
 		};
-		console.log(rooms)
-		console.log(newReservation)
+		// console.log(rooms)
+		// console.log(newReservation)
 
 		try {
 			const response = await fetch('http://localhost:5000/api/reservations', {
@@ -398,10 +408,10 @@ export function ReserveSeat()
 
 		const seatList = selectedSeats.join(", ");
 		console.log(`
-			User ${currentUser.name} has reserved Seats for
+			User ${currentUser._id} has reserved Seats for
 			Date: ${selectedDate.toLocaleDateString()}
 			Time: ${selectedTime}
-			Room: ${selectedRoom.name}
+			Room: ${selectedRoom._id}
 			Seats: ${seatList}
 		`);
 	}
@@ -438,7 +448,7 @@ export function ReserveSeat()
 								focus:outline-none focus:ring-2 focus:ring-[#145b92]
 								focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
 								selected={selectedDate}
-								onChange={() => {setSelectedDate(selectedDate); }}
+								onChange={(date) => setSelectedDate(date)}
 								minDate={minDate}
 								maxDate={maxDate}
 								dateFormat="MM/dd/yyyy"
@@ -459,7 +469,7 @@ export function ReserveSeat()
 							}}
 							value={selectedRoom.name}
 							onChange={(e) => {
-								const newRoom = rooms.find(r => r.name === e.target.value);
+								const newRoom = rooms.find(r => r._id === e.target.value);
 								setSelectedRoom(newRoom);
 								setSelectedSeats([])
 							}}

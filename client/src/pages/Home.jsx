@@ -50,9 +50,9 @@ export function Home () {
 	}, [])
 
 	useEffect(() => {
-		console.log (selectedDate)
-		console.log (selectedRoom)
-		console.log (selectedUser)
+		// console.log (selectedDate)
+		// console.log (selectedRoom)
+		// console.log (selectedUser)
 		setFilter([!!selectedDate, !!selectedRoom, !!selectedUser])
 		setFilterBy([selectedDate,selectedRoom,selectedUser])
 	}, [selectedDate, selectedRoom, selectedUser])

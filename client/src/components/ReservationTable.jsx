@@ -8,52 +8,85 @@ import { Reservation } from "../models/Reservation";
 import { userJSON_to_Object } from "../models/User";
 
 export function ReservationTable({view, mode='global', filter, filterBy}) {
-	const [sort, setSort] = useState("");
     const {currentUser} = useContext(UserContext)
+
+	const [sort, setSort] = useState("");
     const [reservations, setReservations] = useState([]);
     const [loading, setLoading] = useState(true);
 
 	const fetchReservations = async () => {
-		const roomsUrl = 'http://localhost:5000/api/rooms';
-		const reservationsUrl = 'http://localhost:5000/api/reservations';
-		try {
-			// fetch data
-			const [roomsFetch, reservationsFetch] = await Promise.all([
-				fetch(roomsUrl),
-				fetch(reservationsUrl)
-			])
+			const reservationsUrl = 'http://localhost:5000/api/reservations';
+			try {
+				const response = await fetch(reservationsUrl)
 
-			const roomsData = await roomsFetch.json();
-			const reservationsData = await reservationsFetch.json();
+				const reservationsData = await response.json();
 
-			const roomInstances = roomsData
-				.map(item => new Room(item._id, item.row, item.col, item.layout))
-				.sort((a, b) => a.name.localeCompare(b.name));
+				setReservations(reservationsData);
 
-			const reservationInstances = reservationsData.map(res => {
-				const userData = res.user ? res.user : res.inpersonInfo;
-				
-				return new Reservation(
-					userJSON_to_Object(userData),
-					new Date(res.date),
-					res.time,
-					roomInstances.find(r => r.name === (res.room._id)),
-					res.seats,
-					res.resStatus,
-					res.reason,
-					res.isAnonymous,
-					res._id
-				)
-			});
-
-			setReservations(reservationInstances)
-			console.log(reservationInstances)
-			setLoading(false);
-		} catch (error) {
-			console.error("Failed to fetch data:", error);
-			setLoading(false);
-		}
+				setLoading(false);
+			} catch (error) {
+				console.error("Failed to fetch data:", error);
+				setLoading(false);
+			}
 	};
+	
+    const fetchRooms = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('http://localhost:5000/api/rooms')
+
+            if (response.ok) {
+                const data = await response.json()
+                setRooms(data)
+            }
+        } catch (err) {
+            console.error('Error fetching', err) 
+        } finally {
+            setLoading(false)
+        }
+    }
+
+	// const fetchReservations = async () => {
+	// 	const roomsUrl = 'http://localhost:5000/api/rooms';
+	// 	const reservationsUrl = 'http://localhost:5000/api/reservations';
+	// 	try {
+	// 		// fetch data
+	// 		const [roomsFetch, reservationsFetch] = await Promise.all([
+	// 			fetch(roomsUrl),
+	// 			fetch(reservationsUrl)
+	// 		])
+
+	// 		const roomsData = await roomsFetch.json();
+	// 		const reservationsData = await reservationsFetch.json();
+
+	// 		const roomInstances = roomsData
+	// 			.map(item => new Room(item._id, item.row, item.col, item.layout))
+	// 			.sort((a, b) => a.name.localeCompare(b.name));
+
+	// 		const reservationInstances = reservationsData.map(res => {
+	// 			const userData = res.user ? res.user : res.inpersonInfo;
+				
+	// 			return new Reservation(
+	// 				userJSON_to_Object(userData),
+	// 				new Date(res.date),
+	// 				res.time,
+	// 				roomInstances.find(r => r.name === (res.room._id)),
+	// 				res.seats,
+	// 				res.resStatus,
+	// 				res.reason,
+	// 				res.isAnonymous,
+	// 				res._id
+	// 			)
+	// 		});
+
+	// 		setReservations(reservationInstances)
+	// 		console.log(reservationInstances)
+	// 		setLoading(false);
+	// 	} catch (error) {
+	// 		console.error("Failed to fetch data:", error);
+	// 		setLoading(false);
+	// 	}
+	// };
 
     useEffect(() => {
         fetchReservations();
@@ -106,12 +139,15 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 		if (currentUser && reservations.length > 0) {
 			const now = new Date();
 
+			// reservations.forEach(res => {console.log(res.user.id);console.log(currentUser._id)})
+
 			var list = reservations.filter(res => {
+				// console.log(view) // 12409294
+				// console.log(mode) //profile
 				if (mode === 'profile') {
 					if (!(String(res.user?._id) === String(view))) return false;
 				}
-
-
+				
 				const isOwnerOfRes = currentUser && String(res.user?._id) === String(currentUser._id);
 
 				if (currentUser.isAdmin || isOwnerOfRes) {
@@ -136,15 +172,14 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 				const [hour, minute] = row.time.split('-')[0].split(':').map(Number); // assuming row[2] is "HH:mm-HH:mm"
 				date.setHours(hour, minute, 0, 0);
 
-				const status = date < now ? "Completed" : "Upcoming";
-				if (!row.status) row.status = status;
+				row.status = row.resStatus === "Upcoming" && date < now ? "Completed" : row.resStatus;
 			});
 
-			console.log(list)
+			// console.log(list)
 
 			switch(sort) {
 				case 'date-sort':
-					list.sort((a, b) => a.date - b.date);
+					list.sort((a, b) => a.date.toString().localeCompare(b.date.toString()));
 					break;
 
 				case 'time-sort':
@@ -158,7 +193,7 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 					break;
 
 				case 'room-sort':
-					list.sort((a, b) => a && b ? (a.room.name).localeCompare(b.room.name) : 0);
+					list.sort((a, b) => a && b ? (a.room._id).localeCompare(b.room._id) : 0);
 					break;
 
 				case 'status-sort':
@@ -203,9 +238,9 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 
 			return list.map((res, index) => (
 				<tr key={index} className="border-t-2 border-gray-67">
-					<td>{res.date.toDateString()}</td>
+					<td>{res.date.split('T')[0]}</td>
 					<td>{res.time}</td>
-					<td>{res.room.name}</td>
+					<td>{res.room._id}</td>
 					{mode !="room" ? <td>{res.seats.length != 0 ? res.seats.join(", ") : "Entire Room"}</td>
 					: <td>{res.reason}</td>}
 					{(mode === 'global' && currentUser.isAdmin) && (
@@ -225,10 +260,10 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 					)}
 					<td>{res.status}</td>
 					<td className="flex items-center gap-2">
-						{res.status === "Upcoming" ? (
+						{res.status === "Upcoming" && (currentUser._id === res.user._id || currentUser.isAdmin) ? (
 							<button 
 							id={res.id} 
-							onClick={()=>modifyReservation("cancel",res.id)}
+							onClick={()=>modifyReservation("cancel",res._id)}
 							className="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200">
 								Cancel
 								<svg
@@ -244,10 +279,10 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 									/>
 								</svg>
 							</button>
-						):res.status === "Pending" ? (
+						):res.status === "Pending" && currentUser.isAdmin ? (
 							<>
 								<button 
-								onClick={()=>modifyReservation("approve",res.id)}
+								onClick={()=>modifyReservation("approve",res._id)}
 								className="ml-auto flex items-center gap-2 text-green-400 hover:text-green-600 hover:scale-105 transition-all duration-200">
 									Approve
 									<svg
@@ -264,7 +299,7 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 									</svg>
 								</button>
 								<button 
-								onClick={()=>modifyReservation("cancel",res.id)}
+								onClick={()=>modifyReservation("cancel",res._id)}
 								className="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200">
 									Cancel
 									<svg

@@ -66,7 +66,7 @@ export default function App() {
 			return res.json();
 		})
 		.then(data => {
-			console.log(data)
+			// console.log(data)
 			if (data.isAuth) {
 				setUser(data.user)
 				setAdmin(data.user?.isAdmin || false);

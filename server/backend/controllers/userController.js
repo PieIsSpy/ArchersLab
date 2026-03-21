@@ -53,6 +53,11 @@ const createUser = asyncHandler(async (req, res) => {
         throw new Error('Invalid Creation')
     }
 
+	if (await User.findOne({_id: Number(id)})) {
+        res.status(400)
+        throw new Error('User already exists')
+    }
+
     const user = await User.create({
         name: name,
         nickname: nickname,

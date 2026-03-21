@@ -71,12 +71,16 @@ export function UserRegistration() {
 				const error = await response.json();
 				throw new Error(error.message || "Failed to create account")
 			}
+			else
+			{
+				alert('Successfully created account!')
+				navigate('/UserLogin')
+			}
 		} catch (err) {
 			console.error("Error:", err);
+			alert(err)
 		}
 
-		alert('Successfully created account!')
-		navigate('/UserLogin')
 	};
 
 	const inputClass =

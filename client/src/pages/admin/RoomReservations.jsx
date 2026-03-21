@@ -113,6 +113,9 @@ export function RoomReservations ()
 								</div>
 								
 								<select
+									style={{
+										color: selectedRoom ? selectedRoom.name ? "#7A7A7B" : "#C5C5C5" : "#7A7A7B",
+									}}
 									value={selectedRoom ? selectedRoom.name : "" }
 									className={formcontrol}
 									onChange={(e) => {
