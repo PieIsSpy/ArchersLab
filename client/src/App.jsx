@@ -106,7 +106,7 @@ export default function App() {
 	if (loading) return <div className="flex h-screen items-center justify-center">Loading...</div>
 
 	return (
-		<UserContext.Provider value={{currentUser: user, setUser, isAdmin, loading}}>
+		<UserContext.Provider value={{currentUser: user, setUser, setIsAuth, setAdmin, isAdmin, loading}}>
 			<div className="h-screen">
 			{isAuth && location.pathname !== '/' ? (
 				<div className="gray-67 w-20 h-full fixed top-0 left-0 flex flex-col justify-center items-center">
