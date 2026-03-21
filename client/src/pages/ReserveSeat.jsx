@@ -371,7 +371,7 @@ export function ReserveSeat(){
 		if (!selectedSeats.length) return;
 
 		const newReservation = {
-			user: !inpersonInfo ? currentUser.id : null,
+			user: !inpersonInfo ? currentUser._id : null,
 			date: selectedDate.toISOString(),
 			time: selectedTime,
 			room: selectedRoom.name,
@@ -381,6 +381,8 @@ export function ReserveSeat(){
 			isAnonymous: document.getElementById("anonymous-checkbox").checked,
 			inpersonInfo: inpersonInfo
 		};
+		console.log(rooms)
+		console.log(newReservation)
 
 		try {
 			const response = await fetch('http://localhost:5000/api/reservations', {
@@ -405,7 +407,7 @@ export function ReserveSeat(){
 
 		const seatList = selectedSeats.join(", ");
 		console.log(`
-			User has reserved Seats for
+			User ${currentUser.name} has reserved Seats for
 			Date: ${selectedDate.toLocaleDateString()}
 			Time: ${selectedTime}
 			Room: ${selectedRoom.name}
