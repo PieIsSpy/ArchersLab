@@ -163,6 +163,7 @@ export function Home () {
 					<ReservationTable
 						filter = {filter}
 						filterBy = {filterBy}
+						mode={'global'}
 					/>
 				</div>
 			</div>
