@@ -7,184 +7,11 @@ import { Room } from "../models/Room"
 import { Reservation } from "../models/Reservation";
 import { userJSON_to_Object } from "../models/User";
 
-function ReservationTableBody({reservations, sort, filter, filterBy, mode, view}) {
-	const {currentUser} = useContext(UserContext)
-
-	if (currentUser && reservations.length > 0) {
-		const now = new Date();
-
-		const list = reservations.filter(res => {
-			if (mode === 'profile') {
-				if (!(String(res.user?._id) === String(view))) return false;
-			}
-
-			const isOwnerOfRes = currentUser && String(res.user?._id) === String(currentUser._id);
-
-			if (currentUser.isAdmin || isOwnerOfRes) {
-				return true;
-			}
-
-			return res.isAnonymous === false;
-		});
-
-		list.forEach(row => {
-			const date = new Date(row.date); // assuming row[1] is the date
-			const [hour, minute] = row.time.split('-')[0].split(':').map(Number); // assuming row[2] is "HH:mm-HH:mm"
-			date.setHours(hour, minute, 0, 0);
-
-			const status = date < now ? "Completed" : "Upcoming";
-			if (!row.status) row.status = status;
-		});
-
-		switch(sort) {
-			case 'date-sort':
-				list.sort((a, b) => a.date - b.date);
-				break;
-
-			case 'time-sort':
-				list.sort((a, b) => {
-					const [aStart] = a.time.split('-');
-					const [bStart] = b.time.split('-');
-					const [aH, aM] = aStart.split(':').map(Number);
-					const [bH, bM] = bStart.split(':').map(Number);
-					return aH !== bH ? aH - bH : aM - bM;
-				});
-				break;
-
-			case 'room-sort':
-				list.sort((a, b) => a && b ? (a.name).localeCompare(b.name) : 0);
-				break;
-
-			case 'status-sort':
-				const rank = { "Upcoming": 1, "Ongoing": 2, "Cancelled": 3, "Completed": 4 };
-				list.sort((a, b) => (rank[a.status] || 99) - (rank[b.status] || 99));
-				break;
-
-			case 'user-sort':
-				list.sort((a, b) => {
-					const nameA = (a.user.name || a.user || "").toUpperCase();
-					const nameB = (b.user.name || b.user || "").toUpperCase();
-					return nameA.localeCompare(nameB);
-				});
-				break;
-
-			default:
-				break;
-		}
-
-		if (filter)
-		{
-			if (filter[0] && filterBy[0]) {
-				const target = new Date(filterBy[0]);
-				list = list.filter(res => {
-					const d = new Date(res.date);
-					return (
-						d.getFullYear() === target.getFullYear() &&
-						d.getMonth() === target.getMonth() &&
-						d.getDate() === target.getDate()
-					);
-				});
-			}
-
-			if (filter[1])
-				list = list.filter(res => res.room._id === filterBy[1]);
-
-			if (filter[2] && filterBy[2]) {
-				const query = filterBy[2].toLowerCase();
-				list = list.filter(res => (res.user?.name || "").toLowerCase().includes(query));
-			}
-		}
-
-		return list.map((res, index) => (
-			<tr key={index} className="border-t-2 border-gray-67">
-				<td>{res.date.toDateString()}</td>
-				<td>{res.time}</td>
-				<td>{res.room.name}</td>
-				{mode !="room" ? <td>{res.seats.length != 0 ? res.seats.join(", ") : "Entire Room"}</td>
-				: <td>{res.reason}</td>}
-				{(mode === 'global' && currentUser.isAdmin) && (
-					<td className="flex items-center gap-2">
-						{res.user ? res.user.name : res.inpersonInfo ? res.inpersonInfo.name : "Anonymous"}
-						<button className="flex items-center gap-2 transition-all duration-200">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="currentColor"
-								className="flex-shrink-0 w-5 h-5"
-							>
-								<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-							</svg>
-						</button>
-					</td>
-				)}
-				<td>{res.status}</td>
-				<td className="flex items-center gap-2">
-					{res.status === "Upcoming" ? (
-						<button className="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200">
-							Cancel
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								height="20px"
-								width="20px"
-								viewBox="0 -960 960 960"
-								className="flex-shrink-0"
-							>
-								<path
-									d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
-									fill="currentColor"
-								/>
-							</svg>
-						</button>
-					):res.status === "Pending" ? (
-						<button className="ml-auto flex items-center gap-2 text-green-400 hover:text-green-600 hover:scale-105 transition-all duration-200">
-							Approve
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								height="20px"
-								width="20px"
-								viewBox="0 -960 960 960"
-								className="flex-shrink-0"
-							>
-								<path
-									d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
-									fill="currentColor"
-								/>
-							</svg>
-						</button>
-					):null}
-				</td>
-			</tr>
-		));
-	}
-}
-
 export function ReservationTable({view, mode='global', filter, filterBy}) {
 	const [sort, setSort] = useState("");
     const {currentUser} = useContext(UserContext)
     const [reservations, setReservations] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    // const fetchReservations = async () => {
-    //     const reservationsUrl = 'http://localhost:5000/api/reservations';
-	// 	const usersUrl = 'http://localhost:5000/api/users';
-    //     try {
-    //         const [reservationsFetch, usersFetch] = await Promise.all([
-    //             fetch(reservationsUrl),
-	// 			fetch(usersUrl)
-    //         ]);
-
-    //         const reservationsData = await reservationsFetch.json();
-    //         const usersData = await usersFetch.json();
-
-	// 		setReservations(reservationsData)
-	// 		setUsers(usersData)
-			
-    //         setLoading(false);
-    //     } catch (error) {
-    //         console.error("Failed to fetch data:", error);
-    //         setLoading(false);
-    //     }
-    // };
 
 	const fetchReservations = async () => {
 		const roomsUrl = 'http://localhost:5000/api/rooms';
@@ -231,6 +58,235 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
     useEffect(() => {
         fetchReservations();
     }, []);
+
+	async function modifyReservation(mode,reservationId) {
+		try {
+			if (mode === "approve")
+			{
+				console.log("Approving Reservation "+reservationId);
+				var response = await fetch(`http://localhost:5000/api/reservations/${reservationId}`, {
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						resStatus: "Upcoming"
+					})
+				});
+			}
+			else 
+			{
+				console.log("Cancelling Reservation "+reservationId);
+				var response = await fetch(`http://localhost:5000/api/reservations/${reservationId}`, {
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						resStatus: "Cancelled"
+					})
+				});
+			}
+
+			if (!response.ok) {
+				const error = await response.json();
+				throw new Error(error.message || "Cancel failed");
+			}
+
+			await fetchReservations();
+			alert("Reservation updated!");
+		} catch (err) {
+			console.error("Error:", err);
+		}
+	}
+
+	function ReservationTableBody({reservations, sort, filter, filterBy, mode, view}) {
+		const {currentUser} = useContext(UserContext)
+
+		if (currentUser && reservations.length > 0) {
+			const now = new Date();
+
+			var list = reservations.filter(res => {
+				if (mode === 'profile') {
+					if (!(String(res.user?._id) === String(view))) return false;
+				}
+
+
+				const isOwnerOfRes = currentUser && String(res.user?._id) === String(currentUser._id);
+
+				if (currentUser.isAdmin || isOwnerOfRes) {
+					if (mode === 'room')
+						if (res.seats.length == 0) 
+							return true;
+						else
+							return false;
+					
+					if (currentUser.isAdmin)
+						if (res.seats.length == 0)
+							return false;
+
+					return true;
+				}
+
+				return res.isAnonymous === false;
+			});
+
+			list.forEach(row => {
+				const date = new Date(row.date); // assuming row[1] is the date
+				const [hour, minute] = row.time.split('-')[0].split(':').map(Number); // assuming row[2] is "HH:mm-HH:mm"
+				date.setHours(hour, minute, 0, 0);
+
+				const status = date < now ? "Completed" : "Upcoming";
+				if (!row.status) row.status = status;
+			});
+
+			console.log(list)
+
+			switch(sort) {
+				case 'date-sort':
+					list.sort((a, b) => a.date - b.date);
+					break;
+
+				case 'time-sort':
+					list.sort((a, b) => {
+						const [aStart] = a.time.split('-');
+						const [bStart] = b.time.split('-');
+						const [aH, aM] = aStart.split(':').map(Number);
+						const [bH, bM] = bStart.split(':').map(Number);
+						return aH !== bH ? aH - bH : aM - bM;
+					});
+					break;
+
+				case 'room-sort':
+					list.sort((a, b) => a && b ? (a.room.name).localeCompare(b.room.name) : 0);
+					break;
+
+				case 'status-sort':
+					const rank = { "Upcoming": 1, "Ongoing": 2, "Cancelled": 3, "Completed": 4 };
+					list.sort((a, b) => (rank[a.status] || 99) - (rank[b.status] || 99));
+					break;
+
+				case 'user-sort':
+					list.sort((a, b) => {
+						const nameA = (a.user.name || a.user || "").toUpperCase();
+						const nameB = (b.user.name || b.user || "").toUpperCase();
+						return nameA.localeCompare(nameB);
+					});
+					break;
+
+				default:
+					break;
+			}
+
+			if (filter)
+			{
+				if (filter[0] && filterBy[0]) {
+					const target = new Date(filterBy[0]);
+					list = list.filter(res => {
+						const d = new Date(res.date);
+						return (
+							d.getFullYear() === target.getFullYear() &&
+							d.getMonth() === target.getMonth() &&
+							d.getDate() === target.getDate()
+						);
+					});
+				}
+
+				if (filter[1])
+					list = list.filter(res => res.room.name === filterBy[1]);
+
+				if (filter[2] && filterBy[2]) {
+					const query = filterBy[2].toLowerCase();
+					list = list.filter(res => (res.user?.name || "").toLowerCase().includes(query));
+				}
+			}
+
+			return list.map((res, index) => (
+				<tr key={index} className="border-t-2 border-gray-67">
+					<td>{res.date.toDateString()}</td>
+					<td>{res.time}</td>
+					<td>{res.room.name}</td>
+					{mode !="room" ? <td>{res.seats.length != 0 ? res.seats.join(", ") : "Entire Room"}</td>
+					: <td>{res.reason}</td>}
+					{(mode === 'global' && currentUser.isAdmin) && (
+						<td className="flex items-center gap-2">
+							{res.user ? res.user.name : res.inpersonInfo ? res.inpersonInfo.name : "Anonymous"}
+							<button className="flex items-center gap-2 transition-all duration-200">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									fill="currentColor"
+									className="flex-shrink-0 w-5 h-5"
+								>
+									<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+								</svg>
+							</button>
+						</td>
+					)}
+					<td>{res.status}</td>
+					<td className="flex items-center gap-2">
+						{res.status === "Upcoming" ? (
+							<button 
+							id={res.id} 
+							onClick={()=>modifyReservation("cancel",res.id)}
+							className="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200">
+								Cancel
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									height="20px"
+									width="20px"
+									viewBox="0 -960 960 960"
+									className="flex-shrink-0"
+								>
+									<path
+										d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
+										fill="currentColor"
+									/>
+								</svg>
+							</button>
+						):res.status === "Pending" ? (
+							<>
+								<button 
+								onClick={()=>modifyReservation("approve",res.id)}
+								className="ml-auto flex items-center gap-2 text-green-400 hover:text-green-600 hover:scale-105 transition-all duration-200">
+									Approve
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										height="20px"
+										width="20px"
+										viewBox="0 -960 960 960"
+										className="flex-shrink-0"
+									>
+										<path
+											d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
+											fill="currentColor"
+										/>
+									</svg>
+								</button>
+								<button 
+								onClick={()=>modifyReservation("cancel",res.id)}
+								className="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200">
+									Cancel
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										height="20px"
+										width="20px"
+										viewBox="0 -960 960 960"
+										className="flex-shrink-0"
+									>
+										<path
+											d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
+											fill="currentColor"
+										/>
+									</svg>
+								</button>
+							</>
+						):null}
+					</td>
+				</tr>
+			));
+		}
+	}
 
 	let th_class = "hover:bg-[#2e2e31] transition-colors ease-in duration-100 p-4";
 	let th_div = "flex flex-row";
