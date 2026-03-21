@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { PencilSvg } from "../components/PencilSvg";
 import { ReservationTable } from "../components/ReservationTable";
+import defaultPfp from '../resources/default.jpg'
 
 const formelement =
   "w-full p-3 rounded-xl gray-89 text-l font-['Inter',sans-serif] box-border " +
@@ -292,10 +293,8 @@ export function Profile() {
 				<div className="gray-67 flex flex-col rounded-2xl p-4 items-center flex-1">
 					<img
 					className="rounded-full w-40 h-40 object-cover"
-					// src="./src/resources/default.jpg"
 					width='100'
-					// src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSepbhRLPNDHSzHUzCtAGMAL77l09LCnMDClA&s'
-					src={view.pfp_url ? view.pfp_url : "./src/resources/default.jpg"}
+					src={view.pfp_url ? view.pfp_url : defaultPfp}
 					alt="Profile"
 					/>
 
