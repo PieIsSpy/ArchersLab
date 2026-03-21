@@ -11,6 +11,11 @@ const getUsers = asyncHandler(async (req, res) => {
     res.status(200).json(users)
 })
 
+const getUser = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id).select('-password');
+    res.status(200).json(user)
+})
+
 const loginUser = asyncHandler(async (req, res) => {
     const {id, password} = req.body;
 
@@ -96,5 +101,5 @@ const deleteUser = asyncHandler(async (req, res) => {
 })
 
 module.exports = {
-    getUsers, loginUser, createUser, updateUser, deleteUser
+    getUsers, getUser, loginUser, createUser, updateUser, deleteUser
 }
