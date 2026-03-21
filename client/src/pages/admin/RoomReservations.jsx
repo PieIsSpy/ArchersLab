@@ -155,7 +155,7 @@ export function RoomReservations ()
 					<ReservationTable
 						filter = {filter}
 						filterBy = {filterBy}
-						room = {true}
+						mode = {"room"}
 					/>
 				</div>
 			</div>
