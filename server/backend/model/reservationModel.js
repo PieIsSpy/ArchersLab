@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const reservationSchema = mongoose.Schema({
     user: {
-        type: String,
+        type: Number,
         ref: 'User',
     },
     date: {

@@ -11,7 +11,7 @@ const userSchema = mongoose.Schema({
         default: ''
     },
     _id: {
-        type: String,
+        type: Number,
         required: [true, 'Please add your id number']
     },
     bio: {
