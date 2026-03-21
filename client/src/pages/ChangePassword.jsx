@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 export function ChangePassword() {
+	const {currentUser} = useContext(UserContext)
+
 	const [form, setForm] = useState({
 		oldPassword: "",
 		newPassword: "",
@@ -11,14 +15,32 @@ export function ChangePassword() {
 		setForm({ ...form, [e.target.name]: e.target.value });
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (form.newPassword !== form.confirmPassword) {
-		alert("Passwords do not match");
-		return;
+			alert("Passwords do not match");
+			return;
 		}
-		console.log("Password change submitted:", form);
-		// Pls add API call here
+		
+		try {
+			const response = await fetch(`http://localhost:5000/api/users/${currentUser._id}`, {
+				method: 'PUT',
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify({
+					password: form.newPassword
+				})
+			})
+
+			if (response.ok) {
+				const data = await response.json();
+				alert('Password Successfully Updated')
+			}
+			else {
+				alert('Error updating password')
+			}
+		} catch (err) {
+			console.error("Failed to fetch data:", err);
+		}
 	};
 
 	const inputClass =
