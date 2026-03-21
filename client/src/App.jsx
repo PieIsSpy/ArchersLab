@@ -14,7 +14,6 @@ import { UserRegistration } from "./pages/UserRegistration.jsx";
 import { RoomReservations } from "./pages/admin/RoomReservations.jsx";
 import { UserLogin } from "./pages/UserLogin.jsx";
 import { UserContext } from "./context/UserContext.jsx";
-import { currentUser } from "./models/User.jsx";
 
 export default function App() {
 	const [isAuth, setIsAuth] = useState(false);
