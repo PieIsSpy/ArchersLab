@@ -1,9 +1,11 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
 export function ChangePassword() {
 	const {currentUser} = useContext(UserContext)
+	const navigate = useNavigate();
 
 	const [form, setForm] = useState({
 		oldPassword: "",
@@ -33,7 +35,8 @@ export function ChangePassword() {
 
 			if (response.ok) {
 				const data = await response.json();
-				alert('Password Successfully Updated')
+				alert('Password Successfully Updated');
+				navigate(`/Profile/${currentUser._id}`);
 			}
 			else {
 				alert('Error updating password')
