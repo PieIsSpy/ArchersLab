@@ -1,324 +1,145 @@
-import { useState, useEffect} from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import "../dark-datepicker.css";
-import { Room } from "../models/Room";
-import { Reservation } from "../models/Reservation";
-import { userJSON_to_Object } from "../models/User";
-import { InpersonModal } from "../components/Modals";
-
-import { useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { UserContext } from "../context/UserContext";
+import { useRooms } from "../features/rooms/hooks/useRooms.js";
+import { useReservations } from "../features/reservations/hooks/useReservations.js";
+import { TIME_SLOTS } from "../features/reservations/constants.js";
+import { RoomReservationForm } from "../features/reservations/components";
+import { InpersonModal } from "../components/Modals";
+import { LoadingSpinner } from "../components/shared";
 
-const timeSlots = [
-	"07:30-09:00", "09:15-10:45", "11:00-12:30", "12:45-14:15", 
-	"14:30-16:00", "16:15-17:45", "18:00-19:30",
-];
+function basedate(d = new Date()) {
+  const date = new Date(d);
+  date.setHours(8, 0, 0, 0);
+  return date;
+}
 
-export function ReserveRoom(){
-	const {currentUser} = useContext(UserContext)
+function getRoomDateLimits() {
+  const today = basedate();
+  const minDate = new Date(today);
+  minDate.setDate(minDate.getDate() + 14);
+  const maxDate = new Date(today);
+  maxDate.setDate(maxDate.getDate() + 31);
+  return { minDate, maxDate };
+}
 
-	// helper
-	function basedate(d = new Date()) {
-		const date = new Date(d);
-		date.setHours(8, 0, 0, 0);
-		return date;
-	}
+function getAvailableSlots(reservations, selectedDate, selectedRoom) {
+  return TIME_SLOTS.filter((slot) =>
+    !reservations.some(
+      (res) =>
+        new Date(res.date).toDateString() === selectedDate.toDateString() &&
+        res.room._id === selectedRoom._id &&
+        res.seats.length === 0 &&
+        res.resStatus !== "Cancelled" &&
+        res.time === slot
+    )
+  );
+}
 
-	// date limits
-	const today = basedate();
-	
-	const minDate = today;
-	minDate.setDate(minDate.getDate() + 14);
+function isRoomBooked(reservations, selectedDate, selectedTime, selectedRoom) {
+  return reservations.some(
+    (res) =>
+      new Date(res.date).toDateString() === selectedDate.toDateString() &&
+      res.time === selectedTime &&
+      res.room._id === selectedRoom._id &&
+      res.seats.length === 0 &&
+      res.resStatus !== "Cancelled"
+  );
+}
 
-	const maxDate = new Date(today);
-	maxDate.setDate(maxDate.getDate() + 31);
+export function ReserveRoom() {
+  const { currentUser } = useContext(UserContext);
+  const { rooms, loading: roomsLoading } = useRooms();
+  const { reservations, loading: resLoading, create } = useReservations();
+  const { minDate, maxDate } = getRoomDateLimits();
+  const reasonRef = useRef(null);
 
-	// date selection
-	const [selectedDate, setSelectedDate] = useState(() => minDate);
-	
-	const [open, setOpen] = useState(false);
-	const [rooms, setRooms] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(() => minDate);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [selectedTime, setSelectedTime] = useState(null);
+  const [timeSlotOptions, setTimeSlotOptions] = useState([]);
+  const [inpersonOpen, setInpersonOpen] = useState(false);
 
-	const [selectedTime, setSelectedTime] = useState(null);
-	const [selectedRoom, setSelectedRoom] = useState(null);
+  useEffect(() => {
+    if (rooms.length > 0 && !selectedRoom) setSelectedRoom(rooms[0]);
+  }, [rooms]);
 
-	const [reservations, setReservations] = useState([])
+  useEffect(() => {
+    if (!selectedRoom) return;
+    const available = getAvailableSlots(reservations, selectedDate, selectedRoom);
+    setTimeSlotOptions(available.map((slot) => <option key={slot} value={slot}>{slot}</option>));
+    setSelectedTime(available[0] || null);
+  }, [selectedDate, selectedRoom, reservations]);
 
-	const [loading, setLoading] = useState(true);
+  function handleRoomChange(roomId) {
+    setSelectedRoom(rooms.find((r) => r._id === roomId));
+  }
 
-	const [timeSlotOptions, setTimeSlotOptions] = useState([]);
+  async function reserveRoom(inpersonInfo = null) {
+    const reason = reasonRef.current?.value;
+    if (!reason) { alert("Reason field is empty. Please provide a valid reason."); return; }
+    if (isRoomBooked(reservations, selectedDate, selectedTime, selectedRoom)) {
+      alert("The room is already reserved by someone else");
+      return;
+    }
+    try {
+      await create({
+        user: !inpersonInfo ? currentUser._id : null,
+        date: selectedDate.toISOString(),
+        time: selectedTime,
+        room: selectedRoom._id,
+        seats: [],
+        resStatus: "Pending",
+        reason,
+        isAnonymous: false,
+        inpersonInfo: inpersonInfo || null,
+      });
+      if (reasonRef.current) reasonRef.current.value = "";
+      alert("Reservation Successful!");
+    } catch (err) {
+      alert(err.message);
+    }
+  }
 
-	const fetchReservations = async () => {
-		const roomsUrl = 'http://localhost:5000/api/rooms';
-		const reservationsUrl = 'http://localhost:5000/api/reservations';
-		try {
-			// fetch data
-			const [roomsFetch, reservationsFetch] = await Promise.all([
-				fetch(roomsUrl),
-				fetch(reservationsUrl)
-			])
+  function handleReserveClick() {
+    if (isRoomBooked(reservations, selectedDate, selectedTime, selectedRoom)) {
+      alert("The room is already reserved by someone else");
+      return;
+    }
+    if (currentUser.isAdmin) { setInpersonOpen(true); return; }
+    reserveRoom();
+  }
 
-			const roomsData = await roomsFetch.json();
-			const reservationsData = await reservationsFetch.json();
+  const loading = roomsLoading || resLoading;
+  if (loading) return <LoadingSpinner />;
+  if (!rooms.length) return <LoadingSpinner message="No rooms available." />;
+  if (!selectedRoom) return <LoadingSpinner />;
 
-			const roomInstances = roomsData
-				.map(item => new Room(item._id, item.row, item.col, item.layout))
-				.sort((a, b) => a.name.localeCompare(b.name));
-			setRooms(roomInstances);
+  return (
+    <div className="w-full min-h-screen flex justify-center items-center">
+      <div className="flex flex-col justify-center items-center rounded-2xl gap-3">
+        <div className="mr-70">
+          <div className="google text-5xl font-bold">Request a room</div>
+          <div className="google mt-2 text-gray-400">
+            Do note that each reservation must be made 14-31 days in advance.<br />
+            All requests are subject for approval.
+          </div>
+        </div>
 
-			if (roomInstances.length > 0) {
-				setSelectedRoom(roomInstances[0]);
-			}
+        <RoomReservationForm
+          selectedDate={selectedDate} onDateChange={setSelectedDate}
+          minDate={minDate} maxDate={maxDate}
+          rooms={rooms} selectedRoom={selectedRoom} onRoomChange={handleRoomChange}
+          timeSlotOptions={timeSlotOptions} selectedTime={selectedTime} onTimeChange={setSelectedTime}
+          reasonRef={reasonRef}
+          onReserve={handleReserveClick}
+        />
 
-			const reservationInstances = reservationsData.map(res => {
-				const userData = res.user ? res.user : res.inpersonInfo;
-				
-				return new Reservation(
-					userJSON_to_Object(userData),
-					new Date(res.date),
-					res.time,
-					roomInstances.find(r => r.name === (res.room._id)),
-					res.seats,
-					res.resStatus,
-					res.reason,
-					res.isAnonymous,
-					res._id
-				)
-			});
-
-			setReservations(reservationInstances)
-			console.log(reservationInstances)
-			setLoading(false);
-		} catch (error) {
-			console.error("Failed to fetch data:", error);
-			setLoading(false);
-		}
-	};
-
-	useEffect(() => {
-		fetchReservations();
-	}, []);
-
-	const optionRoom = [];
-	for (let i = 0; i< rooms.length; i++){
-		optionRoom.push(
-			<option
-				key={i}
-				value={rooms[i].name}
-			>
-				{rooms[i].name}
-			</option>
-		);
-	}
-
-	useEffect(() => {
-		var tempTimeSlots = [...timeSlots]
-
-		if (selectedRoom) 
-			console.log(selectedRoom.name)
-
-		reservations.forEach(res => {
-			if (res.date.toDateString() === selectedDate.toDateString() && // Same day
-				res.room.name === selectedRoom.name && // Same room
-				res.seats.length === 0 &&
-				res.resStatus === "Cancelled") // No seats (Full room reservation)
-				{
-					tempTimeSlots.splice(tempTimeSlots.indexOf(res.time),1); // Temporarily remove from timeslot
-				}
-		});
-
-		console.log(tempTimeSlots)
-
-		setTimeSlotOptions(
-			tempTimeSlots.map(slot => <option key={slot} value={slot}>{slot}</option>)
-		);
-
-		setSelectedTime(tempTimeSlots[0] || null);
-
-	}, [selectedDate, selectedRoom, reservations]); // only runs when date or room change
-
-	async function reserveRoom(inpersonInfo = null) {
-		console.log("selectedtime:"+selectedTime)
-		console.log("selectedate:"+selectedDate)
-
-		if (!document.getElementById("reason-textarea").value){
-			alert('Reason field is empty. Please provide a valid reason.')
-			return
-		}
-
-		reservations.forEach((res)=>console.log(res.date.toDateString()))
-		console.log(selectedDate.toDateString())
-		console.log(reservations)
-
-		if (reservations.find((res) => res.date.toDateString() === selectedDate.toDateString() && res.time === selectedTime && res.room.name === selectedRoom.name)) {
-			alert('The room is already reserved by someone else')
-			return
-		}
-		
-		const newReservation = {
-			user: !inpersonInfo ? currentUser._id : null,
-			date: selectedDate.toISOString(),
-			time: selectedTime,
-			room: selectedRoom.name,
-			seats: [],
-			resStatus: "Pending",
-			reason: document.getElementById("reason-textarea").value,
-			isAnonymous: false,
-			inpersonInfo: inpersonInfo
-		};
-
-		try {
-			const response = await fetch('http://localhost:5000/api/reservations', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(newReservation)
-			})
-
-			if (!response.ok) {
-				const error = await response.json();
-				throw new Error(error.message || 'Reservation Failed')
-			}
-
-			await fetchReservations();
-			alert("Reservation Successful!")
-		} catch (err) {
-			console.error("Error:", err);
-		}
-		
-		document.getElementById("reason-textarea").value = '';
-		console.log(`
-			User has reserved room for
-			Date: ${selectedDate.toLocaleDateString()}
-			Time: ${selectedTime}
-			Room: ${selectedRoom.name}
-		`);
-	}
-
-	const handleModal = () => {
-		if (!reservations.find((res) => 
-				res.time === selectedTime &&
-				res.date.toDateString() === selectedDate.toDateString() && 
-				res.room.name === selectedRoom.name)) {
-			setOpen(true)
-		}
-		else {
-			alert('The room is already reserved by someone else')
-		}
-	}
-
-	if (loading || !selectedRoom || rooms.length === 0) return <div className="mx-auto">Loading...</div>
-	return(
-	<div className="w-full min-h-screen flex justify-center items-center">
-		<div className="flex flex-col justify-center items-center rounded-2xl gap-3">
-			<div className="mr-70">
-				<div className="google text-5xl font-bold ">
-					Request a room
-				</div>
-				<div className="google mt-2 text-gray-400">
-					Do note that each reservation must be made 14-31 days in advance.<br/>
-					All requests are subject for approval.
-				</div>
-			</div>
-
-			{/* Outer Div that holds DATE ROOM TIMESLOT + REQ btn */}
-			<div className="flex flex-col justify-center items-center rounded-2xl gap-8">
-					{/* Inner Div that holds DATE ROOM TIMESLOT */}
-					<div className="flex flex-col gray-67 rounded-2xl text-2xl google p-6">
-						<div className="flex justify-center items-center gap-x-12">
-							{/* Inner Div that holds DATE */}
-							<div className="gap-2 flex flex-row">
-								<div className="text-xl google flex items-center justify-center">
-									Date:
-								</div>
-								<div className="text-xl w-[150px] flex items-center justify-center">
-									<DatePicker
-										className="gray-89 text-xl w-full p-3 rounded-lg text-center
-										focus:outline-none focus:ring-2 focus:ring-[#145b92]
-										focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
-										selected={selectedDate}
-										onChange={(date) => setSelectedDate(date)}
-										minDate={minDate}
-										maxDate={maxDate}
-										dateFormat="MM/dd/yyyy"
-									/>
-								</div>
-							</div>
-
-							{/* Inner Div that holds ROOM */}
-							<div className="gap-2 flex flex-row">
-								<div className="text-xl google flex items-center justify-center">
-									Room:
-								</div>
-								
-								<select
-									className = "text-xl gray-89 text-center"
-									style={{
-										width: "120px",
-										height: "50px",
-										borderRadius: "8px",
-										padding: "6px 10px",
-									}}
-									value={selectedRoom.name}
-									onChange={(e) => {
-										const newRoom = rooms.find(r => r.name === e.target.value);
-										setSelectedRoom(newRoom);
-									}}
-								>
-								{optionRoom}
-								</select>
-							</div>
-
-							{/* Inner Div that holds TIMESLOT */}
-							<div className="gap-2 flex flex-row">
-								<div className="text-xl google flex items-center justify-center">
-									Timeslot:
-								</div>
-								<select
-								className = "text-xl gray-89"
-								style={{
-									width: "160px",
-									height: "50px",
-									borderRadius: "8px",
-									padding: "6px 10px",
-								}}
-								value={selectedTime}
-								onChange={(e) => 
-									setSelectedTime(e.target.value)
-								}
-								>
-									{timeSlotOptions}
-								</select>
-							</div>
-						</div>
-						<div className="mt-5 text-xl google flex items-center">
-							Reason:
-						</div>
-						<textarea rows="2" placeholder="Please insert reason here" className=
-  							"w-full p-3 rounded-xl gray-89 text-l font-['Inter',sans-serif] box-border focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
-						type="text" id="reason-textarea" maxLength="100"></textarea>
-					</div>
-					{/* Reserve btn */}
-					<div className="bg-[#145b92] p-3 rounded-xl transition-all hover:scale-110 active:scale-105 active:bg-[#02497F] active:shadow-inner select-none"
-						onClick={() => {
-							if (currentUser.isAdmin)
-								handleModal()
-							else
-								reserveRoom()
-						}}
-					>
-						Request Room Reservation
-					</div>
-					<InpersonModal
-						open={open}
-						onClose={() => setOpen(false)}
-						onConfirm={(info) => reserveRoom(info)}
-					/>
-			</div>
-		</div>
-	</div>
-
-	);
+        <InpersonModal
+          open={inpersonOpen}
+          onClose={() => setInpersonOpen(false)}
+          onConfirm={(info) => { setInpersonOpen(false); reserveRoom(info); }}
+        />
+      </div>
+    </div>
+  );
 }
