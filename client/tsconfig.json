@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "allowJs": true,           // Support .js and .jsx files
+    "checkJs": true,           // Enable type checking on those files
+    "noEmit": true,            // Do not generate .js output files
+    "jsx": "react-jsx",        // Modern React (use "react" for v16 or older)
+    "moduleResolution": "node",
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,      // Speeds up checking by ignoring node_modules
+    "strict": false            // Set to true if you want maximum "strict" checking
+  },
+  "include": ["src"]           // Only check files in your src folder
+}
