@@ -382,7 +382,8 @@ export function ReserveSeat()
 				throw new Error(error.message || 'Reservation Failed')
 			}
 
-			await fetchReservations();
+			const reservationData = await fetchReservations();
+			setReservations(reservationData)
 			setSelectedSeats([])
 			alert("Reservation Successful!")
 		} catch (err) {

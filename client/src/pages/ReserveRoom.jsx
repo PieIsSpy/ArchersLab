@@ -151,7 +151,8 @@ export function ReserveRoom(){
 				throw new Error(error.message || 'Reservation Failed')
 			}
 
-			await fetchReservations();
+			const reservationData = await fetchReservations();
+			setReservations(reservationData)
 			alert("Reservation Successful!")
 		} catch (err) {
 			console.error("Error:", err);
