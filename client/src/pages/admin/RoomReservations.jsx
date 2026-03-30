@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Clock } from "../../components/Clock";
-import { Room } from "../../models/Room";
 import { ReservationTable } from "../../components/ReservationTable";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -28,23 +27,39 @@ export function RoomReservations ()
 		setSelectedDate(newDate)
 	};
 
-	const fetchRooms = async () => {
-		try {
-			const roomsFetch = await fetch('http://localhost:5000/api/rooms');
-			const roomsData = await roomsFetch.json();
+	// const fetchRooms = async () => {
+	// 	try {
+	// 		const roomsFetch = await fetch('http://localhost:5000/api/rooms');
+	// 		const roomsData = await roomsFetch.json();
 
-			const roomInstances = roomsData
-				.map(item => new Room(item._id, item.row, item.col, item.layout))
-				.sort((a, b) => a.name.localeCompare(b.name));
+	// 		const roomInstances = roomsData
+	// 			.map(item => new Room(item._id, item.row, item.col, item.layout))
+	// 			.sort((a, b) => a.name.localeCompare(b.name));
 
-			setRooms(roomInstances);
+	// 		setRooms(roomInstances);
 			
-			setLoading(false);
-		} catch (error) {
-			console.error("Failed to fetch data:", error);
-			setLoading(false);
-		}
-	}
+	// 		setLoading(false);
+	// 	} catch (error) {
+	// 		console.error("Failed to fetch data:", error);
+	// 		setLoading(false);
+	// 	}
+	// }
+
+	const fetchRooms = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('http://localhost:5000/api/rooms')
+
+            if (response.ok) {
+                const data = await response.json()
+                setRooms(data)
+            }
+        } catch (err) {
+            console.error('Error fetching', err) 
+        } finally {
+            setLoading(false)
+        }
+    }
 
 	useEffect(() => {
 		fetchRooms()
@@ -114,21 +129,21 @@ export function RoomReservations ()
 								
 								<select
 									style={{
-										color: selectedRoom ? selectedRoom.name ? "#7A7A7B" : "#C5C5C5" : "#7A7A7B",
+										color: selectedRoom ? selectedRoom._id ? "#7A7A7B" : "#C5C5C5" : "#7A7A7B",
 									}}
-									value={selectedRoom ? selectedRoom.name : "" }
+									value={selectedRoom ? selectedRoom._id : "" }
 									className={formcontrol}
 									onChange={(e) => {
-										const room = rooms.find(r => r.name === e.target.value);
+										const room = rooms.find(r => r._id === e.target.value);
 										if (room) 
-											setSelectedRoom(room.name)
+											setSelectedRoom(room._id)
 										else 
 											setSelectedRoom(null);
 									}}
 								>
 									<option value="">Select room...</option>
 									{rooms.map((room) => (
-										<option value={room.name}>{room.name}</option>
+										<option value={room._id}>{room._id}</option>
 									))}
 								</select>
 							</div>

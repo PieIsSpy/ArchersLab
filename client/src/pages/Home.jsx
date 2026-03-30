@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Clock } from "../components/Clock";
-import { Room } from "../models/Room";
+// import { Room } from "../models/Room";
 import { ReservationTable } from "../components/ReservationTable";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -28,31 +28,30 @@ export function Home () {
 	};
 
 	const fetchRooms = async () => {
-		try {
-			const roomsFetch = await fetch('http://localhost:5000/api/rooms');
-			const roomsData = await roomsFetch.json();
+        setLoading(true);
+        try {
+            const response = await fetch('http://localhost:5000/api/rooms')
 
-			const roomInstances = roomsData
-				.map(item => new Room(item._id, item.row, item.col, item.layout))
-				.sort((a, b) => a.name.localeCompare(b.name));
-
-			setRooms(roomInstances);
-			
-			setLoading(false);
-		} catch (error) {
-			console.error("Failed to fetch data:", error);
-			setLoading(false);
-		}
-	}
+            if (response.ok) {
+                const data = await response.json()
+                setRooms(data)
+				// console.log(data)
+				if (data.length > 0) {
+					setSelectedRoom(data[0]);
+				}
+            }
+        } catch (err) {
+            console.error('Error fetching', err) 
+        } finally {
+            setLoading(false)
+        }
+    }
 
 	useEffect(() => {
 		fetchRooms()
 	}, [])
 
 	useEffect(() => {
-		// console.log (selectedDate)
-		// console.log (selectedRoom)
-		// console.log (selectedUser)
 		setFilter([!!selectedDate, !!selectedRoom, !!selectedUser])
 		setFilterBy([selectedDate,selectedRoom,selectedUser])
 	}, [selectedDate, selectedRoom, selectedUser])
@@ -121,19 +120,19 @@ export function Home () {
 								</div>
 								
 								<select
-									value={selectedRoom ? selectedRoom.name : "" }
+									value={selectedRoom ? selectedRoom._id : "" }
 									className={formcontrol}
 									onChange={(e) => {
-										const room = rooms.find(r => r.name === e.target.value);
+										const room = rooms.find(r => r._id === e.target.value);
 										if (room) 
-											setSelectedRoom(room.name)
+											setSelectedRoom(room._id)
 										else 
 											setSelectedRoom(null);
 									}}
 								>
 									<option value="">Select room...</option>
 									{rooms.map((room) => (
-										<option value={room.name}>{room.name}</option>
+										<option value={room._id}>{room._id}</option>
 									))}
 								</select>
 							</div>
@@ -168,14 +167,6 @@ export function Home () {
 				</div>
 			</div>
 		)
-		// (
-		// 	<div>
-		// 		<h2 className="mt-12 font-black google text-4xl">Current Reservations</h2>
-		// 		<div className="px-4 mt-4 rounded-2xl gray-67 shadow-lg">
-		// 			<ReservationTable student={currentUser}/>
-		// 		</div>
-		// 	</div>
-		// )
 		}
 		</div>
 	);
