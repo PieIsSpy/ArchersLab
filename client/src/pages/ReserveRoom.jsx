@@ -8,6 +8,7 @@ import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
 import { fetchRooms } from "../services/roomServices";
+import { fetchReservations } from "../services/reservationServices";
 
 const timeSlots = [
 	"07:30-09:00", "09:15-10:45", "11:00-12:30", "12:45-14:15", 
@@ -48,27 +49,15 @@ export function ReserveRoom(){
 
 	const [timeSlotOptions, setTimeSlotOptions] = useState([]);
 
-    const fetchReservations = async () => {
-        const reservationsUrl = 'http://localhost:5000/api/reservations';
-        try {
-			const response = await fetch(reservationsUrl)
-
-            const reservationsData = await response.json();
-
-			setReservations(reservationsData)
-        } catch (error) {
-            console.error("Failed to fetch data:", error);
-        }
-    };
-
 	useEffect(() => {
 		const loadData = async() => {
 			setLoading(true);
 			try {
 				const roomData = await fetchRooms();
-				await fetchReservations();
+				const reservationData = await fetchReservations();
 				
 				setRooms(roomData)
+				setReservations(reservationData)
 				setSelectedRoom(roomData[0])
 			} catch (err) {
 				console.error(err)

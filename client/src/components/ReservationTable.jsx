@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
+import { fetchReservations } from "../services/reservationServices";
+
 export function ReservationTable({view, mode='global', filter, filterBy}) {
     const {currentUser} = useContext(UserContext)
 
@@ -10,23 +12,20 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
     const [reservations, setReservations] = useState([]);
     const [loading, setLoading] = useState(true);
 
-	const fetchReservations = async () => {
-			const reservationsUrl = 'http://localhost:5000/api/reservations';
-			try {
-				const response = await fetch(reservationsUrl)
-
-				const reservationsData = await response.json();
-
-				setReservations(reservationsData);
-			} catch (error) {
-				console.error("Failed to fetch data:", error);
-			}
-	};
-
     useEffect(() => {
 		setLoading(true);
-        fetchReservations();
-		setLoading(false)
+        const loadData = async() => {
+			try {
+				const reservationData = await fetchReservations();
+				setReservations(reservationData)
+			} catch (err) {
+				
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		loadData();
     }, []);
 
 	async function modifyReservation(mode,reservationId) {
@@ -173,6 +172,7 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 				}
 			}
 
+			console.log(list)
 			return list.map((res, index) => (
 				<tr key={index} className="border-t-2 border-gray-67">
 					<td>{res.date.split('T')[0]}</td>
@@ -197,7 +197,7 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 					)}
 					<td>{res.status}</td>
 					<td className="flex items-center gap-2">
-						{res.status === "Upcoming" && (currentUser._id === res.user._id || currentUser.isAdmin) ? (
+						{res.status === "Upcoming" && (currentUser._id === res.user?._id || currentUser.isAdmin) ? (
 							<button 
 							id={res.id} 
 							onClick={()=>modifyReservation("cancel",res._id)}

@@ -158,6 +158,7 @@ export function Home () {
 						filter = {filter}
 						filterBy = {filterBy}
 						mode={'global'}
+						view={currentUser}
 					/>
 				</div>
 			</div>
