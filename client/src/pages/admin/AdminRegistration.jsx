@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom'
 
+import { useContext } from "react";
+import { UserContext } from "../../context/UserContext";
+
+import { createAccount } from "../../services/userServices";
+
 export function AdminRegistration() {
+	const {currentUser} = useContext(UserContext)
 	const navigate = useNavigate()
 	const [form, setForm] = useState({
 		name: "",
@@ -41,24 +47,13 @@ export function AdminRegistration() {
 		}
 
 		try {
-			const response = await fetch('http://localhost:5000/api/users', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(newUser)
-			})
+			await createAccount(newUser);
 
-			if (!response.ok) {
-				const error = await response.json();
-				throw new Error(error.message || "Failed to create account")
-			}
+			alert('Successfully created account!')
+			navigate(`/Profile/${currentUser.id}`)
 		} catch (err) {
-			console.error("Error:", err);
+			console.error(err);
 		}
-
-		alert('Successfully created account!')
-		navigate('/Profile')
 	};
 
 	const inputClass =

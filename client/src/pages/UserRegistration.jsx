@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom'
 
+import { createAccount } from "../services/userServices";
+
 export function UserRegistration() {
 	const navigate = useNavigate()
 
@@ -59,28 +61,13 @@ export function UserRegistration() {
 		console.log(newUser)
 
 		try {
-			const response = await fetch('http://localhost:5000/api/users', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(newUser)
-			})
+			await createAccount(newUser);
 
-			if (!response.ok) {
-				const error = await response.json();
-				throw new Error(error.message || "Failed to create account")
-			}
-			else
-			{
-				alert('Successfully created account!')
-				navigate('/UserLogin')
-			}
+			alert('Successfully created account!')
+			navigate('/UserLogin')
 		} catch (err) {
-			console.error("Error:", err);
-			alert(err)
+			console.error(err);
 		}
-
 	};
 
 	const inputClass =
