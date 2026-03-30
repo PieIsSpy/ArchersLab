@@ -8,6 +8,8 @@ import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
+import { fetchRooms } from "../services/roomServices";
+
 const layout1 = [
 	[1,1,1,0,1,1,1,0,1,1,1],
 	[0,0,0,0,0,0,0,0,0,0,0],
@@ -148,26 +150,6 @@ export function ReserveSeat()
 		setShowBookedModal(true);
 	};
 
-    const fetchRooms = async () => {
-        setLoading(true);
-        try {
-            const response = await fetch('http://localhost:5000/api/rooms')
-
-            if (response.ok) {
-                const data = await response.json()
-                setRooms(data)
-				// console.log(data)
-				if (data.length > 0) {
-					setSelectedRoom(data[0]);
-				}
-            }
-        } catch (err) {
-            console.error('Error fetching', err) 
-        } finally {
-            setLoading(false)
-        }
-    }
-
     const fetchReservations = async () => {
         const reservationsUrl = 'http://localhost:5000/api/reservations';
         try {
@@ -178,14 +160,26 @@ export function ReserveSeat()
 			setReservations(reservationsData)
         } catch (error) {
             console.error("Failed to fetch data:", error);
-        } finally {
-			setLoading(false);
-		}
+        }
     };
 
 	useEffect(() => {
-        fetchRooms();
-		fetchReservations();
+		const loadData = async() => {
+			setLoading(true);
+			try {
+				const roomData = await fetchRooms();
+				await fetchReservations();
+				
+				setRooms(roomData)
+				setSelectedRoom(roomData[0])
+			} catch (err) {
+				console.error(err)
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		loadData();
 	}, []);
 
 	useEffect(() => {

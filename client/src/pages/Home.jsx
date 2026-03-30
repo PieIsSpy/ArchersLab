@@ -9,6 +9,8 @@ import "../dark-datepicker.css";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
+import { fetchRooms } from "../services/roomServices";
+
 export function Home () {
 	const [loading, setLoading] = useState(true);
 
@@ -27,29 +29,22 @@ export function Home () {
 		setSelectedDate(newDate)
 	};
 
-	const fetchRooms = async () => {
-        setLoading(true);
-        try {
-            const response = await fetch('http://localhost:5000/api/rooms')
-
-            if (response.ok) {
-                const data = await response.json()
-                setRooms(data)
-				// console.log(data)
-				if (data.length > 0) {
-					setSelectedRoom(data[0]);
-				}
-            }
-        } catch (err) {
-            console.error('Error fetching', err) 
-        } finally {
-            setLoading(false)
-        }
-    }
-
 	useEffect(() => {
-		fetchRooms()
-	}, [])
+		const loadData = async() => {
+			setLoading(true);
+			try {
+				const roomData = await fetchRooms();
+				
+				setRooms(roomData)
+			} catch (err) {
+				console.error(err)
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		loadData();
+	}, []);
 
 	useEffect(() => {
 		setFilter([!!selectedDate, !!selectedRoom, !!selectedUser])

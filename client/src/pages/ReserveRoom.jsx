@@ -7,6 +7,8 @@ import { InpersonModal } from "../components/Modals";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
+import { fetchRooms } from "../services/roomServices";
+
 const timeSlots = [
 	"07:30-09:00", "09:15-10:45", "11:00-12:30", "12:45-14:15", 
 	"14:30-16:00", "16:15-17:45", "18:00-19:30",
@@ -46,26 +48,6 @@ export function ReserveRoom(){
 
 	const [timeSlotOptions, setTimeSlotOptions] = useState([]);
 
-	const fetchRooms = async () => {
-        setLoading(true);
-        try {
-            const response = await fetch('http://localhost:5000/api/rooms')
-
-            if (response.ok) {
-                const data = await response.json()
-                setRooms(data)
-				// console.log(data)
-				if (data.length > 0) {
-					setSelectedRoom(data[0]);
-				}
-            }
-        } catch (err) {
-            console.error('Error fetching', err) 
-        } finally {
-            setLoading(false)
-        }
-    }
-
     const fetchReservations = async () => {
         const reservationsUrl = 'http://localhost:5000/api/reservations';
         try {
@@ -76,14 +58,26 @@ export function ReserveRoom(){
 			setReservations(reservationsData)
         } catch (error) {
             console.error("Failed to fetch data:", error);
-        } finally {
-			setLoading(false);
-		}
+        }
     };
 
 	useEffect(() => {
-		fetchRooms();
-		fetchReservations();
+		const loadData = async() => {
+			setLoading(true);
+			try {
+				const roomData = await fetchRooms();
+				await fetchReservations();
+				
+				setRooms(roomData)
+				setSelectedRoom(roomData[0])
+			} catch (err) {
+				console.error(err)
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		loadData();
 	}, []);
 
 	const optionRoom = [];

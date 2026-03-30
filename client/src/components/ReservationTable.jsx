@@ -18,33 +18,15 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 				const reservationsData = await response.json();
 
 				setReservations(reservationsData);
-
-				setLoading(false);
 			} catch (error) {
 				console.error("Failed to fetch data:", error);
-				setLoading(false);
 			}
 	};
-	
-    const fetchRooms = async () => {
-        setLoading(true);
-        try {
-            const response = await fetch('http://localhost:5000/api/rooms')
-
-            if (response.ok) {
-                const data = await response.json()
-                setRooms(data)
-            }
-        } catch (err) {
-            console.error('Error fetching', err) 
-        } finally {
-            setLoading(false)
-        }
-    }
 
     useEffect(() => {
-		fetchRooms();
+		setLoading(true);
         fetchReservations();
+		setLoading(false)
     }, []);
 
 	async function modifyReservation(mode,reservationId) {

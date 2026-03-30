@@ -8,6 +8,8 @@ import "../../dark-datepicker.css";
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
 
+import { fetchRooms } from "../../services/roomServices";
+
 export function RoomReservations () 
 {
 	const [loading, setLoading] = useState(true);
@@ -27,43 +29,22 @@ export function RoomReservations ()
 		setSelectedDate(newDate)
 	};
 
-	// const fetchRooms = async () => {
-	// 	try {
-	// 		const roomsFetch = await fetch('http://localhost:5000/api/rooms');
-	// 		const roomsData = await roomsFetch.json();
-
-	// 		const roomInstances = roomsData
-	// 			.map(item => new Room(item._id, item.row, item.col, item.layout))
-	// 			.sort((a, b) => a.name.localeCompare(b.name));
-
-	// 		setRooms(roomInstances);
-			
-	// 		setLoading(false);
-	// 	} catch (error) {
-	// 		console.error("Failed to fetch data:", error);
-	// 		setLoading(false);
-	// 	}
-	// }
-
-	const fetchRooms = async () => {
-        setLoading(true);
-        try {
-            const response = await fetch('http://localhost:5000/api/rooms')
-
-            if (response.ok) {
-                const data = await response.json()
-                setRooms(data)
-            }
-        } catch (err) {
-            console.error('Error fetching', err) 
-        } finally {
-            setLoading(false)
-        }
-    }
-
 	useEffect(() => {
-		fetchRooms()
-	}, [])
+		const loadData = async() => {
+			setLoading(true);
+			try {
+				const roomData = await fetchRooms();
+				
+				setRooms(roomData)
+			} catch (err) {
+				console.error(err)
+			} finally {
+				setLoading(false)
+			}
+		}
+
+		loadData();
+	}, []);
 
 	useEffect(() => {
 		console.log (selectedDate)
