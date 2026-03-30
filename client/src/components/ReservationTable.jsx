@@ -3,10 +3,6 @@ import { useState, useEffect } from "react";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
-import { Room } from "../models/Room"
-import { Reservation } from "../models/Reservation";
-import { userJSON_to_Object } from "../models/User";
-
 export function ReservationTable({view, mode='global', filter, filterBy}) {
     const {currentUser} = useContext(UserContext)
 
@@ -46,49 +42,8 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
         }
     }
 
-	// const fetchReservations = async () => {
-	// 	const roomsUrl = 'http://localhost:5000/api/rooms';
-	// 	const reservationsUrl = 'http://localhost:5000/api/reservations';
-	// 	try {
-	// 		// fetch data
-	// 		const [roomsFetch, reservationsFetch] = await Promise.all([
-	// 			fetch(roomsUrl),
-	// 			fetch(reservationsUrl)
-	// 		])
-
-	// 		const roomsData = await roomsFetch.json();
-	// 		const reservationsData = await reservationsFetch.json();
-
-	// 		const roomInstances = roomsData
-	// 			.map(item => new Room(item._id, item.row, item.col, item.layout))
-	// 			.sort((a, b) => a.name.localeCompare(b.name));
-
-	// 		const reservationInstances = reservationsData.map(res => {
-	// 			const userData = res.user ? res.user : res.inpersonInfo;
-				
-	// 			return new Reservation(
-	// 				userJSON_to_Object(userData),
-	// 				new Date(res.date),
-	// 				res.time,
-	// 				roomInstances.find(r => r.name === (res.room._id)),
-	// 				res.seats,
-	// 				res.resStatus,
-	// 				res.reason,
-	// 				res.isAnonymous,
-	// 				res._id
-	// 			)
-	// 		});
-
-	// 		setReservations(reservationInstances)
-	// 		console.log(reservationInstances)
-	// 		setLoading(false);
-	// 	} catch (error) {
-	// 		console.error("Failed to fetch data:", error);
-	// 		setLoading(false);
-	// 	}
-	// };
-
     useEffect(() => {
+		fetchRooms();
         fetchReservations();
     }, []);
 

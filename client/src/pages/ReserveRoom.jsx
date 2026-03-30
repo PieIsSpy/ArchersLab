@@ -2,9 +2,6 @@ import { useState, useEffect} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../dark-datepicker.css";
-import { Room } from "../models/Room";
-import { Reservation } from "../models/Reservation";
-import { userJSON_to_Object } from "../models/User";
 import { InpersonModal } from "../components/Modals";
 
 import { useContext } from "react";
@@ -49,54 +46,43 @@ export function ReserveRoom(){
 
 	const [timeSlotOptions, setTimeSlotOptions] = useState([]);
 
-	const fetchReservations = async () => {
-		const roomsUrl = 'http://localhost:5000/api/rooms';
-		const reservationsUrl = 'http://localhost:5000/api/reservations';
-		try {
-			// fetch data
-			const [roomsFetch, reservationsFetch] = await Promise.all([
-				fetch(roomsUrl),
-				fetch(reservationsUrl)
-			])
+	const fetchRooms = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('http://localhost:5000/api/rooms')
 
-			const roomsData = await roomsFetch.json();
-			const reservationsData = await reservationsFetch.json();
+            if (response.ok) {
+                const data = await response.json()
+                setRooms(data)
+				// console.log(data)
+				if (data.length > 0) {
+					setSelectedRoom(data[0]);
+				}
+            }
+        } catch (err) {
+            console.error('Error fetching', err) 
+        } finally {
+            setLoading(false)
+        }
+    }
 
-			const roomInstances = roomsData
-				.map(item => new Room(item._id, item.row, item.col, item.layout))
-				.sort((a, b) => a.name.localeCompare(b.name));
-			setRooms(roomInstances);
+    const fetchReservations = async () => {
+        const reservationsUrl = 'http://localhost:5000/api/reservations';
+        try {
+			const response = await fetch(reservationsUrl)
 
-			if (roomInstances.length > 0) {
-				setSelectedRoom(roomInstances[0]);
-			}
+            const reservationsData = await response.json();
 
-			const reservationInstances = reservationsData.map(res => {
-				const userData = res.user ? res.user : res.inpersonInfo;
-				
-				return new Reservation(
-					userJSON_to_Object(userData),
-					new Date(res.date),
-					res.time,
-					roomInstances.find(r => r.name === (res.room._id)),
-					res.seats,
-					res.resStatus,
-					res.reason,
-					res.isAnonymous,
-					res._id
-				)
-			});
-
-			setReservations(reservationInstances)
-			console.log(reservationInstances)
-			setLoading(false);
-		} catch (error) {
-			console.error("Failed to fetch data:", error);
+			setReservations(reservationsData)
+        } catch (error) {
+            console.error("Failed to fetch data:", error);
+        } finally {
 			setLoading(false);
 		}
-	};
+    };
 
 	useEffect(() => {
+		fetchRooms();
 		fetchReservations();
 	}, []);
 
@@ -105,9 +91,9 @@ export function ReserveRoom(){
 		optionRoom.push(
 			<option
 				key={i}
-				value={rooms[i].name}
+				value={rooms[i]._id}
 			>
-				{rooms[i].name}
+				{rooms[i]._id}
 			</option>
 		);
 	}
@@ -116,10 +102,10 @@ export function ReserveRoom(){
 		var tempTimeSlots = [...timeSlots]
 
 		if (selectedRoom) 
-			console.log(selectedRoom.name)
+			console.log(selectedRoom._id)
 
 		reservations.forEach(res => {
-			if (res.date.toDateString() === selectedDate.toDateString() && // Same day
+			if (new Date(res.date).toDateString() === selectedDate.toDateString() && // Same day
 				res.room.name === selectedRoom.name && // Same room
 				res.seats.length === 0 &&
 				res.resStatus === "Cancelled") // No seats (Full room reservation)
@@ -147,11 +133,11 @@ export function ReserveRoom(){
 			return
 		}
 
-		reservations.forEach((res)=>console.log(res.date.toDateString()))
+		reservations.forEach((res)=>console.log(new Date(res.date).toDateString()))
 		console.log(selectedDate.toDateString())
 		console.log(reservations)
 
-		if (reservations.find((res) => res.date.toDateString() === selectedDate.toDateString() && res.time === selectedTime && res.room.name === selectedRoom.name)) {
+		if (reservations.find((res) => new Date(res.date).toDateString() === selectedDate.toDateString() && res.time === selectedTime && res.room.name === selectedRoom.name)) {
 			alert('The room is already reserved by someone else')
 			return
 		}
@@ -160,7 +146,7 @@ export function ReserveRoom(){
 			user: !inpersonInfo ? currentUser._id : null,
 			date: selectedDate.toISOString(),
 			time: selectedTime,
-			room: selectedRoom.name,
+			room: selectedRoom._id,
 			seats: [],
 			resStatus: "Pending",
 			reason: document.getElementById("reason-textarea").value,
@@ -200,7 +186,7 @@ export function ReserveRoom(){
 	const handleModal = () => {
 		if (!reservations.find((res) => 
 				res.time === selectedTime &&
-				res.date.toDateString() === selectedDate.toDateString() && 
+				new Date(res.date).toDateString() === selectedDate.toDateString() && 
 				res.room.name === selectedRoom.name)) {
 			setOpen(true)
 		}
@@ -261,9 +247,9 @@ export function ReserveRoom(){
 										borderRadius: "8px",
 										padding: "6px 10px",
 									}}
-									value={selectedRoom.name}
+									value={selectedRoom._id}
 									onChange={(e) => {
-										const newRoom = rooms.find(r => r.name === e.target.value);
+										const newRoom = rooms.find(r => r._id === e.target.value);
 										setSelectedRoom(newRoom);
 									}}
 								>
