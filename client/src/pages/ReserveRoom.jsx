@@ -1,8 +1,7 @@
 import { useState, useEffect} from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import "../dark-datepicker.css";
+
 import { InpersonModal } from "../components/Modals";
+import { Button, DarkDatePicker, Picker } from "../components/Input";
 
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
@@ -179,7 +178,7 @@ export function ReserveRoom(){
 	return(
 	<div className="w-full min-h-screen flex justify-center items-center">
 		<div className="flex flex-col justify-center items-center rounded-2xl gap-3">
-			<div className="mr-70">
+			<div className="mr-100">
 				<div className="google text-5xl font-bold ">
 					Request a room
 				</div>
@@ -195,69 +194,31 @@ export function ReserveRoom(){
 					<div className="flex flex-col gray-67 rounded-2xl text-2xl google p-6">
 						<div className="flex justify-center items-center gap-x-12">
 							{/* Inner Div that holds DATE */}
-							<div className="gap-2 flex flex-row">
-								<div className="text-xl google flex items-center justify-center">
-									Date:
-								</div>
-								<div className="text-xl w-[150px] flex items-center justify-center">
-									<DatePicker
-										className="gray-89 text-xl w-full p-3 rounded-lg text-center
-										focus:outline-none focus:ring-2 focus:ring-[#145b92]
-										focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
-										selected={selectedDate}
-										onChange={(date) => setSelectedDate(date)}
-										minDate={minDate}
-										maxDate={maxDate}
-										dateFormat="MM/dd/yyyy"
-									/>
-								</div>
-							</div>
+							<DarkDatePicker
+								selected={selectedDate}
+								onChange={(date) => setSelectedDate(date)}
+								minDate={minDate}
+								maxDate={maxDate}
+							/>
 
-							{/* Inner Div that holds ROOM */}
-							<div className="gap-2 flex flex-row">
-								<div className="text-xl google flex items-center justify-center">
-									Room:
-								</div>
-								
-								<select
-									className = "text-xl gray-89 text-center"
-									style={{
-										width: "120px",
-										height: "50px",
-										borderRadius: "8px",
-										padding: "6px 10px",
-									}}
-									value={selectedRoom._id}
-									onChange={(e) => {
+							<Picker 
+								label="Room:"
+								value={selectedRoom._id}
+								onChange={(e) => {
 										const newRoom = rooms.find(r => r._id === e.target.value);
 										setSelectedRoom(newRoom);
-									}}
-								>
-								{optionRoom}
-								</select>
-							</div>
-
-							{/* Inner Div that holds TIMESLOT */}
-							<div className="gap-2 flex flex-row">
-								<div className="text-xl google flex items-center justify-center">
-									Timeslot:
-								</div>
-								<select
-								className = "text-xl gray-89"
-								style={{
-									width: "160px",
-									height: "50px",
-									borderRadius: "8px",
-									padding: "6px 10px",
 								}}
+								children={optionRoom}
+							/>
+							
+							<Picker 
+								label="Timeslot:"
 								value={selectedTime}
-								onChange={(e) => 
-									setSelectedTime(e.target.value)
-								}
-								>
-									{timeSlotOptions}
-								</select>
-							</div>
+								onChange={(e) => {
+										setSelectedTime(e.target.value);
+								}}
+								children={timeSlotOptions}
+							/>
 						</div>
 						<div className="mt-5 text-xl google flex items-center">
 							Reason:
@@ -267,16 +228,15 @@ export function ReserveRoom(){
 						type="text" id="reason-textarea" maxLength="100"></textarea>
 					</div>
 					{/* Reserve btn */}
-					<div className="bg-[#145b92] p-3 rounded-xl transition-all hover:scale-110 active:scale-105 active:bg-[#02497F] active:shadow-inner select-none"
+					<Button
+						label="Request Room Reservation"
 						onClick={() => {
 							if (currentUser.isAdmin)
 								handleModal()
 							else
 								reserveRoom()
 						}}
-					>
-						Request Room Reservation
-					</div>
+					/>
 					<InpersonModal
 						open={open}
 						onClose={() => setOpen(false)}

@@ -2,18 +2,16 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
-import { PencilSvg } from "../components/PencilSvg";
-import { ReservationTable } from "../components/ReservationTable";
+
 import defaultPfp from '../resources/default.jpg'
 
+import { PencilSvg } from "../components/PencilSvg";
+import { ReservationTable } from "../components/ReservationTable";
+
+import { Button } from "../components/Input"
+import { FormInput, FormLayout } from "../components/Form";
+
 import { updateAccount } from "../services/userServices";
-
-const formelement =
-  "w-full p-2 rounded-xl gray-89 text-l font-['Inter',sans-serif] box-border " +
-  "focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]" +
-  " selection:bg-blue-300 selection:text-black";
-
-
 
 export function UserProfile({user}) {
 	const fields = [
@@ -77,108 +75,109 @@ export function UserForm() {
 	}
 
 	return (
-		<form className="w-full" onSubmit={updateUser}>
-			<div className="flex gap-[15px]">
-				<div className="mb-3 w-full flex-1">
-					<label className="block font-bold text-xs mb-1 ml-3">FULL NAME</label>
-					<input maxLength="40"
-					className={`${formelement}`}
-					type="text" defaultValue={currentUser.name} readOnly></input>
+			<form 
+				className="w-full flex flex-col items-center space-y-4"
+				onSubmit={updateUser}
+				>
+				<div className="flex gap-[15px] w-full">
+					<FormInput
+						label="FULL NAME"
+						maxLength="40"
+						type="text" 
+						defaultValue={currentUser.name} 
+						readOnly
+					/>
+					<FormInput
+						label="DISPLAY NAME"
+						maxLength="25"
+						onChange={handleChange}
+						name='nickname'
+						value={form.nickname}
+						type="text" 
+						defaultValue={currentUser.nickname}
+					/>
 				</div>
-				<div className="mb-3 w-full flex-1">
-					<label className="block font-bold text-xs mb-1 ml-3">DISPLAY NAME</label>
-					<input maxLength="25"
+
+				<div className="flex gap-[15px] w-full">
+					<FormInput
+						label="STUDENT ID"
+						maxLength="10"
+						type="text" 
+						defaultValue={currentUser._id}
+						readOnly
+					/>
+
+					<FormInput
+						label="EMAIL"
+						maxLength="50"
+						onChange={handleChange}
+						name='email'
+						value={form.email}
+						type="text" 
+						defaultValue={currentUser.email}
+					/>
+				</div>
+
+				<FormInput
+					label="COLLEGE"
+					maxLength="50"
 					onChange={handleChange}
-					name='nickname'
-					value={form.nickname}
-					className={`${formelement}`}
-					type="text" defaultValue={currentUser.nickname}></input>
-				</div>
-			</div>
+					name='college'
+					value={form.college}
+					type="text" 
+					defaultValue={currentUser.college}
+				/>
 
-			<div className="flex gap-[15px]">
-				<div className="mb-3 w-full flex-1">
-					<label className="block font-bold text-xs mb-1 ml-3">STUDENT ID</label>
-					<input maxLength="10"
-					className={`${formelement}`}
-					type="text" defaultValue={currentUser._id} readOnly></input>
-				</div>
-				<div className="mb-3 w-full flex-1">
-					<label className="block font-bold text-xs mb-1 ml-3">EMAIL</label>
-					<input maxLength="50"
+				<FormInput
+					label="PROGRAM"
+					maxLength="50"
 					onChange={handleChange}
-					name='email'
-					value={form.email}
-					className={`${formelement}`}
-					type="text" defaultValue={currentUser.email}></input>
-				</div>
-			</div>
+					name='program'
+					value={form.program}
+					type="text"
+					defaultValue={currentUser.program}
+				/>
 
-			<div className="mb-3 w-full">
-				<label className="block font-bold text-xs mb-1 ml-3">COLLEGE</label>
-				<input maxLength="50"
-				onChange={handleChange}
-				name='college'
-				value={form.college}
-					className={`${formelement}`}
-				type="text" defaultValue={currentUser.college}></input>
-			</div>
+				<FormInput
+					label="BIO"
+					maxLength="75"
+					onChange={handleChange}
+					name='bio'
+					value={form.bio}
+					type="text" 
+					defaultValue={currentUser.bio}
+				/>
 
-			<div className="mb-3 w-full">
-				<label className="block font-bold text-xs mb-1 ml-3">PROGRAM</label>
-				<input maxLength="50"
-				onChange={handleChange}
-				name='program'
-				value={form.program}
-					className={`${formelement}`}
-				type="text" defaultValue={currentUser.program}></input>
-			</div>
+				<FormInput
+					label="PROFILE PICTURE URL"
+					maxLength="1000"
+					onChange={handleChange}
+					name='pfp_url'
+					value={form.pfp_url}
+					type="text" 
+					defaultValue={currentUser.pfp_url}
+				/>
 
-			<div className="mb-3 w-full">
-				<label className="block font-bold text-xs mb-1 ml-3">BIO</label>
-				<input maxLength="75"
-				onChange={handleChange}
-				name='bio'
-				value={form.bio}
-					className={`${formelement}`}
-				type="text" defaultValue={currentUser.bio}></input>
-			</div>
-
-			<div className="mb-3 w-full">
-				<label className="block font-bold text-xs mb-1 ml-3">PROFILE PICTURE URL</label>
-				<input maxLength="1000"
-				onChange={handleChange}
-				name='pfp_url'
-				value={form.pfp_url}
-					className={`${formelement}`}
-				type="text" defaultValue={currentUser.pfp_url}></input>
-			</div>
-
-			<div className="mb-3 w-full">
-				<label className="block font-bold text-xs mb-1 ml-3">ABOUT</label>
-				<textarea rows="2" maxLength="200"
-				onChange={handleChange}
-				name='about'
-				value={form.about}
-					className={`${formelement}`}
-				type="text" defaultValue={currentUser.about}></textarea>
-			</div>
-
-			<div className="flex justify-center mt-4 mb-3">
-				<button 
-					type='submit'
-					className=" px-[10px] py-[6px]
-						bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none">
-					Save Changes
-				</button>
-			</div>
-		</form>
+				<FormInput
+					label="ABOUT"
+					textarea={true}
+					rows="2"
+					maxLength="200"
+					onChange={handleChange}
+					name='about'
+					value={form.about}
+					type="text" 
+					defaultValue={currentUser.about}
+				/>
+				
+			</form>
 	)
 }
 
 export function AccountSettings() {
 	const {currentUser} = useContext(UserContext)
 	return (
+		
 		<div className="w-full flex gap-5 m-5 px-4">
 				<div className="w-1/2">
 					<div className="mb-2 font-bold">
@@ -188,11 +187,9 @@ export function AccountSettings() {
 						<p className="mt-2">Update your password.</p>
 						<br/>
 						<Link to="/ChangePassword">
-							<button 
-								className="px-[15px] py-[5px] mb-2
-								bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none">
-								Update
-							</button>
+							<Button 
+								label="Update"
+							/>
 						</Link>
 					</div>
 				</div>
@@ -206,11 +203,9 @@ export function AccountSettings() {
 						<p className="mt-2">Action is permanent.</p>
 						<br/>
 						<Link to="/DeleteAccount">
-							<button 
-								className="px-[15px] py-[5px] mb-2
-								bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 hover:bg-[#7f0202] active:shadow-inner select-none">
-								Delete
-							</button>
+							<Button 
+								label="Delete"
+							/>
 						</Link>
 					</div>
 				</div>
@@ -223,11 +218,9 @@ export function AccountSettings() {
 					<p className="mt-2">Create an admin account for lab technicians</p>
 					<br/>
 							<Link to="/admin/AdminRegistration">
-								<button 
-									className="px-[15px] py-[5px] mb-2
-									bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none">
-									Create
-								</button>
+								<Button 
+									label="Create"
+								/>
 							</Link>
 					</div>
 				</div>

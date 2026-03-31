@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
+import { Button, CancelButton, DarkDatePicker, Picker } from "../components/Input";
+
 import { fetchReservations } from "../services/reservationServices";
 
 export function ReservationTable({view, mode='global', filter, filterBy}) {
@@ -133,7 +135,7 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 					break;
 
 				case 'status-sort':
-					const rank = { "Upcoming": 1, "Ongoing": 2, "Cancelled": 3, "Completed": 4 };
+					const rank = { "Pending": 1, "Upcoming": 2, "Ongoing": 3, "Cancelled": 4, "Completed": 5 };
 					list.sort((a, b) => (rank[a.status] || 99) - (rank[b.status] || 99));
 					break;
 
@@ -173,7 +175,15 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 			}
 
 			console.log(list)
-			return list.map((res, index) => (
+
+			
+			return list.map((res, index) => {
+				const isOwner = currentUser._id === res.user?._id;
+				const isAdmin = currentUser.isAdmin;
+				const canCancelUpcoming = res.status === "Upcoming" && (isOwner || isAdmin);
+				const canManagePending = res.status === "Pending" && isAdmin;
+
+				return (
 				<tr key={index} className="border-t-2 border-gray-67">
 					<td>{res.date.split('T')[0]}</td>
 					<td>{res.time}</td>
@@ -197,30 +207,14 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 					)}
 					<td>{res.status}</td>
 					<td className="flex items-center gap-2">
-						{res.status === "Upcoming" && (currentUser._id === res.user?._id || currentUser.isAdmin) ? (
-							<button 
-							id={res.id} 
-							onClick={()=>modifyReservation("cancel",res._id)}
-							className="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200">
-								Cancel
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									height="20px"
-									width="20px"
-									viewBox="0 -960 960 960"
-									className="flex-shrink-0"
-								>
-									<path
-										d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
-										fill="currentColor"
-									/>
-								</svg>
-							</button>
-						):res.status === "Pending" && currentUser.isAdmin ? (
+						{canCancelUpcoming ? (
+							<CancelButton onClick={() => modifyReservation("cancel", res._id)} />
+						) : canManagePending ? (
 							<>
-								<button 
-								onClick={()=>modifyReservation("approve",res._id)}
-								className="ml-auto flex items-center gap-2 text-green-400 hover:text-green-600 hover:scale-105 transition-all duration-200">
+								<button
+									onClick={() => modifyReservation("approve", res._id)}
+									className="ml-auto flex items-center gap-2 text-green-500"
+								>
 									Approve
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -235,33 +229,19 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 										/>
 									</svg>
 								</button>
-								<button 
-								onClick={()=>modifyReservation("cancel",res._id)}
-								className="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200">
-									Cancel
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										height="20px"
-										width="20px"
-										viewBox="0 -960 960 960"
-										className="flex-shrink-0"
-									>
-										<path
-											d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
-											fill="currentColor"
-										/>
-									</svg>
-								</button>
+
+								<CancelButton onClick={() => modifyReservation("cancel", res._id)} />
 							</>
-						):null}
+						) : null}
 					</td>
-				</tr>
-			));
+				</tr>)
+			});
 		}
 	}
 
 	let th_class = "hover:bg-[#2e2e31] transition-colors ease-in duration-100 p-4";
 	let th_div = "flex flex-row";
+
 
     if (loading) return <div>Loading reservations...</div>;
     return (
