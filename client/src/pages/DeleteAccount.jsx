@@ -3,6 +3,8 @@ import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { useState } from "react";
 
+import { deleteAccount } from "../services/userServices";
+
 export function DeleteAccount() {
     const {currentUser, setUser, setIsAuth, setAdmin} = useContext(UserContext)
     const navigate = useNavigate();
@@ -26,28 +28,18 @@ export function DeleteAccount() {
 		}
         
         try {
-            const response = await fetch(`http://localhost:5000/api/users/${currentUser._id}`, {
-                method: 'DELETE',
-                headers: {'Content-Type' : 'application/json'},
-                credentials: 'include',
-                body: JSON.stringify({
-                    password: form.password
-                })
-            })
+            const response = await deleteAccount(form.password, currentUser._id);
+
+            const msg = await response.json();
+            alert(msg.message);
 
             if (response.ok) {
                 setUser(null);
                 setIsAuth(false);
                 setAdmin(false);
-
-                const msg = await response.json();
-                alert(msg.message)
-
                 navigate('/')
-            } else {
-                const err = await response.json();
-                alert(err.message);
             }
+            
         } catch (err) {
             console.error(err)
         }

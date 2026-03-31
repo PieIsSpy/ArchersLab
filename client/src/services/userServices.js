@@ -36,3 +36,20 @@ export const updateAccount = async(info, form) => {
         console.error("Failed to fetch data:", err);
     }
 }
+
+export const deleteAccount = async(password, id) => {
+    try {
+        const response = await fetch(`http://localhost:5000/api/users/${id}`, {
+            method: 'DELETE',
+            headers: {'Content-Type' : 'application/json'},
+            credentials: 'include',
+            body: JSON.stringify({
+                password: password
+            })
+        })
+
+        return response;
+    } catch (err) {
+        console.error(err)
+    }
+}
