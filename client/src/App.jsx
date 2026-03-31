@@ -16,6 +16,7 @@ import { UserLogin } from "./pages/UserLogin.jsx";
 import { UserContext } from "./context/UserContext.jsx";
 
 import { logoutAccount } from "./services/userServices.js";
+import { initializeSession } from "./services/authServices.js";
 
 export default function App() {
 	const [isAuth, setIsAuth] = useState(false);
@@ -58,30 +59,29 @@ export default function App() {
 	]
 
 	useEffect(() => {
-		setLoading(true)
-		fetch('http://localhost:5000/api/auth/init', {
-			method: 'GET',
-			credentials: 'include'
-		})
-		.then(res => {
-			if (!res.ok) return {isAuth: false}
-			return res.json();
-		})
-		.then(data => {
-			// console.log(data)
-			if (data.isAuth) {
-				setUser(data.user)
-				setAdmin(data.user?.isAdmin || false);
-				setIsAuth(true);
+		const loadSession = async () => {
+			setLoading(true)
+			try {
+				const data = await initializeSession();
+
+				if (data.isAuth) {
+					setUser(data.user)
+					setAdmin(data.user?.isAdmin || false);
+					setIsAuth(true);
+				}
+				else {
+					setUser(null);
+					setIsAuth(false);
+					setAdmin(false);
+				}
+			} catch (err) {
+				console.error(err);
+			} finally {
+				setLoading(false)
 			}
-			else {
-				setUser(null);
-				setIsAuth(false);
-				setAdmin(false);
-			}
-		})
-		.catch(err => console.error(err))
-		.finally(() => setLoading(false))
+		}
+
+		loadSession();
 	}, [])
 
 	const handleLogout = async () => {
