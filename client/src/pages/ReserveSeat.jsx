@@ -1,9 +1,8 @@
 import { useState, useEffect} from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import "../dark-datepicker.css";
-import { Modal, InpersonModal } from "../components/Modals";
 import { Link } from "react-router-dom";
+
+import { Modal, InpersonModal } from "../components/Modals";
+import { Button, CancelButton, DarkDatePicker, Picker } from "../components/Input";
 
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
@@ -135,8 +134,7 @@ export function ReserveSeat()
 		const info = getReservationDetails(seatID);
 		setModalChildren(
 			<>
-			{/* PLEASE PLEASE PLEASE ADD A USER REDIRECTION HERE SOMETIME TOMORROW! */}
-				<p >Seat is already booked by:</p>
+				<p>Seat is already booked by:</p>
 				<h1 className="mt-10 text-3xl font-bold google">{info.name}</h1>
 				{info.isRegistered ? (
 					<Link 
@@ -237,94 +235,58 @@ export function ReserveSeat()
 		for (let i = 0; i < layoutArr.length; i++) {
 			const cols = [];
 			for (let j = 0; j < layoutArr[i].length; j++) {
-				if(layoutArr[i][j] != 0){
+				if (layoutArr[i][j] !== 0) {
 					const seatID = seatidx;
 					const isTaken = takenSeats.some(res => res.seats.includes(seatID));
 					const isSelected = selectedSeats.includes(seatID);
-					if(layoutArr[i][j] === 1)
-					{
-						cols.push(
-							<div className="flex flex-col items-center">
-								{!hasReversed ? (
-									<h1 className="m-0 text-xs">{seatID}</h1>
-								) : null}
-								<button
-									className={`
-										w-16 h-16 flex flex-col items-center justify-center 
-										${isTaken ? "booked" : "hover:bg-gray-500"}
-										${isSelected ? "blue" : ""}
-									`}
-									id={seatID}
-									onClick={() => {
-										if (isTaken) {
-											handleBookedSeatClick(seatID);
-										} else {
-											toggleSeatSelection(seatID);
-										}
-									}
-									}
-								>
-									<div className="w-16 h-16">
-									<img
-										src="./src/resources/computer.png"
-										alt="computer"
-										className="w-16 h-16 object-contain"
-									/>
-									</div>
-								</button>
-								{hasReversed ? (
-									<h1 className="m-0 text-xs">{seatID}</h1>
-								) : null}
-							</div>
-						);
-					}
-					if(layoutArr[i][j] === 2)
-					{
-						cols.push(
-							<div className="flex flex-col items-center">
-								
-								<h1 className="m-0 text-xs">{seatID}</h1>
-								<button
-									id={seatID}
-									onClick={() => {
-										if (isTaken) {
-											handleBookedSeatClick(seatID);
-										} else {
-											toggleSeatSelection(seatID);
-										}
-									}
-								}
-									className={`
-										w-16 h-16 flex flex-col items-center justify-center 
-										${isTaken ? "booked" : "hover:bg-gray-500"}
-										${isSelected ? "blue" : ""}
-									`}
-								>
-									<img
-										src="./src/resources/computer_flipped.png"
-										alt="computer"
-										className="w-16 h-16 object-contain"
-									/>
-								</button>
-							</div>
-						);
-					}
-					seatidx++;
-				}
-				else
-				{
+					const isFlipped = layoutArr[i][j] === 2;
+
+					const renderLabelTop = !hasReversed || isFlipped;
+					const renderLabelBottom = hasReversed && !isFlipped;
+
+					const imgSrc = isFlipped
+						? "./src/resources/computer_flipped.png"
+						: "./src/resources/computer.png";
+
 					cols.push(
-						<div
-						className="w-16 h-10 flex items-center justify-center"
-						>
-						<img
-							src="./src/resources/emptyspace.png"
-							alt="empty"
-							className="w-16 h-10 object-contain"
-						/>
+						<div className="flex flex-col items-center">
+							{renderLabelTop && (
+								<h1 className="m-0 text-xs">{seatID}</h1>
+							)}
+
+							<button
+								id={seatID}
+								onClick={() => {
+									if (isTaken) 
+										handleBookedSeatClick(seatID) 
+									else 
+										toggleSeatSelection(seatID)
+								}}
+								className={`w-16 h-16 flex items-center justify-center
+									${isTaken ? "booked" : "hover:bg-gray-500"}
+									${isSelected ? "blue" : ""}`}
+							>
+								<img
+									src={imgSrc}
+									alt="computer"
+									className="w-16 h-16 object-contain"
+								/>
+							</button>
+
+							{renderLabelBottom && (<h1 className="m-0 text-xs">{seatID}</h1>)}
 						</div>
-					)
-					
+					);
+					seatidx++;
+				} else {
+					cols.push(
+						<div className="w-16 h-10 flex items-center justify-center">
+							<img
+								src="./src/resources/emptyspace.png"
+								alt="empty"
+								className="w-16 h-10 object-contain"
+							/>
+						</div>
+					);
 				}
 			}
 			rows.push(
@@ -365,8 +327,6 @@ export function ReserveSeat()
 			isAnonymous: document.getElementById("anonymous-checkbox").checked,
 			inpersonInfo: inpersonInfo
 		};
-		// console.log(rooms)
-		// console.log(newReservation)
 
 		try {
 			const response = await fetch('http://localhost:5000/api/reservations', {
@@ -418,76 +378,52 @@ export function ReserveSeat()
 	
 	if (loading || !selectedRoom) return <div className="mx-auto">Loading...</div>
 	return(
-		<div className="rounded-2xl gap-3 mx-auto">
+		<div className="mx-auto">
 			<div className="grid gap-4 w-3/4 grid-rows-[auto_1fr]">
 				<div className="text-5xl google font-bold">
 					Reserve a seat	
 				</div>
-				<div className="gray-67 justify-center items-center rounded-2xl text-2xl google flex gap-20 px-10">
-					<div className="gap-2 flex flex-row justify-center items-center">
-						<div className="text-xl google flex items-center justify-center">Date:</div>
-						<div className="text-xl w-[150px] h-[100px] flex items-center justify-center">
-							<DatePicker
-								className="gray-89 text-xl w-full p-3 rounded-lg text-center
-								focus:outline-none focus:ring-2 focus:ring-[#145b92]
-								focus:border-[#145b92] selection:bg-blue-300 selection:text-black"
-								selected={selectedDate}
-								onChange={(date) => setSelectedDate(date)}
-								minDate={minDate}
-								maxDate={maxDate}
-								dateFormat="MM/dd/yyyy"
-							/>
-						</div>
-					</div>
+				<div className="gray-67 justify-center items-center rounded-2xl text-2xl google flex gap-20 p-5">
+					<DarkDatePicker
+						selected={selectedDate}
+						onChange={(date) => setSelectedDate(date)}
+						minDate={minDate}
+						maxDate={maxDate}
+					/>
 
-					<label className="text-xl gap-3 flex flex-row justify-center items-center">
-						<div>Room:</div>
-						
-						<select
-							className = "text-xl gray-89 text-center"
-							style={{
-								width: "120px",
-								height: "50px",
-								borderRadius: "8px",
-								padding: "6px 10px",
-							}}
-							value={selectedRoom.name}
-							onChange={(e) => {
+					<Picker 
+						label="Room:"
+						value={selectedRoom.name}
+						onChange={(e) => {
 								const newRoom = rooms.find(r => r._id === e.target.value);
 								setSelectedRoom(newRoom);
 								setSelectedSeats([])
-							}}
-							>
-							{optionRoom}
-						</select>
-					</label>
-
-					<label className="text-xl gap-3 flex flex-row justify-center items-center">
-						<div>Timeslot:</div>
-						<select
-							className = "text-xl gray-89"
-							style={{
-								width: "160px",
-								height: "50px",
-								borderRadius: "8px",
-								padding: "6px 10px",
-							}}
-							value={selectedTime}
-							onChange={(e) => {
+						}}
+						children={optionRoom}
+					/>
+					
+					<Picker 
+						label="Timeslot:"
+						value={selectedTime}
+						onChange={(e) => {
 								const newTime = e.target.value;
 								setSelectedTime(e.target.value);
 								const newRoomIndex = rooms.indexOf(selectedRoom);
 								const newTimeIndex = timeSlots.indexOf(newTime);
-							}}
-							>
-							{timeSlotOptions}
-						</select>
-					</label>
-					
+						}}
+						children={timeSlotOptions}
+					/>
 					
 					<label className="text-xl gap-3 flex flex-row justify-center items-center">
-						<div>Anonymous?{" "}</div>
-						<input type="checkbox" id="anonymous-checkbox" class="appearance-none w-5 h-5 border-2 border-gray-400 rounded checked:bg-gray-500 checked:border-gray-500" />					</label>
+						<div>
+							Anonymous?{" "}
+						</div>
+						<input 
+							type="checkbox" 
+							id="anonymous-checkbox" 
+							class="appearance-none w-5 h-5 border-2 border-gray-400 rounded checked:bg-gray-500 checked:border-gray-500" 
+						/>					
+					</label>
 				</div>
 				
 				<div className="grid grid-cols-[auto_1fr] justify-center items-stretch rounded-2xl gap-4">
@@ -507,51 +443,27 @@ export function ReserveSeat()
 									<tr key={seatID} className="border-b-2 border-gray-600">
 									<td className="text-left google">Seat #{seatID}</td>
 									<td className="w-1/3 py-1 google">
-										<button
-										className="ml-auto flex items-center gap-2 text-red-400 hover:text-red-600 hover:scale-105 transition-all duration-200"
-										onClick={() => toggleSeatSelection(seatID)}
-										>
-										Remove
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											height="20px"
-											width="20px"
-											viewBox="0 -960 960 960"
-											className="flex-shrink-0"
-										>
-											<path
-											d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
-											fill="currentColor"
-											/>
-										</svg>
-										</button>
+									<CancelButton 
+										onClick={() => toggleSeatSelection(seatID)}									
+									/>
 									</td>
 									</tr>
 								))}
 								</tbody>
 							</table>
 						</div>
-
-
-						<div className="flex justify-center items-center text-xl font-bold google gap-4 mx-auto w-full">
-							<button 
-								className="w-full font-bold
-								bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:bg-[#02497F] active:shadow-inner select-none"
-								onClick={()=> {
-									if (!selectedSeats.length)
-									{
-										alert(`Please select a seat!`)
-									}
-									// ADMIN SWITCH, enable modal
-									else if (currentUser.isAdmin) 
-										setOpen(true)
-									else
-										reserveSeat(selectedTime, selectedRoom, selectedSeats)
-								}}
-								>
-								Reserve
-							</button>
-						</div>
+						<Button 
+							label="Reserve"
+							onClick={()=> {
+								if (!selectedSeats.length)
+									alert(`Please select a seat!`)
+								// ADMIN SWITCH, enable modal
+								else if (currentUser.isAdmin) 
+									setOpen(true)
+								else
+									reserveSeat(selectedTime, selectedRoom, selectedSeats)
+							}}
+						/>
 					</div>
 				</div>
 			<InpersonModal
