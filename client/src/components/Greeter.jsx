@@ -9,7 +9,7 @@ export function Greeter(){
 	return <div className="google p-4 rounded-2xl gray-67 shadow-lg flex items-center">
 				<img
 					className="rounded-full w-15 h-15 mr-5 object-cover"
-					src={currentUser.pfp_url ? currentUser.pfp_url : "./src/resources/default.jpg"}
+					src={currentUser.pfp_url ? currentUser.pfp_url : "/src/resources/default.jpg"}
 					alt="Profile"
 				/>
 				<div>

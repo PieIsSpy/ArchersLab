@@ -157,6 +157,8 @@ export function ReserveSeat()
 				const roomData = await fetchRooms();
 				const reservationData = await fetchReservations();
 				
+				roomData.sort((a, b) => a._id.localeCompare(b._id))
+				
 				setRooms(roomData)
 				setReservations(reservationData)
 				setSelectedRoom(roomData[0])

@@ -1,4 +1,8 @@
 import { useState } from "react";
+import { Link, useParams } from "react-router-dom";
+
+import { FormInput, FormLayout } from "../components/Form";
+import { Button } from "../components/Input";
 
 import { loginAccount } from "../services/userServices";
 
@@ -43,52 +47,39 @@ export function UserLogin({setIsAuth, setAdmin, setUser}) {
 		}
 	};
 
-	const inputClass =
-		"w-full px-[10px] py-[6px] rounded-xl gray-89 text-sm font-['Inter',sans-serif] box-border " +
-		"focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]";
-
 	return (
-		<div className="w-1/3 mx-auto my-45">
-			<div className="mb-4">
-				<div className="text-5xl google font-bold">User Login</div>
-			</div>
-			<form
+		<FormLayout
+			title="User Login"
 			onSubmit={handleSubmit}
-			className="w-full flex flex-col items-center space-y-4 gray-67 rounded-2xl shadow-md p-4"
-			>
-				<div className="flex flex-col w-full">
-					<label className="font-bold text-xs mb-1">ID</label>
-					<input
+		>
+				<FormInput label="ID"
 					type="text"
 					name="id"
 					value={form.id}
 					onChange={handleChange}
-					className={inputClass}
 					placeholder="Enter ID"
-					/>
-				</div>
-
-				<div className="flex flex-col w-full">
-					<label className="font-bold text-xs mb-1">Password</label>
-					<input
+				/>
+				<FormInput label="Password"
 					type="password"
 					name="password"
 					value={form.password}
 					onChange={handleChange}
-					className={inputClass}
 					placeholder="Enter Password"
+				/>
+				<div class="flex gap-6">
+					<Button
+						type="submit"
+						label="Login"
 					/>
-				</div>
 
-				<div className="flex justify-center mt-4">
-					<button
-					type="submit"
-					className="px-[15px] py-[5px] bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none text-white"
-					>
-					Login
-					</button>
+					<Link to ="/">
+						<Button
+							type="button"
+							label="Exit"
+							color="gray"
+						/>
+					</Link>
 				</div>
-			</form>
-		</div>
+		</FormLayout>
 	);
 }

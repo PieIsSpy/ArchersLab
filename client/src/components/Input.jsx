@@ -5,15 +5,19 @@ import "../styles/dark-datepicker.css";
 export function Button(
 	{
 		type="button",
-		className="flex justify-center p-2 bg-[#145b92] rounded-xl select-none",
 		onClick={},
-		label
+		label,
+		color="blue"
 	}
 ){
 	return (
 		<button 
 			type={type}
-			className={className}
+			className={"flex justify-center p-2 rounded-xl select-none" + (
+				color==="red" ? " bg-[#921414]" :
+				color==="gray" ? " bg-[#333333]" : 
+				" bg-[#145b92]")
+			}
 			onClick={onClick}>
 			{label}
 		</button>
