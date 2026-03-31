@@ -134,6 +134,11 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 					list.sort((a, b) => a && b ? (a.room._id).localeCompare(b.room._id) : 0);
 					break;
 
+				case 'reason-sort':
+					list.sort((a, b) => a && b ? (a.reason).localeCompare(b.reason) : 0);
+					break;
+
+
 				case 'status-sort':
 					const rank = { "Pending": 1, "Upcoming": 2, "Ongoing": 3, "Cancelled": 4, "Completed": 5 };
 					list.sort((a, b) => (rank[a.status] || 99) - (rank[b.status] || 99));
@@ -266,7 +271,12 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 								{sort==='room-sort'?<svg className="ml-2 w-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#c5c5c5"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12 7C12.2652 7 12.5196 7.10536 12.7071 7.29289L19.7071 14.2929C20.0976 14.6834 20.0976 15.3166 19.7071 15.7071C19.3166 16.0976 18.6834 16.0976 18.2929 15.7071L12 9.41421L5.70711 15.7071C5.31658 16.0976 4.68342 16.0976 4.29289 15.7071C3.90237 15.3166 3.90237 14.6834 4.29289 14.2929L11.2929 7.29289C11.4804 7.10536 11.7348 7 12 7Z" fill="#c5c5c5"></path> </g></svg>
 							:<div className="ml-2 w-4 w-4"></div>}</div>
 						</th>
-						{mode!="room" ? <th>Seats Reserved</th> : <th>Reason</th>}
+						{mode === "room" ? <th className={th_class} onClick={() => setSort("reason-sort")}>
+							<div className={th_div}>
+								Reason
+								{sort==='reason-sort'?<svg className="ml-2 w-4 w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#c5c5c5"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M12 7C12.2652 7 12.5196 7.10536 12.7071 7.29289L19.7071 14.2929C20.0976 14.6834 20.0976 15.3166 19.7071 15.7071C19.3166 16.0976 18.6834 16.0976 18.2929 15.7071L12 9.41421L5.70711 15.7071C5.31658 16.0976 4.68342 16.0976 4.29289 15.7071C3.90237 15.3166 3.90237 14.6834 4.29289 14.2929L11.2929 7.29289C11.4804 7.10536 11.7348 7 12 7Z" fill="#c5c5c5"></path> </g></svg>
+							:<div className="ml-2 w-4 w-4"></div>}</div>
+						</th> : <th>Seats Reserved</th>}
 
 						{mode === 'global' && currentUser.isAdmin && <th className={th_class} onClick={() => setSort("user-sort")}>
 							<div className={th_div}>

@@ -55,6 +55,8 @@ export function ReserveRoom(){
 				const roomData = await fetchRooms();
 				const reservationData = await fetchReservations();
 				
+				roomData.sort((a, b) => a._id.localeCompare(b._id))
+
 				setRooms(roomData)
 				setReservations(reservationData)
 				setSelectedRoom(roomData[0])
@@ -87,10 +89,10 @@ export function ReserveRoom(){
 			console.log(selectedRoom._id)
 
 		reservations.forEach(res => {
-			if (new Date(res.date).toDateString() === selectedDate.toDateString() && // Same day
-				res.room.name === selectedRoom.name && // Same room
-				res.seats.length === 0 &&
-				res.resStatus === "Cancelled") // No seats (Full room reservation)
+			if (res.time === selectedTime &&
+				new Date(res.date).toDateString() === selectedDate.toDateString() && 
+				res.room._id === selectedRoom._id &&
+				res.resStatus === "Upcoming") // No seats (Full room reservation)
 				{
 					tempTimeSlots.splice(tempTimeSlots.indexOf(res.time),1); // Temporarily remove from timeslot
 				}
@@ -119,7 +121,11 @@ export function ReserveRoom(){
 		console.log(selectedDate.toDateString())
 		console.log(reservations)
 
-		if (reservations.find((res) => new Date(res.date).toDateString() === selectedDate.toDateString() && res.time === selectedTime && res.room.name === selectedRoom.name)) {
+		if (reservations.find((res) => 
+			new Date(res.date).toDateString() === selectedDate.toDateString() && 
+			res.time === selectedTime && 
+			res.room.name === selectedRoom.name && 
+			res.resStatus === "Upcoming")) {
 			alert('The room is already reserved by someone else')
 			return
 		}
@@ -152,7 +158,7 @@ export function ReserveRoom(){
 
 			const reservationData = await fetchReservations();
 			setReservations(reservationData)
-			alert("Reservation Successful!")
+			alert("Request Successful! Please await for your request to be approved...")
 		} catch (err) {
 			console.error("Error:", err);
 		}
@@ -167,14 +173,25 @@ export function ReserveRoom(){
 	}
 
 	const handleModal = () => {
-		if (!reservations.find((res) => 
+		// Reservation is found
+		let test = reservations.find((res) => 
 				res.time === selectedTime &&
 				new Date(res.date).toDateString() === selectedDate.toDateString() && 
-				res.room.name === selectedRoom.name)) {
-			setOpen(true)
+				res.room._id === selectedRoom._id &&
+				res.resStatus === "Upcoming")
+		if (test)
+			console.log(test)
+
+		if (reservations.find((res) => 
+				res.time === selectedTime &&
+				new Date(res.date).toDateString() === selectedDate.toDateString() && 
+				res.room._id === selectedRoom._id &&
+				res.resStatus === "Upcoming")) {
+			alert('The room is already reserved by someone else')
+			
 		}
 		else {
-			alert('The room is already reserved by someone else')
+			setOpen(true)
 		}
 	}
 

@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom'
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
 
+import { Button } from "../../components/Input";
+import { FormInput, FormLayout } from "../../components/Form";
+
 import { createAccount } from "../../services/userServices";
 
 export function AdminRegistration() {
@@ -61,86 +64,62 @@ export function AdminRegistration() {
 		"focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]";
 
 	return (
-		<div className="w-1/3 mx-auto my-45">
-			<div className="mb-4">
-				<div className="text-5xl google font-bold">Admin Registration</div>
-				<div className="google mt-2 text-gray-400">
-					Create an account with administrator privileges.
-				</div>
-			</div>
-			<form
+		<FormLayout
+			title="Admin Registration"
+			subtitle="Create an account with administrator privileges."
 			onSubmit={handleSubmit}
-			className="w-full flex flex-col items-center space-y-4 gray-67 rounded-2xl shadow-md p-4"
-			>
-				<div className="flex flex-col w-full">
-					<label className="font-bold text-xs mb-1">Name</label>
-					<input
+		>
+				<FormInput 
+					label="Name"
 					type="text"
 					name="name"
 					value={form.name}
 					onChange={handleChange}
 					className={inputClass}
 					placeholder="Enter full name"
-					/>
-				</div>
+				/>
 
-				<div className="flex flex-col w-full">
-					<label className="font-bold text-xs mb-1">ID</label>
-					<input
+				<FormInput 
+					label="ID"
 					type="text"
 					name="id"
 					value={form.id}
 					onChange={handleChange}
 					className={inputClass}
 					placeholder="Enter ID Number"
-					/>
-				</div>
+				/>
 
-				<div className="flex flex-col w-full">
-					<label className="font-bold text-xs mb-1">Email</label>
-					<input
+				<FormInput 
+					label="Email"
 					type="email"
 					name="email"
 					value={form.email}
 					onChange={handleChange}
 					className={inputClass}
 					placeholder="Enter email"
-					/>
-				</div>
+				/>
 
-				<div className="flex flex-col w-full">
-					<label className="font-bold text-xs mb-1">Password</label>
-					<input
+				<FormInput 
+					label="Password"
 					type="password"
 					name="password"
 					value={form.password}
 					onChange={handleChange}
 					className={inputClass}
 					placeholder="Enter password"
-					/>
-				</div>
+				/>
 
-				<div className="flex flex-col w-full">
-					<label className="font-bold text-xs mb-1">Confirm Password</label>
-					<input
+				<FormInput 
+					label="Confirm Password"
 					type="password"
 					name="confirmPassword"
 					value={form.confirmPassword}
 					onChange={handleChange}
 					className={inputClass}
 					placeholder="Confirm password"
-					/>
-				</div>
+				/>
 
-				<div className="flex justify-center mt-4">
-					<button
-					type="submit"
-					className="px-[15px] py-[5px] bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none text-white"
-					>
-					Create Admin Account
-					</button>
-				</div>
-			</form>
-		</div>
+				<Button type="submit" label="Create Admin Account"/>
+		</FormLayout>
 	);
 }

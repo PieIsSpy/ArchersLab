@@ -96,9 +96,12 @@ export function Home () {
 										setSelectedRoom(null);
 								}}>
 								<option value="">Select room...</option>
-								{rooms.map((room) => (
+								{rooms
+								.slice()
+								.sort((a, b) => a._id.localeCompare(b._id))
+								.map((room) => (
 									<option key={room._id} value={room._id}>
-										{room._id}
+									{room._id}
 									</option>
 								))}
 							</Picker>

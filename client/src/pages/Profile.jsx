@@ -170,6 +170,10 @@ export function UserForm() {
 					defaultValue={currentUser.about}
 				/>
 				
+				<Button
+					label="Save Changes"
+					type="submit"
+				/>
 			</form>
 	)
 }
