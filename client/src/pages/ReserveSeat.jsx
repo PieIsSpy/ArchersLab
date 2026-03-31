@@ -10,6 +10,7 @@ import { UserContext } from "../context/UserContext";
 
 import { fetchRooms } from "../services/roomServices";
 import { fetchReservations } from "../services/reservationServices";
+import { createReservation } from "../services/reservationServices";
 
 const layout1 = [
 	[1,1,1,0,1,1,1,0,1,1,1],
@@ -369,23 +370,18 @@ export function ReserveSeat()
 		// console.log(newReservation)
 
 		try {
-			const response = await fetch('http://localhost:5000/api/reservations', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(newReservation)
-			})
+			const response = await createReservation(newReservation)
 
 			if (!response.ok) {
 				const error = await response.json();
 				throw new Error(error.message || 'Reservation Failed')
 			}
-
-			const reservationData = await fetchReservations();
-			setReservations(reservationData)
-			setSelectedSeats([])
-			alert("Reservation Successful!")
+			else {
+				const reservationData = await fetchReservations();
+				setReservations(reservationData)
+				setSelectedSeats([])
+				alert("Reservation Successful!")
+			}
 		} catch (err) {
 			console.error("Error:", err);
 		}

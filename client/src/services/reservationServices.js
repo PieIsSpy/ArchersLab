@@ -10,3 +10,19 @@ export const fetchReservations = async () => {
         console.error("Failed to fetch data:", error);
     }
 };
+
+export const createReservation = async (reservation) => {
+    try {
+        const response = await fetch('http://localhost:5000/api/reservations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reservation)
+        })
+
+        return response;
+    } catch (err) {
+        console.error("Error:", err);
+    }
+}
