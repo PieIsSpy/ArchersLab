@@ -6,6 +6,8 @@ import { PencilSvg } from "../components/PencilSvg";
 import { ReservationTable } from "../components/ReservationTable";
 import defaultPfp from '../resources/default.jpg'
 
+import { updateAccount } from "../services/userServices";
+
 const formelement =
   "w-full p-2 rounded-xl gray-89 text-l font-['Inter',sans-serif] box-border " +
   "focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]" +
@@ -65,24 +67,12 @@ export function UserForm() {
 		console.log(form)
 
 		try {
-			const response = await fetch(`http://localhost:5000/api/users/${currentUser._id}`, {
-				method: 'PUT',
-				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify(form)
-			})
-
-			if (response.ok) {
-				const data = await response.json();
-				console.log(data)
-
-				alert(`Profile Successfully Updated`)
-				setUser(data)
-			}
-			else {
-				alert('Error updating profile')
-			}
+			const data = await updateAccount(currentUser, form)
+			alert(`Profile Successfully Updated`)
+			console.log('updated:',data)
+			setUser(data)
 		} catch (err) {
-			console.error("Failed to fetch data:", err);
+			console.error(err);
 		}
 	}
 

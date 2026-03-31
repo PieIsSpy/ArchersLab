@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
+import { updateAccount } from "../services/userServices";
+
 export function ChangePassword() {
 	const {currentUser} = useContext(UserContext)
 	const navigate = useNavigate();
@@ -25,25 +27,16 @@ export function ChangePassword() {
 		}
 		
 		try {
-			const response = await fetch(`http://localhost:5000/api/users/${currentUser._id}`, {
-				method: 'PUT',
-				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify({
-					oldPassword: form.oldPassword,
-					password: form.newPassword
-				})
-			})
+			const info = {
+				oldPassword: form.oldPassword,
+                password: form.newPassword
+			}
 
-			const data = await response.json();
-			if (response.ok) {
-				alert('Password Successfully Updated');
-				navigate(`/Profile/${currentUser._id}`);
-			}
-			else {
-				alert(data.message)
-			}
+			await updateAccount(currentUser, info)
+			alert('Password Successfully Updated');
+            navigate(`/Profile/${currentUser._id}`);
 		} catch (err) {
-			console.error("Failed to fetch data:", err);
+			console.error(err);
 		}
 	};
 
