@@ -54,11 +54,6 @@ export function RoomReservations ()
 		setFilterBy([selectedDate,selectedRoom,selectedUser])
 	}, [selectedDate, selectedRoom, selectedUser])
 
-	const formcontrol =
-		"gray-89 text-xl text-center px-3 h-10 w-43 rounded-xl bg-transparent " +
-		"focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92] " +
-		"selection:bg-blue-300 selection:text-black";
-
 	if (loading) return <div className="mx-auto">Loading...</div>
 	return (
 		<div className="w-3/4 mx-auto">

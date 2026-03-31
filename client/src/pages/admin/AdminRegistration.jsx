@@ -59,10 +59,6 @@ export function AdminRegistration() {
 		}
 	};
 
-	const inputClass =
-		"w-full px-[10px] py-[6px] rounded-xl gray-89 text-sm font-['Inter',sans-serif] box-border " +
-		"focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]";
-
 	return (
 		<FormLayout
 			title="Admin Registration"
@@ -75,7 +71,6 @@ export function AdminRegistration() {
 					name="name"
 					value={form.name}
 					onChange={handleChange}
-					className={inputClass}
 					placeholder="Enter full name"
 				/>
 
@@ -85,7 +80,6 @@ export function AdminRegistration() {
 					name="id"
 					value={form.id}
 					onChange={handleChange}
-					className={inputClass}
 					placeholder="Enter ID Number"
 				/>
 
@@ -95,7 +89,6 @@ export function AdminRegistration() {
 					name="email"
 					value={form.email}
 					onChange={handleChange}
-					className={inputClass}
 					placeholder="Enter email"
 				/>
 
@@ -105,7 +98,6 @@ export function AdminRegistration() {
 					name="password"
 					value={form.password}
 					onChange={handleChange}
-					className={inputClass}
 					placeholder="Enter password"
 				/>
 
@@ -115,7 +107,6 @@ export function AdminRegistration() {
 					name="confirmPassword"
 					value={form.confirmPassword}
 					onChange={handleChange}
-					className={inputClass}
 					placeholder="Confirm password"
 				/>
 
