@@ -71,3 +71,16 @@ export const loginAccount = async(password, id) => {
         console.error(err)
     }
 }
+
+export const logoutAccount = async() => {
+    try {
+        const response = await fetch('http://localhost:5000/api/users/logout', {
+            method: 'POST',
+            credentials: 'include'
+        })
+
+        return response;
+    } catch (err) {
+        console.error(err)
+    }
+}

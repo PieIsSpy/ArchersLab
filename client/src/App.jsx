@@ -15,6 +15,8 @@ import { RoomReservations } from "./pages/admin/RoomReservations.jsx";
 import { UserLogin } from "./pages/UserLogin.jsx";
 import { UserContext } from "./context/UserContext.jsx";
 
+import { logoutAccount } from "./services/userServices.js";
+
 export default function App() {
 	const [isAuth, setIsAuth] = useState(false);
 	const [isAdmin, setAdmin] = useState(false);
@@ -84,10 +86,7 @@ export default function App() {
 
 	const handleLogout = async () => {
 		try {
-			const response = await fetch('http://localhost:5000/api/users/logout', {
-				method: 'POST',
-				credentials: 'include'
-			})
+			const response = await logoutAccount();
 
 			if (response.ok) {
 				setAdmin(false)
