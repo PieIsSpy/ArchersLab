@@ -53,3 +53,21 @@ export const deleteAccount = async(password, id) => {
         console.error(err)
     }
 }
+
+export const loginAccount = async(password, id) => {
+    try {
+        const response = await fetch('http://localhost:5000/api/users/login', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                id: Number(id),
+                password: password
+            }),
+            credentials: 'include'
+        })
+
+        return response;
+    } catch (err) {
+        console.error(err)
+    }
+}

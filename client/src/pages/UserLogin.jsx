@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { loginAccount } from "../services/userServices";
+
 export function UserLogin({setIsAuth, setAdmin, setUser}) {
 	const [form, setForm] = useState({
 		id: null,
@@ -22,15 +24,7 @@ export function UserLogin({setIsAuth, setAdmin, setUser}) {
 		e.preventDefault();
 		
 		try {
-			const response = await fetch('http://localhost:5000/api/users/login', {
-				method: 'POST',
-				headers: {'Content-Type': 'application/json'},
-				body: JSON.stringify({
-					id: Number(form.id),
-					password: form.password
-				}),
-				credentials: 'include'
-			})
+			const response = await loginAccount(form.password, form.id)
 
 			if (response.ok) {
 				const data = await response.json();
