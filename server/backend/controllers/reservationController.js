@@ -52,6 +52,27 @@ const createReservation = asyncHandler(async (req, res) => {
         throw new Error('Invalid Creation')
     }
 
+    const exists = await Reservation.find({date, time, room})
+    if (exists.length > 0) {
+        if (seats.length === 0) {
+            res.status(400)
+            throw new Error('Cannot reserve the entire room')
+        }
+
+        for (const reserved of exists) {
+            if (reserved.seats.length === 0) {
+                res.status(400)
+                throw new Error('The room is already reserved')
+            }
+
+            const conflict = seats.some(seat => reserved.seats.includes(seat));
+            if (conflict) {
+                res.status(400)
+                throw new Error('Some of the seats have already been reserved')
+            }
+        }
+    }
+
     const reservation = await Reservation.create({
         user: user || null,
         date: date,
