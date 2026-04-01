@@ -1,6 +1,8 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export const createAccount = async(info) => {
     try {
-        const response = await fetch('http://localhost:5000/api/users', {
+        const response = await fetch(`${API_URL}/api/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -19,7 +21,7 @@ export const createAccount = async(info) => {
 
 export const updateAccount = async(info, form) => {
     try {
-        const response = await fetch(`http://localhost:5000/api/users/${info._id}`, {
+        const response = await fetch(`${API_URL}/api/users/${info._id}`, {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(form)
@@ -39,7 +41,7 @@ export const updateAccount = async(info, form) => {
 
 export const deleteAccount = async(password, id) => {
     try {
-        const response = await fetch(`http://localhost:5000/api/users/${id}`, {
+        const response = await fetch(`${API_URL}/api/users/${id}`, {
             method: 'DELETE',
             headers: {'Content-Type' : 'application/json'},
             credentials: 'include',
@@ -56,7 +58,7 @@ export const deleteAccount = async(password, id) => {
 
 export const loginAccount = async(password, id) => {
     try {
-        const response = await fetch('http://localhost:5000/api/users/login', {
+        const response = await fetch(`${API_URL}/api/users/login`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -74,7 +76,7 @@ export const loginAccount = async(password, id) => {
 
 export const logoutAccount = async() => {
     try {
-        const response = await fetch('http://localhost:5000/api/users/logout', {
+        const response = await fetch(`${API_URL}/api/users/logout`, {
             method: 'POST',
             credentials: 'include'
         })

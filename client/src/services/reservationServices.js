@@ -1,5 +1,7 @@
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
 export const fetchReservations = async () => {
-    const reservationsUrl = 'http://localhost:5000/api/reservations';
+    const reservationsUrl = `${API_URL}/api/reservations`;
     try {
         const response = await fetch(reservationsUrl)
 
@@ -13,7 +15,7 @@ export const fetchReservations = async () => {
 
 export const fetchFilteredReservations = async (settings) => {
     try {
-        const response = await fetch('http://localhost:5000/api/reservations/filtered', {
+        const response = await fetch(`${API_URL}/api/reservations/filtered`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -29,7 +31,7 @@ export const fetchFilteredReservations = async (settings) => {
 
 export const createReservation = async (reservation) => {
     try {
-        const response = await fetch('http://localhost:5000/api/reservations', {
+        const response = await fetch(`${API_URL}/api/reservations`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -48,7 +50,7 @@ export const modifyReservation = async (mode,reservationId) => {
 		if (mode === "approve")
 		{
 			console.log("Approving Reservation "+reservationId);
-			var response = await fetch(`http://localhost:5000/api/reservations/${reservationId}`, {
+			var response = await fetch(`${API_URL}/api/reservations/${reservationId}`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json"
@@ -61,7 +63,7 @@ export const modifyReservation = async (mode,reservationId) => {
 		else 
 		{
 			console.log("Cancelling Reservation "+reservationId);
-			var response = await fetch(`http://localhost:5000/api/reservations/${reservationId}`, {
+			var response = await fetch(`${API_URL}/api/reservations/${reservationId}`, {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json"
