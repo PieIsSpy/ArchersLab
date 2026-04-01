@@ -11,7 +11,7 @@ import { ReservationTable } from "../components/ReservationTable";
 import { Button } from "../components/Input"
 import { FormInput, FormLayout } from "../components/Form";
 
-import { updateAccount } from "../services/userServices";
+import { fetchAccount, updateAccount } from "../services/userServices";
 
 export function UserProfile({user}) {
 	const fields = [
@@ -254,12 +254,8 @@ export function Profile() {
 		const fetchView = async () => {
 			setFetching(true);
 			try {
-				const response = await fetch(`http://localhost:5000/api/users/${id}`)
-
-				if (response.ok) {
-					const data = await response.json();
-					setView(data)
-				}
+				const data = await fetchAccount(id)
+				setView(data)
 			} catch (err) {
 				console.error('Error fetching:', err)
 			} finally {
