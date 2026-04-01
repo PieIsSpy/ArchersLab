@@ -1,24 +1,25 @@
 {
-  "name": "archerslab2",
+  "name": "archerslab",
   "version": "1.0.0",
-  "description": "Since the first one was a **huge** mess of bloat and fuck knows what, we're changing that now!\r Currently, all you need to do is:",
+  "description": "Installing:\r 1. Clone the repo or install the zip file and unzip it\r 2. Run `npm install` inside `client` and `server` folders\r 3. Run `npm install` inside the project's parent folder\r 4. Create your own `.env` file inside the `server` folder\r    - look at `/server/.env.example` for instructions",
   "main": "index.js",
   "scripts": {
-    "client": "npm run dev --prefix client",
-    "server": "npm run server --prefix server",
-    "dev": "concurrently \"npm run client\" \"npm run server\""
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "concurrently \"npm run dev --prefix client\" \"npm start --prefix server\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PieIsSpy/ArchersLab.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "devDependencies": {
-    "@vitejs/plugin-react": "^6.0.1",
-    "concurrently": "^9.2.1",
-    "vite": "^8.0.0"
+  "bugs": {
+    "url": "https://github.com/PieIsSpy/ArchersLab/issues"
   },
+  "homepage": "https://github.com/PieIsSpy/ArchersLab#readme",
   "dependencies": {
-    "dotenv": "^17.3.1",
-    "express": "^5.2.1"
+    "concurrently": "^9.2.1"
   }
 }
