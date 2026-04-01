@@ -6,7 +6,37 @@ const Reservation = require('../model/reservationModel')
 // @route   GET /api/reservations
 // @access  Private
 const getReservations = asyncHandler(async (req, res) => {
-    const reservations = await Reservation.find().populate('user').populate('room')
+    const reservations = await Reservation.find().populate('user', '-password').populate('room')
+
+    res.status(200).json(reservations)
+})
+
+const getFilteredReservations = asyncHandler(async (req, res) => {
+    const {id, ignoreAnonymous, redactAnonymous} = req.body;
+    
+    const query = {};
+    if (id) {
+        query._id = id;
+    }
+
+    if (ignoreAnonymous === true) {
+        query.isAnonymous = false;
+    }
+
+    let reservations = await Reservation.find(query).populate('user', '-password').populate('room').lean()
+
+    if (redactAnonymous === true) {
+        reservations = reservations.map(res => {
+            if (res.isAnonymous) {
+                return {
+                    ...res,
+                    user: null,
+                    inpersonInfo: null
+                }
+            }
+            return res
+        })
+    }
 
     res.status(200).json(reservations)
 })
@@ -71,5 +101,5 @@ const deleteReservation = asyncHandler(async (req, res) => {
 })
 
 module.exports = {
-    getReservations, createReservation, updateReservation, deleteReservation
+    getReservations, getFilteredReservations, createReservation, updateReservation, deleteReservation
 }
