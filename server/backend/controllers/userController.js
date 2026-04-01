@@ -101,8 +101,15 @@ const updateUser = asyncHandler(async (req, res) => {
     }
 
     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {new: true}).select('-password')
+    req.session.user = updatedUser.toObject();
 
-    res.status(200).json(updatedUser)
+    req.session.save((err) => {
+        if (err) {
+            res.status(500);
+            throw new Error(err)
+        }
+        res.status(200).json(updatedUser)
+    })
 })
 
 // @desc    Delete User
