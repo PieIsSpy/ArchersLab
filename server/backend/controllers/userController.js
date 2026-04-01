@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler')
 
 const User = require('../model/userModel')
 const Reservation = require('../model/reservationModel')
+const bcrypt = require('bcrypt')
 
 // @desc    Get User
 // @route   GET /api/users
@@ -22,7 +23,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const user = await User.findOne({_id: Number(id)})
 
-    if (user && (user.password === password)) {
+    isMatch = await bcrypt.compare(password, user.password)
+
+    if (user && isMatch) {
         const userRes = user.toObject();
         delete userRes.password
 
@@ -58,6 +61,8 @@ const createUser = asyncHandler(async (req, res) => {
         throw new Error('User already exists')
     }
 
+    const hash = await bcrypt.hash(password, 13)
+
     const user = await User.create({
         name: name,
         nickname: nickname,
@@ -68,7 +73,7 @@ const createUser = asyncHandler(async (req, res) => {
         program: program,
         about: about,
         pfp_url: pfp_url,
-        password: password,
+        password: hash,
         isAdmin: isAdmin
     })
 
