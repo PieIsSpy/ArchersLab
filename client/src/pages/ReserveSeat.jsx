@@ -325,7 +325,7 @@ export function ReserveSeat()
 			time: selectedTime,
 			room: selectedRoom._id,
 			seats: selectedSeats,
-			resStatus: "Upcoming",
+			resStatus: "Approved",
 			reason: '',
 			isAnonymous: document.getElementById("anonymous-checkbox").checked,
 			inpersonInfo: inpersonInfo

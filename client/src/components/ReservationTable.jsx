@@ -5,7 +5,7 @@ import { UserContext } from "../context/UserContext";
 
 import { Button, CancelButton, DarkDatePicker, Picker } from "../components/Input";
 
-import { fetchReservations } from "../services/reservationServices";
+import { fetchReservations,modifyReservation } from "../services/reservationServices";
 
 export function ReservationTable({view, mode='global', filter, filterBy}) {
     const {currentUser} = useContext(UserContext)
@@ -29,47 +29,6 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 
 		loadData();
     }, []);
-
-	async function modifyReservation(mode,reservationId) {
-		try {
-			if (mode === "approve")
-			{
-				console.log("Approving Reservation "+reservationId);
-				var response = await fetch(`http://localhost:5000/api/reservations/${reservationId}`, {
-					method: "PUT",
-					headers: {
-						"Content-Type": "application/json"
-					},
-					body: JSON.stringify({
-						resStatus: "Upcoming"
-					})
-				});
-			}
-			else 
-			{
-				console.log("Cancelling Reservation "+reservationId);
-				var response = await fetch(`http://localhost:5000/api/reservations/${reservationId}`, {
-					method: "PUT",
-					headers: {
-						"Content-Type": "application/json"
-					},
-					body: JSON.stringify({
-						resStatus: "Cancelled"
-					})
-				});
-			}
-
-			if (!response.ok) {
-				const error = await response.json();
-				throw new Error(error.message || "Cancel failed");
-			}
-
-			await fetchReservations();
-			alert("Reservation updated!");
-		} catch (err) {
-			console.error("Error:", err);
-		}
-	}
 
 	function ReservationTableBody({reservations, sort, filter, filterBy, mode, view}) {
 		const {currentUser} = useContext(UserContext)
@@ -105,12 +64,20 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 				return res.isAnonymous === false;
 			});
 
-			list.forEach(row => {
-				const date = new Date(row.date); // assuming row[1] is the date
-				const [hour, minute] = row.time.split('-')[0].split(':').map(Number); // assuming row[2] is "HH:mm-HH:mm"
-				date.setHours(hour, minute, 0, 0);
+			list.forEach(res => {
+				const startDate = new Date(res.date);
+				const [startHour, startMinute] = res.time.split('-')[0].split(':').map(Number);
+				startDate.setHours(startHour, startMinute, 0, 0);
 
-				row.status = row.resStatus === "Upcoming" && date < now ? "Completed" : row.resStatus;
+				const endDate = new Date(res.date);
+				const [endHour, endMinute] = res.time.split('-')[1].split(':').map(Number);
+				endDate.setHours(endHour, endMinute, 0, 0);
+
+				res.status = 
+				res.resStatus === "Approved" && startDate < now && endDate > now ? "Ongoing" : 
+				res.resStatus === "Approved" && endDate < now ? "Completed" :
+				res.resStatus === "Approved" ? "Upcoming" : res.resStatus 		
+				;
 			});
 
 			// console.log(list)

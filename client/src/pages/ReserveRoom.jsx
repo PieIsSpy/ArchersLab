@@ -93,7 +93,7 @@ export function ReserveRoom(){
 			if (res.time === selectedTime &&
 				new Date(res.date).toDateString() === selectedDate.toDateString() && 
 				res.room._id === selectedRoom._id &&
-				res.resStatus === "Upcoming") // No seats (Full room reservation)
+				res.resStatus === "Approved") // No seats (Full room reservation)
 				{
 					tempTimeSlots.splice(tempTimeSlots.indexOf(res.time),1); // Temporarily remove from timeslot
 				}
@@ -126,7 +126,7 @@ export function ReserveRoom(){
 			new Date(res.date).toDateString() === selectedDate.toDateString() && 
 			res.time === selectedTime && 
 			res.room.name === selectedRoom.name && 
-			res.resStatus === "Upcoming")) {
+			res.resStatus === "Approved")) {
 			alert('The room is already reserved by someone else')
 			return
 		}
@@ -169,20 +169,11 @@ export function ReserveRoom(){
 	}
 
 	const handleModal = () => {
-		// Reservation is found
-		let test = reservations.find((res) => 
-				res.time === selectedTime &&
-				new Date(res.date).toDateString() === selectedDate.toDateString() && 
-				res.room._id === selectedRoom._id &&
-				res.resStatus === "Upcoming")
-		if (test)
-			console.log(test)
-
 		if (reservations.find((res) => 
 				res.time === selectedTime &&
 				new Date(res.date).toDateString() === selectedDate.toDateString() && 
 				res.room._id === selectedRoom._id &&
-				res.resStatus === "Upcoming")) {
+				res.resStatus === "Approved")) {
 			alert('The room is already reserved by someone else')
 			
 		}
