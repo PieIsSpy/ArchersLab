@@ -158,32 +158,39 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 					)}
 					<td>{res.status}</td>
 					<td className="flex items-center gap-2">
-						{canCancelUpcoming ? (
-							<CancelButton onClick={() => modifyReservation("cancel", res._id)} />
-						) : canManagePending ? (
-							<>
-								<button
-									onClick={() => modifyReservation("approve", res._id)}
-									className="ml-auto flex items-center gap-2 text-green-500"
+						{canManagePending ? (
+						<>
+							<button
+								onClick={() => modifyReservation("approve", res._id)}
+								className="ml-auto flex items-center gap-2 text-green-500"
+							>
+								Approve
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									height="20px"
+									width="20px"
+									viewBox="0 -960 960 960"
+									className="flex-shrink-0"
 								>
-									Approve
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										height="20px"
-										width="20px"
-										viewBox="0 -960 960 960"
-										className="flex-shrink-0"
-									>
-										<path
-											d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
-											fill="currentColor"
-										/>
-									</svg>
-								</button>
+									<path
+										d="m256-240-56-56 384-384H240v-80h480v480h-80v-344L256-240Z"
+										fill="currentColor"
+									/>
+								</svg>
+							</button>
 
-								<CancelButton onClick={() => modifyReservation("cancel", res._id)} />
-							</>
+						</>
 						) : null}
+						
+						{canCancelUpcoming || canManagePending ? (
+							<CancelButton onClick={async () => {
+								modifyReservation("cancel", res._id)
+								setReservations(await fetchReservations())
+								console.log("onclick activateed");
+							}}/>
+						) : null
+						
+						}
 					</td>
 				</tr>)
 			});
