@@ -5,7 +5,7 @@ import { UserContext } from "../context/UserContext";
 
 import defaultPfp from '../resources/default.jpg'
 
-import { PencilSvg } from "../components/PencilSvg";
+import { PencilSvg } from "../components/Svg";
 import { ReservationTable } from "../components/ReservationTable";
 
 import { Button } from "../components/Input"

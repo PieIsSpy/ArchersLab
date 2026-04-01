@@ -7,7 +7,7 @@ export function FormInput({
 	name,
 	type = "text",
 	value,
-	onChange = undefined,
+	onChange,
 	placeholder = "",
 	readOnly = false,
 	maxLength = undefined,
@@ -48,7 +48,7 @@ export function FormInput({
 	);
 }
 
-export function FormLayout({ title, subtitle = "", children, onSubmit="" }) {
+export function FormLayout({ title, subtitle = "", children, onSubmit=()=>{} }) {
 	return (
 		<div className="w-1/3 mx-auto my-45">
 		<div className="mb-4">

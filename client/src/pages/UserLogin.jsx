@@ -8,8 +8,8 @@ import { loginAccount } from "../services/userServices";
 
 export function UserLogin({setIsAuth, setAdmin, setUser}) {
 	const [form, setForm] = useState({
-		id: null,
-		password: null
+		id: "",
+		password: ""
 	});
 
 	const handleChange = (e) => {
@@ -22,7 +22,6 @@ export function UserLogin({setIsAuth, setAdmin, setUser}) {
 
 		setForm({ ...form, [name]: value });
 	};
-
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -66,7 +65,7 @@ export function UserLogin({setIsAuth, setAdmin, setUser}) {
 					onChange={handleChange}
 					placeholder="Enter Password"
 				/>
-				<div class="flex gap-6">
+				<div className="flex gap-6">
 					<Button
 						type="submit"
 						label="Login"

@@ -128,7 +128,7 @@ export function UserRegistration() {
 					onChange={handleChange}
 					placeholder="Confirm password"
 				/>
-				<div class="flex gap-6">
+				<div className="flex gap-6">
 					<Button
 						type="submit"
 						label="Create Account"

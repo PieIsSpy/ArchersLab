@@ -5,7 +5,7 @@ import "../styles/dark-datepicker.css";
 export function Button(
 	{
 		type="button",
-		onClick={},
+		onClick=()=>{},
 		label,
 		color="blue"
 	}

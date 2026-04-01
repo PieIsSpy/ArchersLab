@@ -419,7 +419,7 @@ export function ReserveSeat()
 						<input 
 							type="checkbox" 
 							id="anonymous-checkbox" 
-							class="appearance-none w-5 h-5 border-2 border-gray-400 rounded checked:bg-gray-500 checked:border-gray-500" 
+							className="appearance-none w-5 h-5 border-2 border-gray-400 rounded checked:bg-gray-500 checked:border-gray-500" 
 						/>					
 					</label>
 				</div>
