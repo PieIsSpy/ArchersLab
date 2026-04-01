@@ -41,15 +41,28 @@ export function UserProfile({user}) {
 
 export function UserForm() {
 	const {currentUser, setUser} = useContext(UserContext)
+	console.log('cur:', currentUser)
 	const [form, setForm] = useState({
-		nickname: null,
-		email: null,
-		college: null,
-		program: null,
-		bio: null,
-		about: null,
-		pfp_url: null
-	})
+        nickname: currentUser?.nickname || '',
+        college: currentUser?.college || '',
+        program: currentUser?.program || '',
+        bio: currentUser?.bio || '',
+        about: currentUser?.about || '',
+        pfp_url: currentUser?.pfp_url || ''
+    });
+
+	useEffect(() => {
+        if (currentUser) {
+            setForm({
+                nickname: currentUser.nickname || '',
+                college: currentUser.college || '',
+                program: currentUser.program || '',
+                bio: currentUser.bio || '',
+                about: currentUser.about || '',
+                pfp_url: currentUser.pfp_url || ''
+            });
+        }
+    }, [currentUser]);
 
 	const handleChange = (e) => {
 		setForm({...form, [e.target.name]: e.target.value})
@@ -84,7 +97,7 @@ export function UserForm() {
 						label="FULL NAME"
 						maxLength="40"
 						type="text" 
-						defaultValue={currentUser.name} 
+						value={currentUser.name} 
 						readOnly
 					/>
 					<FormInput
@@ -93,8 +106,7 @@ export function UserForm() {
 						onChange={handleChange}
 						name='nickname'
 						value={form.nickname}
-						type="text" 
-						defaultValue={currentUser.nickname}
+						type="text"
 					/>
 				</div>
 
@@ -103,7 +115,7 @@ export function UserForm() {
 						label="STUDENT ID"
 						maxLength="10"
 						type="text" 
-						defaultValue={currentUser._id}
+						value={currentUser._id}
 						readOnly
 					/>
 
@@ -112,9 +124,9 @@ export function UserForm() {
 						maxLength="50"
 						onChange={handleChange}
 						name='email'
-						value={form.email}
 						type="text" 
-						defaultValue={currentUser.email}
+						value={currentUser.email}
+						readOnly
 					/>
 				</div>
 
@@ -124,8 +136,7 @@ export function UserForm() {
 					onChange={handleChange}
 					name='college'
 					value={form.college}
-					type="text" 
-					defaultValue={currentUser.college}
+					type="text"
 				/>
 
 				<FormInput
@@ -135,17 +146,15 @@ export function UserForm() {
 					name='program'
 					value={form.program}
 					type="text"
-					defaultValue={currentUser.program}
 				/>
 
 				<FormInput
-					label="BIO"
+					label='BIO'
 					maxLength="75"
 					onChange={handleChange}
 					name='bio'
 					value={form.bio}
-					type="text" 
-					defaultValue={currentUser.bio}
+					type="text"
 				/>
 
 				<FormInput
@@ -154,8 +163,7 @@ export function UserForm() {
 					onChange={handleChange}
 					name='pfp_url'
 					value={form.pfp_url}
-					type="text" 
-					defaultValue={currentUser.pfp_url}
+					type="text"
 				/>
 
 				<FormInput
@@ -166,8 +174,7 @@ export function UserForm() {
 					onChange={handleChange}
 					name='about'
 					value={form.about}
-					type="text" 
-					defaultValue={currentUser.about}
+					type="text"
 				/>
 				
 				<Button

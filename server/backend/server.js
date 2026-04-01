@@ -10,6 +10,8 @@ const {errorHandler} = require('./middleware/errorMiddleware');
 const connectDB = require('./config/db')
 const port = process.env.PORT || 5000;
 
+const User = require('./model/userModel');
+
 connectDB();
 
 const store = new MongoDBSession({
@@ -44,15 +46,22 @@ app.use(session({
     }
 }))
 
-app.get('/api/auth/init', (req, res) => {
+app.get('/api/auth/init', async (req, res) => {
     console.log("id:", req.sessionID)
     console.log('isAuth:', req.session.isAuth)
-    if (req.session.isAuth) {
-        console.log('New Session Created')
-        return res.status(200).json({
-            isAuth: true,
-            user: req.session.user
-        })
+    if (req.session.isAuth && req.session.user?._id) {
+        try {
+            const user = await User.findById(req.session.user._id).select('-password')
+            req.session.user = user.toObject();
+            return res.status(200).json({
+                isAuth: true,
+                user: user
+            })
+        } catch (err) {
+            return res.status(200).json({
+                isAuth: false
+            })
+        }
     } else {
         return res.status(200).json({
             isAuth: false
