@@ -7,7 +7,7 @@ import { UpArrowSvg } from "../components/Svg";
 
 import { Button, CancelButton, DarkDatePicker, Picker } from "../components/Input";
 
-import { fetchReservations,modifyReservation } from "../services/reservationServices";
+import { fetchFilteredReservations,modifyReservation } from "../services/reservationServices";
 
 export function ReservationTable({view, mode='global', filter, filterBy}) {
     const {currentUser} = useContext(UserContext)
@@ -20,17 +20,24 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 		setLoading(true);
         const loadData = async() => {
 			try {
-				const reservationData = await fetchReservations();
+				// const reservationData = await fetchReservations();
+				const settings = {
+					id: mode === 'profile' ? view : null,
+					ignoreAnonymous: !currentUser?.isAdmin, 
+                	redactAnonymous: !currentUser?.isAdmin
+				}
+
+				const reservationData = await fetchFilteredReservations(settings);
 				setReservations(reservationData)
 			} catch (err) {
-				
+				console.error(err)
 			} finally {
 				setLoading(false)
 			}
 		}
 
 		loadData();
-    }, []);
+    }, [view, mode, currentUser]);
 
 	function ReservationTableBody({reservations, sort, filter, filterBy, mode, view}) {
 		const {currentUser} = useContext(UserContext)
@@ -38,35 +45,7 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 		if (currentUser && reservations.length > 0) {
 			const now = new Date();
 
-			// reservations.forEach(res => {console.log(res.user.id);console.log(currentUser._id)})
-
-			var list = reservations.filter(res => {
-				// console.log(view) // 12409294
-				// console.log(mode) //profile
-				if (mode === 'profile') {
-					if (!(String(res.user?._id) === String(view))) return false;
-				}
-				
-				const isOwnerOfRes = currentUser && String(res.user?._id) === String(currentUser._id);
-
-				if (currentUser.isAdmin || isOwnerOfRes) {
-					if (mode === 'room')
-						if (res.seats.length == 0) 
-							return true;
-						else
-							return false;
-					
-					if (currentUser.isAdmin)
-						if (res.seats.length == 0)
-							return false;
-
-					return true;
-				}
-
-				return res.isAnonymous === false;
-			});
-
-			list.forEach(res => {
+			reservations.forEach(res => {
 				const startDate = new Date(res.date);
 				const [startHour, startMinute] = res.time.split('-')[0].split(':').map(Number);
 				startDate.setHours(startHour, startMinute, 0, 0);
@@ -86,11 +65,11 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 
 			switch(sort) {
 				case 'date':
-					list.sort((a, b) => a.date.toString().localeCompare(b.date.toString()));
+					reservations.sort((a, b) => a.date.toString().localeCompare(b.date.toString()));
 					break;
 
 				case 'time':
-					list.sort((a, b) => {
+					reservations.sort((a, b) => {
 						const [aStart] = a.time.split('-');
 						const [bStart] = b.time.split('-');
 						const [aH, aM] = aStart.split(':').map(Number);
@@ -100,20 +79,20 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 					break;
 
 				case 'room':
-					list.sort((a, b) => a && b ? (a.room._id).localeCompare(b.room._id) : 0);
+					reservations.sort((a, b) => a && b ? (a.room._id).localeCompare(b.room._id) : 0);
 					break;
 
 				case 'reason':
-					list.sort((a, b) => a && b ? (a.reason).localeCompare(b.reason) : 0);
+					reservations.sort((a, b) => a && b ? (a.reason).localeCompare(b.reason) : 0);
 					break;
 
 				case 'status':
 					const rank = { "Pending": 1, "Upcoming": 2, "Ongoing": 3, "Cancelled": 4, "Completed": 5 };
-					list.sort((a, b) => (rank[a.status] || 99) - (rank[b.status] || 99));
+					reservations.sort((a, b) => (rank[a.status] || 99) - (rank[b.status] || 99));
 					break;
 
 				case 'user':
-					list.sort((a, b) => {
+					reservations.sort((a, b) => {
 						const nameA = (a.user ? a.user.name : "").toUpperCase();
 						const nameB = (b.user ? b.user.name : "").toUpperCase();
 						return nameA.localeCompare(nameB);
@@ -128,7 +107,7 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 			{
 				if (filter[0] && filterBy[0]) {
 					const target = new Date(filterBy[0]);
-					list = list.filter(res => {
+					list = reservations.filter(res => {
 						const d = new Date(res.date);
 						return (
 							d.getFullYear() === target.getFullYear() &&
@@ -139,18 +118,18 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 				}
 
 				if (filter[1])
-					list = list.filter(res => res.room._id === filterBy[1]);
+					list = reservations.filter(res => res.room._id === filterBy[1]);
 
 				if (filter[2] && filterBy[2]) {
 					const query = filterBy[2].toLowerCase();
-					list = list.filter(res => (res.user?.name || "").toLowerCase().includes(query));
+					list = reservations.filter(res => (res.user?.name || "").toLowerCase().includes(query));
 				}
 			}
 
-			console.log(list)
+			console.log(reservations)
 
 			
-			return list.map((res, index) => {
+			return reservations.map((res, index) => {
 				const isOwner = currentUser._id === res.user?._id;
 				const isAdmin = currentUser.isAdmin;
 				const canCancelUpcoming = res.status === "Upcoming" && (isOwner || isAdmin);

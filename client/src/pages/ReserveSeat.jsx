@@ -9,6 +9,7 @@ import { UserContext } from "../context/UserContext";
 
 import { fetchRooms } from "../services/roomServices";
 import { fetchReservations } from "../services/reservationServices";
+import { fetchFilteredReservations } from "../services/reservationServices";
 import { createReservation } from "../services/reservationServices";
 
 const layout1 = [
@@ -155,7 +156,12 @@ export function ReserveSeat()
 			setLoading(true);
 			try {
 				const roomData = await fetchRooms();
-				const reservationData = await fetchReservations();
+				// const reservationData = await fetchReservations();
+				const reservationData = await fetchFilteredReservations(
+					{
+						redactAnonymous: true
+					}
+				)
 				
 				roomData.sort((a, b) => a._id.localeCompare(b._id))
 				

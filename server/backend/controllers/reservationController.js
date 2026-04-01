@@ -16,7 +16,7 @@ const getFilteredReservations = asyncHandler(async (req, res) => {
     
     const query = {};
     if (id) {
-        query._id = id;
+        query.user = id;
     }
 
     if (ignoreAnonymous === true) {
@@ -26,15 +26,15 @@ const getFilteredReservations = asyncHandler(async (req, res) => {
     let reservations = await Reservation.find(query).populate('user', '-password').populate('room').lean()
 
     if (redactAnonymous === true) {
-        reservations = reservations.map(res => {
-            if (res.isAnonymous) {
+        reservations = reservations.map(r => {
+            if (r.isAnonymous) {
                 return {
-                    ...res,
+                    ...r,
                     user: null,
                     inpersonInfo: null
                 }
             }
-            return res
+            return r
         })
     }
 
