@@ -4,6 +4,6 @@ const { getReservations, getFilteredReservations, createReservation, updateReser
 
 router.route('/').get(getReservations).post(createReservation);
 router.route('/:id').put(updateReservation).delete(deleteReservation);
-router.route('/filtered', getFilteredReservations)
+router.post('/filtered', getFilteredReservations)
 
 module.exports = router;
