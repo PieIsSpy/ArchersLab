@@ -16,16 +16,16 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
     const [reservations, setReservations] = useState([]);
     const [loading, setLoading] = useState(true);
 
+	const settings = {
+		id: mode === 'profile' ? view : null,
+		ignoreAnonymous: !currentUser?.isAdmin, 
+		redactAnonymous: !currentUser?.isAdmin
+	}
     useEffect(() => {
 		setLoading(true);
         const loadData = async() => {
 			try {
 				// const reservationData = await fetchReservations();
-				const settings = {
-					id: mode === 'profile' ? view : null,
-					ignoreAnonymous: !currentUser?.isAdmin, 
-                	redactAnonymous: !currentUser?.isAdmin
-				}
 
 				const reservationData = await fetchFilteredReservations(settings);
 				setReservations(reservationData)
@@ -164,8 +164,8 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 							<button
 								onClick={async () => 
 								{
-									modifyReservation("approve", res._id)
-									setReservations(await fetchReservations())
+									await modifyReservation("approve", res._id)
+									setReservations(await fetchFilteredReservations(settings))
 								}
 							}
 								className="ml-auto flex items-center gap-2 text-green-500"
@@ -190,8 +190,8 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 						
 						{canCancelUpcoming || canManagePending ? (
 							<CancelButton onClick={async () => {
-								modifyReservation("cancel", res._id)
-								setReservations(await fetchReservations())
+								await modifyReservation("cancel", res._id)
+								setReservations(await fetchFilteredReservations(settings))
 								console.log("onclick activateed");
 							}}/>
 						) : null
