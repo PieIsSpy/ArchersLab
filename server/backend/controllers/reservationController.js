@@ -107,5 +107,5 @@ const updateReservation = asyncHandler(async (req, res) => {
 })
 
 module.exports = {
-    getReservations, getFilteredReservations, createReservation, updateReservation, deleteReservation
+    getReservations, getFilteredReservations, createReservation, updateReservation
 }
