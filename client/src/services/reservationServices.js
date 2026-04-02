@@ -17,6 +17,7 @@ export const fetchFilteredReservations = async (settings) => {
     try {
         const response = await fetch(`${API_URL}/api/reservations/filtered`, {
             method: 'POST',
+			credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -33,6 +34,7 @@ export const createReservation = async (reservation) => {
     try {
         const response = await fetch(`${API_URL}/api/reservations`, {
             method: 'POST',
+			credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -52,6 +54,7 @@ export const modifyReservation = async (mode,reservationId) => {
 			console.log("Approving Reservation "+reservationId);
 			var response = await fetch(`${API_URL}/api/reservations/${reservationId}`, {
 				method: "PUT",
+				credentials: 'include',
 				headers: {
 					"Content-Type": "application/json"
 				},
@@ -65,6 +68,7 @@ export const modifyReservation = async (mode,reservationId) => {
 			console.log("Cancelling Reservation "+reservationId);
 			var response = await fetch(`${API_URL}/api/reservations/${reservationId}`, {
 				method: "PUT",
+				credentials: 'include',
 				headers: {
 					"Content-Type": "application/json"
 				},

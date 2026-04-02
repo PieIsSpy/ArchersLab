@@ -35,14 +35,15 @@ app.use(express.urlencoded({extended: false}));
 
 app.use(session({
     secret: 'key that will sign cookie',
-    resave: true,
+    resave: false,
     saveUninitialized: false,
+    proxy: true,
     store: store,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24,
         httpOnly: true,
-        secure: false,
-        sameSite: 'lax'
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
     }
 }))
 

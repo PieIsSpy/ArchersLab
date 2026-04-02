@@ -19,6 +19,7 @@ export const createAccount = async(info) => {
     try {
         const response = await fetch(`${API_URL}/api/users`, {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -38,6 +39,7 @@ export const updateAccount = async(info, form) => {
     try {
         const response = await fetch(`${API_URL}/api/users/${info._id}`, {
             method: 'PUT',
+            credentials: 'include',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(form)
         })
@@ -58,8 +60,8 @@ export const deleteAccount = async(password, id) => {
     try {
         const response = await fetch(`${API_URL}/api/users/${id}`, {
             method: 'DELETE',
-            headers: {'Content-Type' : 'application/json'},
             credentials: 'include',
+            headers: {'Content-Type' : 'application/json'},
             body: JSON.stringify({
                 password: password
             })
@@ -75,12 +77,12 @@ export const loginAccount = async(password, id) => {
     try {
         const response = await fetch(`${API_URL}/api/users/login`, {
             method: 'POST',
+            credentials: 'include',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 id: Number(id),
                 password: password
             }),
-            credentials: 'include'
         })
 
         return response;
@@ -93,7 +95,7 @@ export const logoutAccount = async() => {
     try {
         const response = await fetch(`${API_URL}/api/users/logout`, {
             method: 'POST',
-            credentials: 'include'
+            credentials: 'include',
         })
 
         return response;
