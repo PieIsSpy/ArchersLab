@@ -20,7 +20,6 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 		setLoading(true);
         const loadData = async() => {
 			try {
-				// const reservationData = await fetchReservations();
 				const settings = {
 					id: mode === 'profile' ? view : null,
 					ignoreAnonymous: !currentUser?.isAdmin, 
