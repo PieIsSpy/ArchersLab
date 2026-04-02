@@ -12,6 +12,10 @@ import { fetchReservations } from "../services/reservationServices";
 import { fetchFilteredReservations } from "../services/reservationServices";
 import { createReservation } from "../services/reservationServices";
 
+import computer_img from '../resources/computer.png'
+import computerF_img from '../resources/computer_flipped.png'
+import empty_space from '../resources/emptyspace.png'
+
 const layout1 = [
 	[1,1,1,0,1,1,1,0,1,1,1],
 	[0,0,0,0,0,0,0,0,0,0,0],
@@ -254,8 +258,8 @@ export function ReserveSeat()
 					const renderLabelBottom = hasReversed && !isFlipped;
 
 					const imgSrc = isFlipped
-						? "./src/resources/computer_flipped.png"
-						: "./src/resources/computer.png";
+						? computerF_img
+						: computer_img;
 
 					cols.push(
 						<div className="flex flex-col items-center">
@@ -290,7 +294,7 @@ export function ReserveSeat()
 					cols.push(
 						<div className="w-16 h-10 flex items-center justify-center">
 							<img
-								src="./src/resources/emptyspace.png"
+								src= {empty_space}
 								alt="empty"
 								className="w-16 h-10 object-contain"
 							/>

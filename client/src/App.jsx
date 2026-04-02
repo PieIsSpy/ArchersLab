@@ -18,6 +18,8 @@ import { UserContext } from "./context/UserContext.jsx";
 import { logoutAccount } from "./services/userServices.js";
 import { initializeSession } from "./services/authServices.js";
 
+import bg from './resources/dlsu-jubilee.webp'
+
 export default function App() {
 	const [isAuth, setIsAuth] = useState(false);
 	const [isAdmin, setAdmin] = useState(false);
@@ -169,7 +171,7 @@ export default function App() {
 								<div className="h-screen flex items-center justify-center">Loading...</div>
 							) : !isAuth ? (
 								<div className="bg-[#00000060] h-screen w-screen">
-									<img className="absolute z-0 h-screen w-screen top-0 left-0 blur-lg" src="src/resources/dlsu-jubilee.webp"></img>
+									<img className="absolute z-0 h-screen w-screen top-0 left-0 blur-lg" src={bg}></img>
 									<div className="bg-[#000000AA] relative z-10 flex flex-col h-screen items-center justify-center">
 										<h1 className="text-5xl google font-bold">Welcome to ArchersLab!</h1>
 										<div>A lab reservation system that works for <span>you</span>.</div>
