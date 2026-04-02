@@ -15,6 +15,12 @@ const getUsers = asyncHandler(async (req, res) => {
 
 const getUser = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id).select('-password');
+
+    if (!user) {
+        res.status(400);
+        throw new Error('User not found');
+    }
+
     res.status(200).json(user)
 })
 
@@ -22,6 +28,11 @@ const loginUser = asyncHandler(async (req, res) => {
     const {id, password} = req.body;
 
     const user = await User.findOne({_id: Number(id)})
+
+    if (!user) {
+        res.status(400);
+        throw new Error('User not found');
+    }
 
     isMatch = await bcrypt.compare(password, user.password)
 
@@ -41,7 +52,7 @@ const loginUser = asyncHandler(async (req, res) => {
     }
     else {
         res.status(400);
-        throw new Error('User not found');
+        throw new Error('Wrong Password');
     }
 })
 
