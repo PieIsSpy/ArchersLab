@@ -92,12 +92,15 @@ const updateUser = asyncHandler(async (req, res) => {
     }
 
     if (req.body.oldPassword) {
-        if (user.password !== req.body.oldPassword) {
+        isMatch = await bcrypt.compare(req.body.oldPassword, user.password)
+        
+        if (!isMatch) {
             res.status(401)
             throw new Error('Old Password incorrect')
         }
 
-        user.password = req.body.password;
+        const hash = await bcrypt.hash(req.body.password, 13)
+        user.password = hash;
         await user.save();
 
         const userResponse = user.toObject();
@@ -129,7 +132,8 @@ const deleteUser = asyncHandler(async (req, res) => {
         throw new Error('User not found');
     }
 
-    if (user.password !== password) {
+    isMatch = await bcrypt.compare(password, user.password)
+    if (!isMatch) {
         res.status(401)
         throw new Error('Password incorrect')
     }
