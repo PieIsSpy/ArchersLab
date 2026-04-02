@@ -226,7 +226,7 @@ export default function App() {
                             </>
                         )}
 
-                        <Route path="*" element={<Navigate to={isAuth ? "/Dashboard" : "/"} />} />
+                        <Route path="*" element={<Navigate to={isAuth ? "/Home" : "/"} />} />
 					</Routes>
 				</div>
 			</div>
