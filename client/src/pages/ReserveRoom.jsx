@@ -7,7 +7,7 @@ import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
 import { fetchRooms } from "../services/roomServices";
-import { fetchFilteredReservations, fetchReservations } from "../services/reservationServices";
+import { fetchFilteredReservations } from "../services/reservationServices";
 import { createReservation } from "../services/reservationServices";
 
 const timeSlots = [
@@ -54,7 +54,6 @@ export function ReserveRoom(){
 			setLoading(true);
 			try {
 				const roomData = await fetchRooms();
-				// const reservationData = await fetchReservations();
 				const reservationData = await fetchFilteredReservations(
 					{
 						redactAnonymous: true
@@ -156,7 +155,11 @@ export function ReserveRoom(){
 				throw new Error(error.message || 'Reservation Failed')
 			}
 			else {
-				const reservationData = await fetchReservations();
+				const reservationData = await fetchFilteredReservations(
+					{
+						redactAnonymous: true
+					}
+				)
 				setReservations(reservationData)
 				alert("Request Successful! Please await for your request to be approved...")
 			}

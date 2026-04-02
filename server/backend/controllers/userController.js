@@ -4,15 +4,6 @@ const User = require('../model/userModel')
 const Reservation = require('../model/reservationModel')
 const bcrypt = require('bcrypt')
 
-// @desc    Get User
-// @route   GET /api/users
-// @access  Private
-const getUsers = asyncHandler(async (req, res) => {
-    const users = await User.find().select('-password')
-
-    res.status(200).json(users)
-})
-
 const getUser = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id).select('-password');
 
@@ -166,5 +157,5 @@ const deleteUser = asyncHandler(async (req, res) => {
 })
 
 module.exports = {
-    getUsers, getUser, loginUser, createUser, updateUser, deleteUser
+    getUser, loginUser, createUser, updateUser, deleteUser
 }

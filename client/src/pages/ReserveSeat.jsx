@@ -160,7 +160,6 @@ export function ReserveSeat()
 			setLoading(true);
 			try {
 				const roomData = await fetchRooms();
-				// const reservationData = await fetchReservations();
 				const reservationData = await fetchFilteredReservations(
 					{
 						redactAnonymous: true
@@ -349,7 +348,11 @@ export function ReserveSeat()
 				throw new Error(error.message || 'Reservation Failed')
 			}
 			else {
-				const reservationData = await fetchReservations();
+				const reservationData = await fetchFilteredReservations(
+					{
+						redactAnonymous: true
+					}
+				)
 				setReservations(reservationData)
 				setSelectedSeats([])
 				alert("Reservation Successful!")

@@ -25,8 +25,6 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 		setLoading(true);
         const loadData = async() => {
 			try {
-				// const reservationData = await fetchReservations();
-
 				const reservationData = await fetchFilteredReservations(settings);
 				setReservations(reservationData)
 			} catch (err) {

@@ -106,21 +106,6 @@ const updateReservation = asyncHandler(async (req, res) => {
     res.status(200).json(updatedReservation)
 })
 
-// @desc    Delete Reservation
-// @route   DELETE /api/reservations/:id
-// @access  Private
-const deleteReservation = asyncHandler(async (req, res) => {
-    const reservation = await Reservation.findById(req.params.id);
-
-    if (!reservation) {
-        res.status(400);
-        throw new Error('Reservation not found');
-    }
-
-    await reservation.deleteOne();
-    res.status(200).json({ id: req.params.id });
-})
-
 module.exports = {
-    getReservations, getFilteredReservations, createReservation, updateReservation, deleteReservation
+    getReservations, getFilteredReservations, createReservation, updateReservation
 }
