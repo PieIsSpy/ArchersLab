@@ -125,7 +125,7 @@ export function CheckBox
 			</div>
 			<input 
 				type="checkbox" 
-				id="anonymous-checkbox" 
+				id={id}
 				className="appearance-none w-5 h-5 border-2 border-gray-400 rounded checked:bg-gray-500 checked:border-gray-500" 
 			/>					
 		</label>
