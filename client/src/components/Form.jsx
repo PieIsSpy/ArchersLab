@@ -1,3 +1,6 @@
+import { EyeSvg, EyeSlashSvg } from "../components/Svg";
+import { useState } from "react";
+
 const inputClass =
 	"w-full px-[10px] py-[6px] rounded-xl gray-89 text-sm font-['Inter',sans-serif] box-border " +
 	"focus:outline-none focus:ring-2 focus:ring-[#145b92] focus:border-[#145b92]";
@@ -5,32 +8,14 @@ const inputClass =
 export function FormInput({
 	label,
 	name,
-	type = "text",
+	type="text",
 	value,
 	onChange,
 	placeholder = "",
 	readOnly = false,
 	maxLength = undefined,
-	textarea = false,
 }) {
 	return (
-		textarea ? <>
-			<div className="flex flex-col w-full">
-			<label className="font-bold text-xs mb-1">{label}</label>
-			<textarea
-				type={type}
-				name={name}
-				value={value ?? ""}
-				onChange={onChange}
-				placeholder={placeholder}
-				readOnly={readOnly}
-				maxLength={maxLength}
-				className={inputClass}
-			/>
-			</div>
-		</>
-		:
-		<>
 			<div className="flex flex-col w-full">
 			<label className="font-bold text-xs mb-1">{label}</label>
 			<input
@@ -44,9 +29,72 @@ export function FormInput({
 				className={inputClass}
 			/>
 			</div>
-		</>
+	)
+}
+
+export function FormTextArea({
+	label,
+	name,
+	value,
+	type="text-area",
+	onChange,
+	placeholder = "",
+	readOnly = false,
+	maxLength = undefined,
+}){
+	return (<div className="flex flex-col w-full">
+			<label className="font-bold text-xs mb-1">{label}</label>
+			<textarea
+				type={type}
+				name={name}
+				value={value ?? ""}
+				onChange={onChange}
+				placeholder={placeholder}
+				readOnly={readOnly}
+				maxLength={maxLength}
+				className={inputClass}
+			/>
+			</div>
 	);
 }
+
+export function FormPassword({
+	label,
+	name="password",
+	type="password",
+	value,
+	onChange,
+	placeholder = "",
+	readOnly = false,
+	maxLength = undefined,
+}) {
+	
+  	const [open, setOpen] = useState(false);
+
+	return (
+			<div className="flex flex-col w-full">
+			<label className="font-bold text-xs mb-1">{label}</label>
+			<div className="flex flex-row w-full items-center gap-2">
+				<input
+					type={open ? "text" : "password"}
+					name={name}
+					value={value ?? ""}
+					onChange={onChange}
+					placeholder={placeholder}
+					readOnly={readOnly}
+					maxLength={maxLength}
+					className={inputClass}
+				/>
+				<div
+					onClick={() => setOpen(prev => !prev)}
+				>
+					{open ? <EyeSvg /> : <EyeSlashSvg />}
+				</div>
+			</div>
+			</div>
+	)
+}
+
 
 export function FormLayout({ title, subtitle = "", children, onSubmit=()=>{} }) {
 	return (

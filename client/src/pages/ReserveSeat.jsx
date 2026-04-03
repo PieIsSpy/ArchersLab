@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { Modal, InpersonModal } from "../components/Modals";
 import { Button, CancelButton, DarkDatePicker, Picker } from "../components/Input";
 
+import { CheckBox } from "../components/Input";
+
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
@@ -425,16 +427,12 @@ export function ReserveSeat()
 						children={timeSlotOptions}
 					/>
 					
-					<label className="text-xl gap-3 flex flex-row justify-center items-center">
-						<div>
-							Anonymous?{" "}
-						</div>
-						<input 
-							type="checkbox" 
-							id="anonymous-checkbox" 
-							className="appearance-none w-5 h-5 border-2 border-gray-400 rounded checked:bg-gray-500 checked:border-gray-500" 
-						/>					
-					</label>
+					<CheckBox
+						type="checkbox" 
+						label="Anonymous? "
+						id="anonymous-checkbox" 
+						className="appearance-none w-5 h-5 border-2 border-gray-400 rounded checked:bg-gray-500 checked:border-gray-500" 
+					/>
 				</div>
 				
 				<div className="grid grid-cols-[auto_1fr] justify-center items-stretch rounded-2xl gap-4">

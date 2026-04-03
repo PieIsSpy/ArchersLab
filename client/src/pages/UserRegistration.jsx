@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom'
 import { Link, useParams } from "react-router-dom";
 
-import { FormInput, FormLayout } from "../components/Form";
+import { FormInput, FormPassword, FormLayout } from "../components/Form";
 import { Button } from "../components/Input";
 
 import { createAccount } from "../services/userServices";
@@ -86,7 +86,6 @@ export function UserRegistration() {
 		>
 				<FormInput 
 					label="Name"
-					type="text"
 					name="name"
 					value={form.name}
 					onChange={handleChange}
@@ -95,7 +94,6 @@ export function UserRegistration() {
 
 				<FormInput 
 					label="ID"
-					type="text"
 					name="id"
 					value={form.id}
 					onChange={handleChange}
@@ -111,18 +109,16 @@ export function UserRegistration() {
 					placeholder="Enter email"
 				/>
 
-				<FormInput 
+				<FormPassword 
 					label="Password"
-					type="password"
 					name="password"
 					value={form.password}
 					onChange={handleChange}
 					placeholder="Enter password"
 				/>
 
-				<FormInput 
+				<FormPassword
 					label="Confirm Password"
-					type="password"
 					name="confirmPassword"
 					value={form.confirmPassword}
 					onChange={handleChange}
