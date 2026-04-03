@@ -66,7 +66,13 @@ const createReservation = asyncHandler(async (req, res) => {
         throw new Error('Invalid Creation')
     }
 
-    const exists = await Reservation.find({date, time, room, resStatus: {$ne: 'Cancelled'}})
+    let exists = await Reservation.find({date, time, room, resStatus: {$ne: 'Cancelled'}}).lean()
+
+    exists = exists.filter(r => {
+        const recalculated = calculateStatus(r)
+        return recalculated !== 'Cancelled'
+    })
+
     if (exists.length > 0) {
         if (seats.length === 0) {
             res.status(400)
