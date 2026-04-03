@@ -27,7 +27,8 @@ export function UserLogin({setIsAuth, setAdmin, setUser}) {
 		e.preventDefault();
 		
 		try {
-			const response = await loginAccount(form.password, form.id)
+			const remember = document.getElementById("remember").checked
+			const response = await loginAccount(form.password, form.id, remember)
 
 			if (response.ok) {
 				const data = await response.json();
@@ -63,8 +64,10 @@ export function UserLogin({setIsAuth, setAdmin, setUser}) {
 					placeholder="Enter Password"
 				/>
 				<CheckBox
+					type='checkbox'
 					label="Remember Me "
 					className="text-xs"
+					id="remember"
 				/>
 				<div className="flex gap-6">
 					<Button

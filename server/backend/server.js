@@ -17,7 +17,7 @@ connectDB();
 const store = new MongoDBSession({
     uri: process.env.MONGO_URI,
     collection: 'sessions',
-    expires: 1000 * 60 * 60 * 24
+    expires: 21 * 24 * 60 * 60 * 1000
 })
 
 store.on('error', (error) => console.log('Error:', error))
@@ -38,6 +38,7 @@ app.use(session({
     secret: 'key that will sign cookie',
     resave: false,
     saveUninitialized: false,
+    rolling: true,
     proxy: true,
     store: store,
     cookie: {

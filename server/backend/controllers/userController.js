@@ -16,7 +16,7 @@ const getUser = asyncHandler(async (req, res) => {
 })
 
 const loginUser = asyncHandler(async (req, res) => {
-    const {id, password} = req.body;
+    const {id, password, remember} = req.body;
 
     const user = await User.findOne({_id: Number(id)})
 
@@ -30,6 +30,12 @@ const loginUser = asyncHandler(async (req, res) => {
     if (user && isMatch) {
         const userRes = user.toObject();
         delete userRes.password
+
+        const oneDay = 1000 * 60 * 60 * 24;
+        const threeWeeks = 21 * 24 * 60 * 60 * 1000;
+
+        req.session.cookie.maxAge = remember ? threeWeeks : oneDay;
+        console.log('remember? ', remember)
 
         req.session.isAuth = true;
         req.session.user = userRes;

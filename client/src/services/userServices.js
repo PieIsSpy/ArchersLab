@@ -76,7 +76,7 @@ export const deleteAccount = async(password, id) => {
     }
 }
 
-export const loginAccount = async(password, id) => {
+export const loginAccount = async(password, id, remember) => {
     try {
         const response = await fetch(`${API_URL}/api/users/login`, {
             method: 'POST',
@@ -84,7 +84,8 @@ export const loginAccount = async(password, id) => {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 id: Number(id),
-                password: password
+                password: password,
+                remember: remember
             }),
         })
 
