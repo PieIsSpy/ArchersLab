@@ -2,7 +2,10 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export const fetchAccount = async(id) => {
     try {
-        const response = await fetch(`${API_URL}/api/users/${id}`)
+        const response = await fetch(`${API_URL}/api/users/${id}`, {
+            method: 'GET',
+            credentials: 'include'
+        })
         
         if (!response.ok) {
             throw new Error('User not found');
