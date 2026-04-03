@@ -79,7 +79,7 @@ const createReservation = asyncHandler(async (req, res) => {
         time: time,
         room: room,
         seats: seats,
-        resStatus: resStatus,
+        resStatus: {$ne: 'Cancelled'},
         reason: reason,
         isAnonymous: isAnonymous,
         inpersonInfo: inpersonInfo || null
