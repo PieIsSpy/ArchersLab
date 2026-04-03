@@ -110,3 +110,24 @@ export function Picker ({
 				</select>
 			</label>
 }
+
+export function CheckBox 
+({
+	label="",
+	id="",
+	className=""
+})
+{
+	return (
+		<label className={"text-xl gap-3 flex flex-row justify-center items-center "+className}>
+			<div>
+				{label}{" "}
+			</div>
+			<input 
+				type="checkbox" 
+				id="anonymous-checkbox" 
+				className="appearance-none w-5 h-5 border-2 border-gray-400 rounded checked:bg-gray-500 checked:border-gray-500" 
+			/>					
+		</label>
+	);
+}

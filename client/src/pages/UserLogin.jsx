@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-import { FormInput, FormLayout } from "../components/Form";
-import { Button } from "../components/Input";
+import { FormInput, FormLayout, FormPassword } from "../components/Form";
+import { Button, CheckBox } from "../components/Input";
 
 import { loginAccount } from "../services/userServices";
 
@@ -52,18 +52,19 @@ export function UserLogin({setIsAuth, setAdmin, setUser}) {
 			onSubmit={handleSubmit}
 		>
 				<FormInput label="ID"
-					type="text"
 					name="id"
 					value={form.id}
 					onChange={handleChange}
 					placeholder="Enter ID"
 				/>
-				<FormInput label="Password"
-					type="password"
-					name="password"
+				<FormPassword
 					value={form.password}
 					onChange={handleChange}
 					placeholder="Enter Password"
+				/>
+				<CheckBox
+					label="Remember Me "
+					className="text-xs"
 				/>
 				<div className="flex gap-6">
 					<Button

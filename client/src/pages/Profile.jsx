@@ -9,7 +9,7 @@ import { PencilSvg } from "../components/Svg";
 import { ReservationTable } from "../components/ReservationTable";
 
 import { Button } from "../components/Input"
-import { FormInput, FormLayout } from "../components/Form";
+import { FormInput, FormTextArea, FormLayout } from "../components/Form";
 
 import { fetchAccount, updateAccount } from "../services/userServices";
 
@@ -96,7 +96,6 @@ export function UserForm() {
 					<FormInput
 						label="FULL NAME"
 						maxLength="40"
-						type="text" 
 						value={currentUser.name} 
 						readOnly
 					/>
@@ -106,7 +105,6 @@ export function UserForm() {
 						onChange={handleChange}
 						name='nickname'
 						value={form.nickname}
-						type="text"
 					/>
 				</div>
 
@@ -114,7 +112,6 @@ export function UserForm() {
 					<FormInput
 						label="STUDENT ID"
 						maxLength="10"
-						type="text" 
 						value={currentUser._id}
 						readOnly
 					/>
@@ -124,7 +121,7 @@ export function UserForm() {
 						maxLength="50"
 						onChange={handleChange}
 						name='email'
-						type="text" 
+						type='email'
 						value={currentUser.email}
 						readOnly
 					/>
@@ -136,7 +133,6 @@ export function UserForm() {
 					onChange={handleChange}
 					name='college'
 					value={form.college}
-					type="text"
 				/>
 
 				<FormInput
@@ -145,7 +141,6 @@ export function UserForm() {
 					onChange={handleChange}
 					name='program'
 					value={form.program}
-					type="text"
 				/>
 
 				<FormInput
@@ -154,7 +149,6 @@ export function UserForm() {
 					onChange={handleChange}
 					name='bio'
 					value={form.bio}
-					type="text"
 				/>
 
 				<FormInput
@@ -163,10 +157,9 @@ export function UserForm() {
 					onChange={handleChange}
 					name='pfp_url'
 					value={form.pfp_url}
-					type="text"
 				/>
 
-				<FormInput
+				<FormTextArea
 					label="ABOUT"
 					textarea={true}
 					rows="2"
@@ -174,7 +167,6 @@ export function UserForm() {
 					onChange={handleChange}
 					name='about'
 					value={form.about}
-					type="text"
 				/>
 				
 				<Button
