@@ -119,7 +119,7 @@ export function CheckBox
 })
 {
 	return (
-		<label className={"text-xl gap-3 flex flex-row justify-center items-center "+className}>
+		<label className={"text-xl gap-3 flex flex-row justify-center items-center select-none "+className}>
 			<div>
 				{label}{" "}
 			</div>
