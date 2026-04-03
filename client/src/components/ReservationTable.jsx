@@ -41,26 +41,6 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 		const {currentUser} = useContext(UserContext)
 
 		if (currentUser && reservations.length > 0) {
-			const now = new Date();
-
-			reservations.forEach(res => {
-				const startDate = new Date(res.date);
-				const [startHour, startMinute] = res.time.split('-')[0].split(':').map(Number);
-				startDate.setHours(startHour, startMinute, 0, 0);
-
-				const endDate = new Date(res.date);
-				const [endHour, endMinute] = res.time.split('-')[1].split(':').map(Number);
-				endDate.setHours(endHour, endMinute, 0, 0);
-
-				res.status = 
-				res.resStatus === "Approved" && startDate < now && endDate > now ? "Ongoing" : 
-				res.resStatus === "Approved" && endDate < now ? "Completed" :
-				res.resStatus === "Approved" ? "Upcoming" : res.resStatus 		
-				;
-			});
-
-			// console.log(list)
-
 			switch(sort) {
 				case 'date':
 					reservations.sort((a, b) => a.date.toString().localeCompare(b.date.toString()));
@@ -86,7 +66,7 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 
 				case 'status':
 					const rank = { "Pending": 1, "Upcoming": 2, "Ongoing": 3, "Cancelled": 4, "Completed": 5 };
-					reservations.sort((a, b) => (rank[a.status] || 99) - (rank[b.status] || 99));
+					reservations.sort((a, b) => (rank[a.resStatus] || 99) - (rank[b.resStatus] || 99));
 					break;
 
 				case 'user':
@@ -130,8 +110,8 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 			return reservations.map((res, index) => {
 				const isOwner = currentUser._id === res.user?._id;
 				const isAdmin = currentUser.isAdmin;
-				const canCancelUpcoming = res.status === "Upcoming" && (isOwner || isAdmin);
-				const canManagePending = res.status === "Pending" && isAdmin;
+				const canCancelUpcoming = res.resStatus === "Upcoming" && (isOwner || isAdmin);
+				const canManagePending = res.resStatus === "Pending" && isAdmin;
 
 				return (
 				<tr key={index} className="border-t-2 border-gray-67">
@@ -155,7 +135,7 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 							</button>
 						</td>
 					)}
-					<td>{res.status}</td>
+					<td>{res.resStatus}</td>
 					<td className="flex items-center gap-2">
 						{canManagePending ? (
 						<>
