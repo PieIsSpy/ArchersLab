@@ -58,7 +58,7 @@ export function UserLogin({setIsAuth, setAdmin, setUser}) {
 					onChange={handleChange}
 					placeholder="Enter ID"
 				/>
-				<FormPassword
+				<FormPassword label="Password"
 					value={form.password}
 					onChange={handleChange}
 					placeholder="Enter Password"
