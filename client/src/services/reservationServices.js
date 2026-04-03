@@ -3,7 +3,10 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 export const fetchReservations = async () => {
     const reservationsUrl = `${API_URL}/api/reservations`;
     try {
-        const response = await fetch(reservationsUrl)
+        const response = await fetch(reservationsUrl, {
+			method: 'GET',
+			credentials: 'include',
+		})
 
         const reservationsData = await response.json();
 
