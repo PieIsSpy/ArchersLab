@@ -1,12 +1,20 @@
 const asyncHandler = require('express-async-handler')
 
 const Reservation = require('../model/reservationModel')
+const { calculateStatus } = require('../helpers/calculator')
 
 // @desc    Get Reservation
 // @route   GET /api/reservations
 // @access  Private
 const getReservations = asyncHandler(async (req, res) => {
-    const reservations = await Reservation.find().populate('user', '-password').populate('room')
+    let reservations = await Reservation.find().populate('user', '-password').populate('room').lean()
+
+    reservations = reservations.map(r => {
+        return {
+            ...r,
+            resStatus: calculateStatus(r)
+        }
+    })
 
     res.status(200).json(reservations)
 })
@@ -24,6 +32,12 @@ const getFilteredReservations = asyncHandler(async (req, res) => {
     }
 
     let reservations = await Reservation.find(query).populate('user', '-password').populate('room').lean()
+    reservations = reservations.map(r => {
+        return {
+            ...r,
+            resStatus: calculateStatus(r)
+        }
+    })
 
     if (redactAnonymous === true) {
         reservations = reservations.map(r => {
