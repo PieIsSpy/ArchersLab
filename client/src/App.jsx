@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 
 // pages
+import { About } from "./pages/About.jsx"
 import { Home } from "./pages/Home.jsx";
 import { Profile } from "./pages/Profile.jsx";
 import { ChangePassword } from "./pages/ChangePassword.jsx";
@@ -36,6 +37,11 @@ export default function App() {
 	}
 
 	const navBarElems = [
+		{
+			route: 'About',
+			viewBox: '0 0 512 512',
+			svg: "M256 0C114.88 0 0 114.88 0 256s114.88 256 256 256 256-114.88 256-256S397.12 0 256 0zm0 460c-112.16 0-204-91.84-204-204S143.84 52 256 52s204 91.84 204 204-91.84 204-204 204zm26 0h-53V240h53v220zm-26-288a26 26 0 1 1 0-52 26 26 0 0 1 0 52z"
+		},
 		{
 			route: 'Home',
 			viewBox: '0 0 512 512',
@@ -208,7 +214,7 @@ export default function App() {
 						<Route path="/UserRegistration" element={
 							isAuth ? <Navigate to='/Home'/> : <UserRegistration />
 						} />
-						
+						<Route path="/About" element={<About/>} />
 						<Route path="/Home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
                         <Route path="/Profile/:id" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                         <Route path="/ReserveSeat" element={<ProtectedRoute><ReserveSeat /></ProtectedRoute>} />
