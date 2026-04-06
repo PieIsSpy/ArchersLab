@@ -1,9 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
-import { FormInput, FormLayout } from "../components/Form";
+import { FormPassword, FormLayout } from "../components/Form";
+import { Button } from "../components/Input";
 
 import { updateAccount } from "../services/userServices";
 
@@ -49,7 +50,7 @@ export function ChangePassword() {
 			onSubmit={handleSubmit}
 			children={
 				<>
-					<FormInput 
+					<FormPassword 
 						label="Old Password"
 						type="password"
 						name="oldPassword"
@@ -58,7 +59,7 @@ export function ChangePassword() {
 						placeholder="Enter old password"
 					/>
 
-					<FormInput
+					<FormPassword
 						label="New Password"
 						type="password"
 						name="newPassword"
@@ -67,7 +68,7 @@ export function ChangePassword() {
 						placeholder="Enter new password"
 					/>
 
-					<FormInput
+					<FormPassword
 						label="Confirm Password"
 						type="password"
 						name="confirmPassword"
@@ -76,13 +77,19 @@ export function ChangePassword() {
 						placeholder="Confirm new password"
 					/>
 
-					<div className="flex justify-center mt-4">
-						<button
-						type="submit"
-						className="px-[15px] py-[5px] bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none text-white"
-						>
-						Change Password
-						</button>
+					<div className="flex gap-6">
+						<Button
+							type="submit"
+							label="Change Password"
+						/>
+
+						<Link to ={`/Profile/${currentUser._id}`}>
+							<Button
+								type="button"
+								label="Exit"
+								color="gray"
+							/>
+						</Link>
 					</div>
 				</>
 			}
