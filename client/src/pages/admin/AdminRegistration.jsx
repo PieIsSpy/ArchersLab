@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
@@ -53,7 +53,7 @@ export function AdminRegistration() {
 			await createAccount(newUser);
 
 			alert('Successfully created account!')
-			navigate(`/Profile/${currentUser.id}`)
+			navigate(`/Profile/${currentUser._id}`)
 		} catch (err) {
 			console.error(err);
 		}
@@ -110,7 +110,20 @@ export function AdminRegistration() {
 					placeholder="Confirm password"
 				/>
 
-				<Button type="submit" label="Create Admin Account"/>
+				<div className="flex gap-6">
+					<Button 
+						type="submit" 
+						label="Create Admin Account"
+					/>
+
+					<Link to ={`/Profile/${currentUser._id}`}>
+						<Button
+							type="button"
+							label="Exit"
+							color="gray"
+						/>
+					</Link>
+				</div>
 		</FormLayout>
 	);
 }
