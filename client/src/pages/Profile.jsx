@@ -39,7 +39,7 @@ export function UserProfile({user}) {
 	);
 }
 
-export function UserForm() {
+export function UserForm({setView}) {
 	const {currentUser, setUser} = useContext(UserContext)
 	console.log('cur:', currentUser)
 	const [form, setForm] = useState({
@@ -78,10 +78,15 @@ export function UserForm() {
 		console.log(form)
 
 		try {
-			const data = await updateAccount(currentUser, form)
-			alert(`Profile Successfully Updated`)
-			console.log('updated:',data)
-			setUser(data)
+			const response = await updateAccount(currentUser, form)
+			if (response.ok) {
+				const data = await response.json();
+				setUser(data);
+
+				if (setView) 
+					setView(data)
+				alert(`Profile Successfully Updated`)
+			}
 		} catch (err) {
 			console.error(err);
 		}
@@ -322,7 +327,7 @@ export function Profile() {
 						<div className="flex flex-col flex-1">
 							<div className="text-3xl font-bold google w-full mb-4">Edit Details</div>
 							<div className="gray-67 flex flex-col rounded-2xl p-4 items-center mb-4 flex-1">
-								<UserForm />
+								<UserForm setView={setView}/>
 							</div>
 
 							<div className="text-3xl font-bold google w-full mb-4">Account Settings</div>
