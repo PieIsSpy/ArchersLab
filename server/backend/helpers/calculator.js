@@ -16,10 +16,10 @@ const calculateStatus = (res) => {
 
     if (res.seats.length === 0) {
         if (res.resStatus === 'Pending') {
-            const twoweeks = 14 * 24 * 60 * 60 * 1000;
+            const tendays = 10 * 24 * 60 * 60 * 1000;
             const interval = startDate - now;
 
-            if (interval < twoweeks)
+            if (interval < tendays)
                 return 'Cancelled'
         }
     }
