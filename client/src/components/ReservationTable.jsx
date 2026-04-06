@@ -86,7 +86,7 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 			{
 				if (filter[0] && filterBy[0]) {
 					const target = new Date(filterBy[0]);
-					list = reservations.filter(res => {
+					reservations = reservations.filter(res => {
 						const d = new Date(res.date);
 						return (
 							d.getFullYear() === target.getFullYear() &&
@@ -97,11 +97,11 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 				}
 
 				if (filter[1])
-					list = reservations.filter(res => res.room._id === filterBy[1]);
+					reservations = reservations.filter(res => res.room._id === filterBy[1]);
 
 				if (filter[2] && filterBy[2]) {
 					const query = filterBy[2].toLowerCase();
-					list = reservations.filter(res => (res.user?.name || "").toLowerCase().includes(query));
+					reservations = reservations.filter(res => (res.user?.name || "").toLowerCase().includes(query));
 				}
 			}
 

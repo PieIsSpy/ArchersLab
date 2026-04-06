@@ -1,3 +1,5 @@
+import beatles from "../resources/beatles.png"
+
 export function About(){
 	return(
 		<>
@@ -5,7 +7,7 @@ export function About(){
 				<h1 className="font-bold text-4xl text-center mt-5 mb-10">About Archer's Lab</h1>
 				<h2 className="text-s">THE BRAINS BEHIND THE MASTERPIECE</h2>
 				<div className="gray-89 p-5 flex gap-5 rounded-4xl">
-					<img src="/src/resources/beatles.png" className="h-40 w-40 rounded-2xl"></img>
+					<img src={beatles} className="h-40 w-40 rounded-2xl"></img>
 					<div className="justify-center flex text-center mx-auto">
 						<ul className="space-y-5">
 							<li>Karl Deejay <span className="italic">"Omangoat"</span> Omandac</li>
