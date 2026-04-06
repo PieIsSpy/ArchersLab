@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
@@ -122,7 +123,14 @@ export function ReservationTable({view, mode='global', filter, filterBy}) {
 					: <td>{res.reason}</td>}
 					{(mode === 'global' && currentUser.isAdmin) && (
 						<td className="flex items-center gap-2">
-							{res.user ? res.user.name : res.inpersonInfo ? res.inpersonInfo.name : "Anonymous"}
+							{res.user?.name ? (
+								<Link
+								to={`/Profile/${res.user._id}`}>
+									<span className="underline">
+										{res.user.name}
+									</span>
+								</Link>
+							) : res.inpersonInfo.name ? res.inpersonInfo.name : "Anonymous"}
 							<button className="flex items-center gap-2 transition-all duration-200">
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
