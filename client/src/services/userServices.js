@@ -46,14 +46,8 @@ export const updateAccount = async(info, form) => {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(form)
         })
-
-        const data = await response.json();
-        if (!response.ok) {
-            alert(data.message)
-        } else {
-            console.log(data)
-            return data;
-        }
+        
+        return response;
     } catch (err) {
         console.error("Failed to fetch data:", err);
     }

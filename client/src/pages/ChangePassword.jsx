@@ -24,6 +24,12 @@ export function ChangePassword() {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+
+		if (!form.oldPassword || !form.newPassword || !form.confirmPassword) {
+			alert('Please enter missing fields')
+			return;
+		}
+
 		if (form.newPassword !== form.confirmPassword) {
 			alert("Passwords do not match");
 			return;
@@ -35,9 +41,15 @@ export function ChangePassword() {
                 password: form.newPassword
 			}
 
-			await updateAccount(currentUser, info)
-			alert('Password Successfully Updated');
-            navigate(`/Profile/${currentUser._id}`);
+			const response = await updateAccount(currentUser, info)
+
+			if (response.ok) {
+				alert('Password Successfully Updated');
+            	navigate(`/Profile/${currentUser._id}`);
+			} else {
+				const errorData = await response.json();
+            	alert(errorData.message || "Failed to update password");
+			}
 		} catch (err) {
 			console.error(err);
 		}
