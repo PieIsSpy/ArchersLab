@@ -46,47 +46,45 @@ export function ChangePassword() {
 		<FormLayout
 			title="Change Password"
 			subtitle="Need to secure your account? Change your password here."
+			onSubmit={handleSubmit}
 			children={
-				<form
-					onSubmit={handleSubmit}
-					className="w-full flex flex-col items-center space-y-4"
-					>
-						<FormInput 
-							label="Old Password"
-							type="password"
-							name="oldPassword"
-							value={form.oldPassword}
-							onChange={handleChange}
-							placeholder="Enter old password"
-						/>
+				<>
+					<FormInput 
+						label="Old Password"
+						type="password"
+						name="oldPassword"
+						value={form.oldPassword}
+						onChange={handleChange}
+						placeholder="Enter old password"
+					/>
 
-						<FormInput
-							label="New Password"
-							type="password"
-							name="newPassword"
-							value={form.newPassword}
-							onChange={handleChange}
-							placeholder="Enter new password"
-						/>
+					<FormInput
+						label="New Password"
+						type="password"
+						name="newPassword"
+						value={form.newPassword}
+						onChange={handleChange}
+						placeholder="Enter new password"
+					/>
 
-						<FormInput
-							label="Confirm Password"
-							type="password"
-							name="confirmPassword"
-							value={form.confirmPassword}
-							onChange={handleChange}
-							placeholder="Confirm new password"
-						/>
+					<FormInput
+						label="Confirm Password"
+						type="password"
+						name="confirmPassword"
+						value={form.confirmPassword}
+						onChange={handleChange}
+						placeholder="Confirm new password"
+					/>
 
-						<div className="flex justify-center mt-4">
-							<button
-							type="submit"
-							className="px-[15px] py-[5px] bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none text-white"
-							>
-							Change Password
-							</button>
-						</div>
-				</form>
+					<div className="flex justify-center mt-4">
+						<button
+						type="submit"
+						className="px-[15px] py-[5px] bg-[#145b92] p-3 rounded-xl transition-all hover:scale-102 active:scale-100 active:shadow-inner select-none text-white"
+						>
+						Change Password
+						</button>
+					</div>
+				</>
 			}
 		/>
 	)
