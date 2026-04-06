@@ -121,13 +121,15 @@ const updateReservation = asyncHandler(async (req, res) => {
         throw new Error('Reservation not found');
     }
 
-    if ((reservation.user.toString() != req.session.user._id) && !req.session.user.isAdmin) {
+    const resUserId = reservation.user ? reservation.user.toString() : null;
+    const sessionUserId = req.session.user._id;
+    const isAdmin = req.session.user.isAdmin;
+    if ((resUserId !== sessionUserId) && !isAdmin) {
         res.status(400);
         throw new Error('Unauthorized Change');
     }
 
     const updatedReservation = await Reservation.findByIdAndUpdate(req.params.id, req.body, {new: true})
-
     res.status(200).json(updatedReservation)
 })
 
