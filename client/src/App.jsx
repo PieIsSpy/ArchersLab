@@ -138,7 +138,7 @@ export default function App() {
 						{isAdmin && (
 							<li>
 								<Link
-								to="/Issues"
+								to="/admin/RoomReservations"
 								className={choice}
 								>
 									<svg
